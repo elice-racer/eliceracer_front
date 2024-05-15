@@ -3,9 +3,9 @@ import { paths } from "./utils/path";
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Layout from "./components/Layout";
-import Home from "./routes/home/Home.page";
-import LogIn from "./routes/login/LogIn.page";
-import CreateAccount from "./routes/login/CreateAccount.page";
+import Home from "./pages/home/Home.page";
+import LogIn from "./pages/login/LogIn.page";
+import CreateAccount from "./pages/login/CreateAccount.page";
 import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 import { useEffect, useState } from "react";
