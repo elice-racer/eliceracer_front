@@ -1,36 +1,23 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import UserInfoBox from "./components/UserInfoBox";
 
-export default function CreateAccount() {
+export default function CreateAdmin() {
   const [error, setError] = useState("");
-  const [confirmUser, setConfirmUser] = useState(false);
-  /**
-   * todo
-   * user 회원가입
-   * 번호 인증
-   * 이메일 인증?
-   * 트랙 확인
-   *
-   * 번호인증을 하면 이메일이 날아옴 , 날아온 이메일 기반으로 정보가 자동 입력됨
-   */
+
   return (
     <Wrapper>
       <Img src="imgs/elice-logo.svg" />
-      <h1>본인 인증</h1>
+      <Title>관리자 계정 등록하기</Title>
       {error && <Error>{error}</Error>}
       <Input name="name" placeholder="name" />
-      <Input name="phoneNumber" placeholder="phone number" />
-      <Input name="authCode" placeholder="auth code" />
-      <Btn onClick={() => setConfirmUser(true)}>본인 인증하기</Btn>
-      {confirmUser ? (
-        <UserInfoBox />
-      ) : (
-        <Text>
-          이미 회원이신가요? <Link to="/login">로그인하기&rarr;</Link>{" "}
-        </Text>
-      )}
+      <Input name="email" placeholder="email" />
+      <Input name="password" placeholder="password" />
+      <Input name="password" placeholder="checked password" />
+      <Btn>이메일 인증하기</Btn>
+      <Text>
+        이미 회원이신가요? <Link to="/login">로그인하기&rarr;</Link>
+      </Text>
     </Wrapper>
   );
 }
@@ -50,6 +37,10 @@ const Img = styled.img`
   margin: 50px 0 40px 0;
 `;
 
+const Title = styled.h1`
+  font-size: 1.2rem;
+  margin-bottom: 14px;
+`;
 const Input = styled.input`
   width: 240px;
   height: 30px;

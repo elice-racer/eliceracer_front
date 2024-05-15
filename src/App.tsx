@@ -10,14 +10,18 @@ import { createGlobalStyle } from "styled-components";
 import reset from "styled-reset";
 import { useEffect, useState } from "react";
 import LoadingScreen from "./components/LoadingScreen";
+import Intro from "./pages/intro/Intro.page";
+import CreateAdmin from "./pages/login/CreateAdmin.Page";
 const router = createBrowserRouter([
   {
     path: paths.HOME,
     element: <Layout />,
     children: [{ path: "", element: <Home /> }],
   },
+  { path: "/intro", element: <Intro /> },
   { path: "/login", element: <LogIn /> },
   { path: "/create-account", element: <CreateAccount /> },
+  { path: "/create-admin", element: <CreateAdmin /> },
 ]);
 function App() {
   const [isLoading, setLoading] = useState(true);
@@ -43,7 +47,7 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: border-box;
   }
   body {
-    background-color:  black;
+    background-color: #242424;
     color:white;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
   }
