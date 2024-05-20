@@ -1,8 +1,8 @@
 import "./App.css";
 import { paths } from "./utils/path";
 
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Layout from "./components/Layout";
+import { Route, RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Layout } from "./components/Layout";
 import Home from "./pages/home/Home.page";
 import LogIn from "./pages/login/LogIn.page";
 import CreateAccount from "./pages/login/CreateAccount.page";
@@ -12,6 +12,8 @@ import { useEffect, useState } from "react";
 import LoadingScreen from "./components/LoadingScreen";
 import Intro from "./pages/intro/Intro.page";
 import CreateAdmin from "./pages/login/CreateAdmin.Page";
+import { ProtectedRoute } from "./routes/ProtectedRoute";
+
 const router = createBrowserRouter([
   {
     path: paths.HOME,
@@ -34,7 +36,14 @@ function App() {
   return (
     <>
       <GlobalStyles />
-      {isLoading ? <LoadingScreen /> : <RouterProvider router={router} />}
+      {isLoading ? (
+        <LoadingScreen />
+      ) : (
+        <>
+          <Route element={<ProtectedRoute />} />
+          <RouterProvider router={router} />
+        </>
+      )}
     </>
   );
 }

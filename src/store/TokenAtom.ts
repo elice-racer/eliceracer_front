@@ -1,6 +1,11 @@
-import { atom } from "recoil";
+import { atom, selector } from "recoil";
 
-export const TokenAtom = atom({
-  key: "TokenAtom",
+export const tokenAtom = atom({
+  key: "tokenAtom",
   default: undefined,
+});
+
+export const isLoginSelector = selector({
+  key: "isLoginSelector",
+  get: ({ get }) => !!get(tokenAtom),
 });

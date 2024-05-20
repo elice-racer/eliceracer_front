@@ -1,15 +1,20 @@
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { styled } from "styled-components";
+import { fetchLogin } from "../../servies/auth";
+import { useRecoilValue } from "recoil";
+import { tokenAtom } from "../../store/TokenAtom";
 
 function LogIn() {
   const navigate = useNavigate();
-
+  const location = useLocation();
+  const from = location?.state?.redirectedFrom?.pathname || "/";
   const [userLoginForm, setUserLoginForm] = useState({
     identifier: "",
     password: "",
   });
   const [error, setError] = useState("");
+  const token = useRecoilValue(tokenAtom);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -19,12 +24,18 @@ function LogIn() {
   const handleLogin = (e: any) => {
     e.preventDefault();
     try {
+      fetchLogin(userLoginForm);
+      navigate(from);
     } catch (e: any) {
       setError(e);
     }
-    navigate("/");
   };
-
+  useEffect(() => {
+    if (token) {
+      navigate("/");
+    }
+  }, []);
+  // State = 컴포넌트 내부에서 변화할 수 있는 값
   return (
     <Wrapper>
       <Img src="imgs/elice-logo.svg" />
