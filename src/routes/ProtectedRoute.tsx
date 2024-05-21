@@ -1,16 +1,17 @@
 import { useRecoilValue } from "recoil";
-import { isLoginSelector } from "../store/TokenAtom";
-import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { isLoginSelector } from "../recoil/TokenAtom";
+import { Navigate, useLocation } from "react-router-dom";
+import { paths } from "../utils/path";
 
-export const ProtectedRoute = () => {
+interface ProtectedRouteProps {
+  element: React.ReactNode;
+}
+
+export const ProtectedRoute = ({ element }: ProtectedRouteProps) => {
   const isLogin = useRecoilValue(isLoginSelector);
-  const navigate = useNavigate();
   const curruntLocation = useLocation();
-  if (isLogin) return;
-  else {
-    navigate("/login");
-  }
-  return isLogin ? <Outlet /> : <Navigate to={"/login"} replace state={{ redirectedFrom: curruntLocation }} />;
+
+  return isLogin ? <>{element} </> : <Navigate to={paths.LOGIN} replace state={{ redirectedFrom: curruntLocation }} />;
 };
 
 //location.replace('보낼 라우터')

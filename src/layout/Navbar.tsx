@@ -1,12 +1,13 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { paths } from "../utils/path";
 
 export const Navbar = () => {
   return (
     <Header>
       <Nav>
-        <Link to={"/"}>홈</Link>
-        <Link to={"/login"}>로그인</Link>
+        <Link to={paths.HOME}>홈</Link>
+        <Link to={paths.LOGIN}>로그인</Link>
       </Nav>
     </Header>
   );

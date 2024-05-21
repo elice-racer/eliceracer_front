@@ -1,6 +1,4 @@
-import { useSetRecoilState } from "recoil";
 import { api } from "./api";
-import { tokenAtom } from "../store/TokenAtom";
 
 interface UserLogin {
   identifier: string;
@@ -19,8 +17,6 @@ interface CheckedUserNumber {
   authCode?: string;
 }
 
-const setAccessToken = useSetRecoilState(tokenAtom);
-
 export const getAccessToken = () => {
   return localStorage.getItem("access_token");
 };
@@ -31,13 +27,9 @@ export const RefreshToken = () => {
 
 export const fetchCreateUser = async (data: CreateUser) => {
   const url = `/users/signup`;
-  await api.post(url, data);
+  return api.post(url, data);
 };
 export const fetchLogin = async (data: UserLogin) => {
-  try {
-    await api.post(`auth/login`, data).then(res => setAccessToken(res.data.accessToken));
-    console.log(tokenAtom);
-  } catch (e) {
-    console.error(e);
-  }
+  const res = await api.post(`auth/login`, data).then(res => res.data);
+  return res;
 };

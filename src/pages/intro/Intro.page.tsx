@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
+import { paths } from "../../utils/path";
 
 function Intro() {
   const navigate = useNavigate();
@@ -7,15 +8,15 @@ function Intro() {
     <Wrapper>
       <Text>포지션을 선택해주세요.</Text>
       <BoxWrapper>
-        <Box onClick={() => navigate("/create-account")}>
+        <Box onClick={() => navigate(paths.CREATE_USER)}>
           <p>레이서</p>
         </Box>
-        <Box onClick={() => navigate("/create-admin")}>
+        <Box onClick={() => navigate(paths.CREATE_ADMIN)}>
           <p>관리자</p>
         </Box>
       </BoxWrapper>
       <Text>
-        이미 회원이신가요? <Link to="/login">로그인하기&rarr;</Link>
+        이미 회원이신가요? <Link to={paths.LOGIN}>로그인하기&rarr;</Link>
       </Text>
     </Wrapper>
   );

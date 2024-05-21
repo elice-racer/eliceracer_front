@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { isLoginSelector, tokenAtom } from "../../store/TokenAtom";
+import { isLoginSelector, tokenAtom } from "../../recoil/TokenAtom";
 import { useRecoilValue } from "recoil";
+import { paths } from "../../utils/path";
 
 function Home() {
   const navigate = useNavigate();
@@ -11,11 +12,11 @@ function Home() {
   useEffect(() => {
     if (isLogin) return;
     else {
-      navigate("/login");
+      navigate(paths.LOGIN);
     }
   }, []);
   // user 정보
-  return <div>Home.page</div>;
+  return <div>home</div>;
 }
 
 export default Home;
