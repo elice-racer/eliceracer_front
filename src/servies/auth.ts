@@ -1,15 +1,20 @@
 import { api } from "./api";
 
+// role 타입을 role: "racer"|"coach"라고 해줄 때, 페이지딴에서 어떻게 입력을 주지?
 interface SignupUser {
-  username: string;
+  userName: string;
   password: string;
   realName: string;
   phoneNumber: string;
+  role: string;
 }
 
-interface CheckedUserNumber {
+interface AuthUserNumber {
+  realName: string;
   phoneNumber: string;
-  authCode?: string;
+}
+interface CheckedUserNumber extends AuthUserNumber {
+  authCode: string;
 }
 
 export interface CreateAdmin {
@@ -31,13 +36,21 @@ export const RefreshToken = () => {
   return localStorage.getItem("refresh_token");
 };
 
-// export const fetchCheckedAdminEmail = async (data: string) => {
-//   const url = `admins/verify-email?id= & token =`;
-// };
-
 /** 관리자 회원가입 */
 export const fetchSignupAdmin = async (data: CreateAdmin) => {
   const url = `admins/signup`;
+  return api.post(url, data);
+};
+
+/** 유저 전화번호 인증 요청 */
+export const fetchAuthUserNumber = async (data: AuthUserNumber) => {
+  const url = `auth/send-verification`;
+  return api.post(url, data);
+};
+
+/** 유저 인증번호 확인 */
+export const fetchCheckedAuthCode = async (data: CheckedUserNumber) => {
+  const url = `auth/verify-code`;
   return api.post(url, data);
 };
 

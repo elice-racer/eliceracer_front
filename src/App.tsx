@@ -33,6 +33,8 @@ import AdminAlert from "./pages/admin/AdminAlert.page";
 import AdminProject from "./pages/admin/AdminProject.page";
 import AdminSearchUser from "./pages/admin/manageUsers/AdminSearchUser.page";
 import AdminSettingsChat from "./pages/admin/AdminSettingsChat";
+import FindId from "./pages/login/FindId.page";
+import FindPW from "./pages/login/FindPW.page";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +45,8 @@ const router = createBrowserRouter([
       { path: paths.INTRO, element: <Intro /> },
       { path: paths.CREATE_USER, element: <CreateAccount /> },
       { path: paths.CREATE_ADMIN, element: <CreateAdmin /> },
+      { path: paths.FIND_ID, element: <FindId /> },
+      { path: paths.FIND_PW, element: <FindPW /> },
     ],
   },
   {

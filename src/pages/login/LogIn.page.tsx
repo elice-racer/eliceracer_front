@@ -96,6 +96,8 @@ const Btn = styled.button`
   border-radius: 16px;
   border: none;
   background-color: #b67bff;
+
+  cursor: pointer;
 `;
 
 const Text = styled.p`

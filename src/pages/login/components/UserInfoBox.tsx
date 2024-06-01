@@ -1,9 +1,9 @@
 import styled from "styled-components";
 
-function UserInfoBox({ onClick }: any) {
+function UserInfoBox({ onClick, password }: any) {
   return (
     <Wrapper>
-      <Input name="password" placeholder="password" />
+      <Input name="password" placeholder="password" value={password} />
       <Input name="confirmPassword" placeholder="checked password" />
       <Btn onClick={onClick}>회원가입!</Btn>
     </Wrapper>

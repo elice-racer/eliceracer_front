@@ -5,8 +5,8 @@ const paths = {
   CREATE_USER: "/hello/create-account",
   CREATE_ADMIN: "/hello/create-admin",
 
-  FIND_ID: "/find-id",
-  FIND_PW: "/find-pw",
+  FIND_ID: "/hello/find-id",
+  FIND_PW: "/hello/find-pw",
 
   // 채팅
   CHAT_LIST: "/chat",

@@ -1,52 +1,92 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import UserInfoBox from "./components/UserInfoBox";
 import { imgPaths, paths } from "../../utils/path";
+import { fetchAuthUserNumber, fetchCheckedAuthCode, fetchSignupUser } from "../../servies/auth";
 
 export default function CreateAccount() {
+  const navigate = useNavigate();
+
   const [error, setError] = useState("");
   const [confirmUser, setConfirmUser] = useState(false);
 
   const [userAuth, setUserAuth] = useState({
-    name: "",
+    realName: "",
     phoneNumber: "",
-    authCode: "",
   });
+
+  const [authCode, setAuthCode] = useState("");
 
   const [userData, setUserData] = useState({
+    realName: userAuth.realName,
+    phoneNumber: userAuth.phoneNumber,
     userName: "",
     password: "",
-    realName: "",
+    role: "racer",
   });
-  /**
-   * todo
-   * user 회원가입
-   * 번호 인증
-   * 이메일 인증?
-   * 트랙 확인
-   * 본인 인증 완료상태면
-   * 번호인증을 하면 이메일이 날아옴 , 날아온 이메일 기반으로 정보가 자동 입력됨
-   */
 
-  const fetchAddUsersEmailAndPW = async () => {};
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserAuth(userInfo => ({ ...userInfo, [name]: value }));
+    setAuthCode(authCode);
+    setUserData(userInfo => ({ ...userInfo, [name]: value }));
+  };
+
+  /** 유저 전화번호 인증 */
+  const handleAuthUserPhoneNumber = async (e: any) => {
+    e.preventDefault();
+    try {
+      const res = await fetchAuthUserNumber(userAuth);
+      if (res.status === 200) {
+        setError("인증번호가 전송되었습니다.");
+      }
+    } catch (e: any) {
+      const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
+      setError(errorMessage);
+    }
+  };
+
+  /** 인증번호 확인 */
+  const handleCheckedAuthCode = async (e: any) => {
+    e.prevenDefualt();
+    try {
+      const res = await fetchCheckedAuthCode({ ...userAuth, authCode });
+      if (res.status === 201) setConfirmUser(true);
+    } catch (e: any) {
+      const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
+      setError(errorMessage);
+    }
+  };
+
+  /** 유저 회원가입 완료! */
+  const handleAddUsersEmailAndPW = async (e: any) => {
+    e.preventDefault();
+    try {
+      const res = await fetchSignupUser(userData);
+      if (res.status === 201) navigate(paths.LOGIN);
+    } catch (e: any) {
+      const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
+      setError(errorMessage);
+    }
+  };
+
   return (
     <Wrapper>
       <Img src={imgPaths.ELICE_LOGO} />
       <h1>본인 인증</h1>
       {error && <Error>{error}</Error>}
-      <Input name="name" placeholder="name" />
+      <Input onChange={onChange} name="realName" value={userAuth.realName} placeholder="name" />
+      <Input onChange={onChange} name="phoneNumber" value={userAuth.phoneNumber} placeholder="phone number" />
+      <AuthSendBtn onClick={handleAuthUserPhoneNumber}>인증문자 보내기</AuthSendBtn>
 
-      <Input name="phoneNumber" placeholder="phone number" />
-      <AuthSendBtn>인증문자 보내기</AuthSendBtn>
-
-      <Input name="authCode" placeholder="auth code" />
-      <Btn onClick={() => setConfirmUser(true)}>본인 인증 완료</Btn>
+      <Input onChange={onChange} name="authCode" value={authCode} placeholder="auth code" />
+      <Btn onClick={handleCheckedAuthCode}>본인 인증 완료</Btn>
       {confirmUser ? (
-        <UserInfoBox onClick={fetchAddUsersEmailAndPW} />
+        <UserInfoBox onClick={handleAddUsersEmailAndPW} password={userData.password} />
       ) : (
         <Text>
-          이미 회원이신가요? <Link to={paths.LOGIN}>로그인하기&rarr;</Link>{" "}
+          이미 회원이신가요? <Link to={paths.LOGIN}>로그인하기&rarr;</Link>
         </Text>
       )}
     </Wrapper>
@@ -74,6 +114,8 @@ const AuthSendBtn = styled.button`
   border: none;
   border-radius: 16px;
   background-color: #b67bff;
+
+  cursor: pointer;
 `;
 
 const Input = styled.input`
@@ -95,6 +137,8 @@ const Btn = styled.button`
   border-radius: 16px;
   border: none;
   background-color: #b67bff;
+
+  cursor: pointer;
 `;
 
 const Text = styled.p`
