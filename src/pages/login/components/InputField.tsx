@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 
 interface InputFielProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
-  error: string;
+  error?: string;
 }
 
 export default function InputFiled({ label, error, ...props }: InputFielProps) {

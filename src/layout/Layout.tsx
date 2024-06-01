@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
-import { Navbar } from "./Navbar";
+import { AdminNavbar, Navbar } from "./Navbar";
+import styled from "styled-components";
 
 export const NavLayout = () => {
   return (
@@ -10,7 +11,22 @@ export const NavLayout = () => {
 };
 
 export const Layout = () => {
-  return <Outlet />;
+  return (
+    <Container>
+      <Wrapper>
+        <Outlet />
+      </Wrapper>
+    </Container>
+  );
+};
+
+export const AdminLayout = () => {
+  return (
+    <Container>
+      <AdminNavbar />
+      <Outlet />
+    </Container>
+  );
 };
 
 export const IntroLayout = () => {
@@ -22,3 +38,11 @@ export const IntroLayout = () => {
     </div>
   );
 };
+
+const Container = styled.div`
+  position: relative;
+  width: 100dvw;
+  height: 100%;
+`;
+
+const Wrapper = styled.div``;

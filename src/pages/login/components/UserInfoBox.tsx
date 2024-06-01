@@ -1,10 +1,11 @@
 import styled from "styled-components";
 
-function UserInfoBox() {
+function UserInfoBox({ onClick }: any) {
   return (
     <Wrapper>
       <Input name="password" placeholder="password" />
       <Input name="confirmPassword" placeholder="checked password" />
+      <Btn onClick={onClick}>회원가입!</Btn>
     </Wrapper>
   );
 }
@@ -28,4 +29,12 @@ const Input = styled.input`
   background-color: #eeeafe;
   padding-left: 16px;
   border: none;
+`;
+
+const Btn = styled.button`
+  border: none;
+  width: 230px;
+  height: 30px;
+  border-radius: 12px;
+  color: #fff;
 `;

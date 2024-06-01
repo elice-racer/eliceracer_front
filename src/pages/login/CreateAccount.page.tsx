@@ -28,17 +28,22 @@ export default function CreateAccount() {
    * 본인 인증 완료상태면
    * 번호인증을 하면 이메일이 날아옴 , 날아온 이메일 기반으로 정보가 자동 입력됨
    */
+
+  const fetchAddUsersEmailAndPW = async () => {};
   return (
     <Wrapper>
       <Img src={imgPaths.ELICE_LOGO} />
       <h1>본인 인증</h1>
       {error && <Error>{error}</Error>}
       <Input name="name" placeholder="name" />
+
       <Input name="phoneNumber" placeholder="phone number" />
+      <AuthSendBtn>인증문자 보내기</AuthSendBtn>
+
       <Input name="authCode" placeholder="auth code" />
-      <Btn onClick={() => setConfirmUser(true)}>본인 인증하기</Btn>
+      <Btn onClick={() => setConfirmUser(true)}>본인 인증 완료</Btn>
       {confirmUser ? (
-        <UserInfoBox />
+        <UserInfoBox onClick={fetchAddUsersEmailAndPW} />
       ) : (
         <Text>
           이미 회원이신가요? <Link to={paths.LOGIN}>로그인하기&rarr;</Link>{" "}
@@ -61,6 +66,14 @@ const Wrapper = styled.div`
 const Img = styled.img`
   width: 230px;
   margin: 50px 0 40px 0;
+`;
+
+const AuthSendBtn = styled.button`
+  width: 230px;
+  height: 30px;
+  border: none;
+  border-radius: 16px;
+  background-color: #b67bff;
 `;
 
 const Input = styled.input`

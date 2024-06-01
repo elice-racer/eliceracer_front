@@ -39,7 +39,7 @@ const BoxWrapper = styled.div`
 `;
 
 const Box = styled.div`
-  background-color: #b67bff;
+  background-color: ${({ theme }) => theme.colors.puple2};
   width: 80px;
   height: 120px;
   display: flex;
@@ -50,6 +50,5 @@ const Box = styled.div`
 `;
 
 const Text = styled.p`
-  color: #dbdbdb;
   font-size: 0.8rem;
 `;

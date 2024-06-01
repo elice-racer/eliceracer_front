@@ -11,12 +11,14 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const from = location?.state?.redirectedFrom?.pathname || paths.HOME;
+
   const [userLoginForm, setUserLoginForm] = useState({
     identifier: "",
     password: "",
   });
   const [error, setError] = useState("");
   const [token, setToken] = useRecoilState(tokenAtom);
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserLoginForm(userInfo => ({ ...userInfo, [name]: value }));
@@ -32,11 +34,13 @@ export default function Login() {
     e.preventDefault();
     try {
       const res = await fetchLogin(userLoginForm);
+      console.log(res);
       localStorage.setItem("userToken", res.accessToken);
       setToken(res.accessToken);
       navigate(from);
     } catch (e: any) {
-      setError(e);
+      const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
+      setError(errorMessage);
     }
   };
   useEffect(() => {
@@ -48,10 +52,12 @@ export default function Login() {
   return (
     <Wrapper>
       <Img src={imgPaths.ELICE_LOGO} />
-      <InputFiled error={error} onChange={onChange} name="identifier" value={userLoginForm.identifier} placeholder="id" type="id" required />
+      <InputFiled onChange={onChange} name="identifier" value={userLoginForm.identifier} placeholder="id" type="id" required />
       <InputFiled error={error} onChange={onChange} name="password" value={userLoginForm.password} placeholder="password" type="password" required />
       <Btn onClick={handleLogin}>로그인</Btn>
-      <Text>아이디 | 비밀번호 찾기</Text>
+      <TextWrapper>
+        <StyledLink to={paths.FIND_ID}>아이디</StyledLink> | <StyledLink to={paths.FIND_PW}>비밀번호 찾기</StyledLink>
+      </TextWrapper>
 
       <Text>
         처음 방문하셨나요? <Link to={paths.INTRO}>회원가입하기 &rarr;</Link>
@@ -93,6 +99,8 @@ const Btn = styled.button`
 `;
 
 const Text = styled.p`
-  color: #dbdbdb;
   font-size: 0.8rem;
 `;
+
+const TextWrapper = styled.div``;
+const StyledLink = styled(Link)``;

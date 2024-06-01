@@ -4,12 +4,50 @@ const paths = {
   LOGIN: "/hello/login",
   CREATE_USER: "/hello/create-account",
   CREATE_ADMIN: "/hello/create-admin",
-  MY_ELICER: "/my-elicer",
-  CHAT_LIST: "/chat-list",
-  CHATTING_ROOM: "/chat-list/:id",
+
+  FIND_ID: "/find-id",
+  FIND_PW: "/find-pw",
+
+  // 채팅
+  CHAT_LIST: "/chat",
+  CHAT_ROOM: "/chat/:id",
+
+  // 상대 프로필 조회
+  ELICER: "/elicer/:id",
   MENU: "/memu",
   MYPAGE: "/mypage",
   SETTINGS: "/settings",
+
+  // 공지 게시판
+  NOTICE_LIST: "/notice",
+  EDIT_NOTICE: "/notice/edit/:id",
+  NOTICE: "/notice/:id",
+
+  // 관리자 기능
+  ADMIN: "/admin",
+
+  // 관리자 유저 관리
+  ADD_USERS: "/admin/upload-file",
+  ADMIN_SEARCH_USERS: "/admin/search-users",
+
+  // 채팅 관리
+  ADMIN_SETTINGS_CHAT: "/admin/chat",
+
+  // 관리자 오피스아워 관리
+  OFFICE_HOUR: "/admin/officehour",
+  ADMIN_ADD_OFFICE_HOUR: "/admin/add-officehour",
+  UPDATE_OFFICE_HOUR: "/admin/update-officehour",
+
+  // 관리자 공지 관리
+  ADMIN_NOTICE_LIST: "/admin/notice",
+  ADMIN_NOTICE_ID: "/admin/notice/:id",
+  ADMIN_ADD_NOTICE: "/admin/add-notice",
+
+  // 출결 및 공지 알림 기능
+  ALERT: "/admin/alert",
+
+  // 프로젝트 관리
+  USERS_PROJECTS: "/admin/projects",
 };
 
 const imgPaths = {
