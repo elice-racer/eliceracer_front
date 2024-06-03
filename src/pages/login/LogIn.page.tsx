@@ -35,9 +35,11 @@ export default function Login() {
     try {
       const res = await fetchLogin(userLoginForm);
       console.log(res);
-      localStorage.setItem("userToken", res.accessToken);
-      setToken(res.accessToken);
-      navigate(from);
+      if (res.statusCode === 200) {
+        localStorage.setItem("userToken", res.data?.accessToken);
+        setToken(res.data.accessToken);
+        navigate(from);
+      }
     } catch (e: any) {
       const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
       setError(errorMessage);
