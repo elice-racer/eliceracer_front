@@ -5,6 +5,7 @@ import { useRef, useState } from "react";
 import { AxiosAdmin } from "../../../servies/admin";
 import DataBoard from "./components/DataBoad";
 import * as XLSX from "xlsx";
+import SelectBox from "./components/SelectBox";
 
 interface RowData {
   [key: string]: any;
@@ -60,13 +61,7 @@ function AdminAddFile() {
   return (
     <Container>
       <Title>트랙 생성하기</Title>
-      <select>
-        {OPTIONS.map(option => (
-          <option key={option.value} value={option.value}>
-            {option.name}
-          </option>
-        ))}
-      </select>
+      <SelectBox options={OPTIONS} />
       <Input type="text" />
       <Title>유저 정보 등록하기</Title>
       <Text>유저 정보를 등록하려면 아래 파일을 업로드하세요.</Text>
