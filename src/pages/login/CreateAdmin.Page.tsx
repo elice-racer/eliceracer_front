@@ -13,31 +13,31 @@ export default function CreateAdmin() {
     email: "",
     realName: "",
     password: "",
+    confirmPassword: "",
   });
 
-  const [checkedPassword, setCheckedPassword] = useState("");
   const [sendEmail, setSendEmail] = useState(false);
 
   const onCheckedPassword = () => {
-    if (createAdminForm.password === checkedPassword) {
+    if (createAdminForm.password === createAdminForm.confirmPassword) {
     }
   };
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setCreateAdminForm(AdminInfo => ({ ...AdminInfo, [name]: value }));
-    setCheckedPassword(checkedPassword);
   };
 
   const handleCreateAdmin = async (e: any) => {
     if (createAdminForm.realName === "") return alert("이름을 입력해주세요.");
     if (createAdminForm.email === "") return alert("이메일을 입력해주세요.");
     if (createAdminForm.password === "") return alert("비밀번호를 입력해주세요.");
-    // if (checkedPassword === "") return alert("비밀번호를 확인해주세요.");
+    if (createAdminForm.confirmPassword !== createAdminForm.password) return alert("비밀번호가 일치하지 않습니다.");
     e.preventDefault();
 
     try {
-      const res = await AxiosAuth.fetchSignupAdmin(createAdminForm);
+      const { email, password, realName } = createAdminForm;
+      const res = await AxiosAuth.fetchSignupAdmin({ email, password, realName });
       console.log(res);
       setSendEmail(true);
     } catch (e: any) {
@@ -54,18 +54,29 @@ export default function CreateAdmin() {
         <AfterSendEmailInfo />
       ) : (
         <>
-          <InputFiled onChange={onChange} name="realName" value={createAdminForm.realName} placeholder="name" type="text" required />
-          <InputFiled onChange={onChange} name="email" value={createAdminForm.email} placeholder="email" type="email" required />
-          <InputFiled onChange={onChange} name="password" value={createAdminForm.password} placeholder="password" type="password" required />
+          <InputFiled onChange={onChangeForm} name="realName" value={createAdminForm.realName} placeholder="name" type="text" required />
+          <InputFiled onChange={onChangeForm} name="email" value={createAdminForm.email} placeholder="email" type="email" required />
+          <InputFiled onChange={onChangeForm} name="password" value={createAdminForm.password} placeholder="password" type="password" required />
           <InputFiled
             error={error}
-            onChange={onChange}
-            name="checkedPassword"
-            value={checkedPassword}
-            placeholder="checked password"
-            type="text"
+            onChange={onChangeForm}
+            name="confirmPassword"
+            value={createAdminForm.confirmPassword}
+            placeholder="confirm password"
+            type="password"
             required
           />
+
+          {createAdminForm.password !== "" && createAdminForm.confirmPassword !== "" && (
+            <>
+              {createAdminForm.password === createAdminForm.confirmPassword ? (
+                <ConfirmText isConfirm>비밀번호가 일치합니다.</ConfirmText>
+              ) : (
+                <ConfirmText isConfirm={false}>비밀번호가 일치하지 않습니다.</ConfirmText>
+              )}
+            </>
+          )}
+
           <Btn onClick={handleCreateAdmin}>이메일 인증하기</Btn>
 
           <Text>
@@ -111,4 +122,9 @@ const Btn = styled.button`
 const Text = styled.p`
   color: #dbdbdb;
   font-size: 0.8rem;
+`;
+
+const ConfirmText = styled.p<{ isConfirm: boolean }>`
+  color: ${({ isConfirm }) => (isConfirm ? "#b67bff" : "tomato")};
+  transition: all 0.3s ease-in;
 `;
