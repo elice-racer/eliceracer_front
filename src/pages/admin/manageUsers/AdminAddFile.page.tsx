@@ -1,11 +1,13 @@
 import { styled } from "styled-components";
-import GetUsers from "./components/GetUsers";
 import { useRef, useState } from "react";
 
 import { AxiosAdmin } from "../../../servies/admin";
-import DataBoard from "./components/DataBoad";
+
 import * as XLSX from "xlsx";
+
+// components
 import SelectBox from "./components/SelectBox";
+import DataBoard from "./components/DataBoad";
 
 interface RowData {
   [key: string]: any;
@@ -29,7 +31,7 @@ function AdminAddFile() {
 
         console.log(res);
 
-        if (res.status === 200) {
+        if (res.status === 201) {
           alert("파일이 성공적으로 업로드되었습니다.");
 
           // 파일을 읽고 파싱하여 상태로 관리
@@ -70,22 +72,7 @@ function AdminAddFile() {
         <Input type="file" accept=".xlsx, .xls .csv" onChange={handleFileUpload} ref={inputFileRef} />
       </Label>
       <Text>아래는 파일에서 받아온 유저정보입니다.</Text>
-      <table>
-        <thead>
-          <tr>{data.length > 0 && Object.keys(data[0]).map(key => <th key={key}>{key}</th>)}</tr>
-        </thead>
-        <tbody>
-          {data.map((row, index) => (
-            <tr key={index}>
-              {Object.values(row).map((item, i) => (
-                <td key={i}>{String(item)}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
       <DataBoard data={data} />
-      <GetUsers />
     </Container>
   );
 }

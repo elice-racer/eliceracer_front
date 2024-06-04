@@ -20,7 +20,6 @@ export namespace AxiosAdmin {
     form.append("file", file);
     const url = `admins/members/racers`;
     const res = await api.post(url, form, configs);
-    console.log("-------res");
     console.log(res);
     return res;
   };
