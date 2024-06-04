@@ -2,7 +2,7 @@ import { api } from "./api";
 
 interface CreateTrack {
   trackName: string;
-  cardinalNo: number;
+  cardinalNo: number | string;
 }
 
 // period : "2023.05.15~2023.11.15 형태
@@ -20,7 +20,6 @@ export namespace AxiosAdmin {
     form.append("file", file);
     const url = `admins/members/racers`;
     const res = await api.post(url, form, configs);
-    console.log("-------res");
     console.log(res);
     return res;
   };

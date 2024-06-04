@@ -18,7 +18,7 @@ const fixData = (data: ArrayBuffer) => {
 };
 
 // Reads the Excel file
-export const readExcelFile = (file: File, callback: (workbook: XLSX.WorkBook) => void): void => {
+export const readExcelFile = (file: File, callback: WorkBookCallBack) => {
   const reader = new FileReader();
   reader.readAsArrayBuffer(file);
   reader.onload = e => {

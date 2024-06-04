@@ -1,8 +1,8 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { styled } from "styled-components";
 import { AxiosAuth } from "../../servies/auth";
-import { useRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 import { tokenAtom } from "../../recoil/TokenAtom";
 import InputFiled from "./components/InputField";
 import { imgPaths, paths } from "../../utils/path";
@@ -17,7 +17,7 @@ export default function Login() {
     password: "",
   });
   const [error, setError] = useState("");
-  const [token, setToken] = useRecoilState(tokenAtom);
+  const setToken = useSetRecoilState(tokenAtom);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

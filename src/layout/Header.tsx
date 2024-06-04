@@ -6,29 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { tokenAtom } from "../recoil/TokenAtom";
 import { useSetRecoilState } from "recoil";
 
-export const Navbar = () => {
-  return (
-    <Header>
-      <Nav>
-        <Link to={paths.HOME}>홈</Link>
-        <Link to={paths.LOGIN}>로그인</Link>
-      </Nav>
-    </Header>
-  );
-};
-
-const Header = styled.header`
-  width: 100%;
-  height: 72px;
-  border-bottom: 1px solid var(--line-gray);
-  display: flex;
-`;
-
-const Nav = styled.div`
-  width: 300px;
-`;
-
-export const AdminNavbar = () => {
+const Header = ({ adminMenu }: any) => {
   const navigate = useNavigate();
 
   const setToken = useSetRecoilState(tokenAtom);
@@ -43,12 +21,17 @@ export const AdminNavbar = () => {
     navigate(paths.LOGIN);
   };
   return (
-    <TopNav>
+    <Container>
       <Flex>
         <Relative to={paths.HOME}>
           <Img src={imgPaths.ELICE_LOGO} alt="logo" />
         </Relative>
         <Wrapper>
+          {adminMenu && (
+            <LinkItem>
+              <Link to={paths.ADMIN}>관리</Link>
+            </LinkItem>
+          )}
           <LinkItem>
             <Link to={"https://elice-lab.imweb.me/"}>엘리스랩</Link>
           </LinkItem>
@@ -63,9 +46,11 @@ export const AdminNavbar = () => {
           </LinkItem>
         </Wrapper>
       </Flex>
-    </TopNav>
+    </Container>
   );
 };
+
+export default Header;
 
 const Img = styled.img`
   width: 12rem;
@@ -77,9 +62,8 @@ const Img = styled.img`
   transform: translateY(-50%);
 `;
 
-const TopNav = styled.header`
+const Container = styled.header`
   width: 100%;
-
   background-color: #fff;
   position: relative;
 `;
@@ -104,6 +88,7 @@ const Wrapper = styled.div`
   align-items: center;
   gap: 4px;
 `;
+
 const LinkItem = styled.p`
   width: 68px;
   text-align: center;

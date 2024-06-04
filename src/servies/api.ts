@@ -1,5 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from "axios";
-import { getAccessToken } from "./auth";
+// import { getAccessToken } from "./auth";
 
 const baseURL = import.meta.env.VITE_BASE_URL;
 
@@ -34,8 +34,8 @@ const onFulfilled = (res: AxiosResponse) => {
 
 // 요청 시 응답에 에러 발생하면 콘메시지 출력하기
 const onRejected = async (e: AxiosError) => {
-  const { config, response } = e;
-  const originalRequest = config;
+  // const { config, response } = e;
+  // const originalRequest = config;
 
   console.log(e);
 
