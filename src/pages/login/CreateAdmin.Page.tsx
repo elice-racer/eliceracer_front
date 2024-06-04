@@ -30,11 +30,11 @@ export default function CreateAdmin() {
   };
 
   const handleCreateAdmin = async (e: any) => {
+    e.preventDefault();
     if (createAdminForm.realName === "") return alert("이름을 입력해주세요.");
     if (createAdminForm.email === "") return alert("이메일을 입력해주세요.");
     if (createAdminForm.password === "") return alert("비밀번호를 입력해주세요.");
     if (createAdminForm.confirmPassword !== createAdminForm.password) return alert("비밀번호가 일치하지 않습니다.");
-    e.preventDefault();
 
     try {
       const { email, password, realName } = createAdminForm;
