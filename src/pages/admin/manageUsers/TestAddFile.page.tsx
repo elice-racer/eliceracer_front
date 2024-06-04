@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
-import { postUsersFile } from "../../../servies/api";
+import { AxiosAdmin } from "../../../servies/admin";
 interface RowData {
   [key: string]: any;
 }
@@ -13,7 +13,7 @@ const ExcelUpload = () => {
     if (file) {
       try {
         // 서버에 파일 업로드
-        await postUsersFile(file);
+        await AxiosAdmin.uploadUserFile(file);
         alert("파일이 성공적으로 업로드되었습니다.");
 
         // 파일을 읽고 파싱하여 상태로 관리

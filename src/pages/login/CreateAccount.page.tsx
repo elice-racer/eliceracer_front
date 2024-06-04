@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import UserInfoBox from "./components/UserInfoBox";
 import { imgPaths, paths } from "../../utils/path";
-import { fetchAuthUserNumber, fetchCheckedAuthCode, fetchSignupUser } from "../../servies/auth";
+import { AxiosAuth } from "../../servies/auth";
 
 export default function CreateAccount() {
   const navigate = useNavigate();
@@ -37,7 +37,7 @@ export default function CreateAccount() {
   const handleAuthUserPhoneNumber = async (e: any) => {
     e.preventDefault();
     try {
-      const res = await fetchAuthUserNumber(userAuth);
+      const res = await AxiosAuth.fetchAuthUserNumber(userAuth);
       if (res.status === 200) {
         setError("인증번호가 전송되었습니다.");
       }
@@ -51,7 +51,7 @@ export default function CreateAccount() {
   const handleCheckedAuthCode = async (e: any) => {
     e.prevenDefualt();
     try {
-      const res = await fetchCheckedAuthCode({ ...userAuth, authCode });
+      const res = await AxiosAuth.fetchCheckedAuthCode({ ...userAuth, authCode });
       if (res.status === 201) setConfirmUser(true);
     } catch (e: any) {
       const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
@@ -63,7 +63,7 @@ export default function CreateAccount() {
   const handleAddUsersEmailAndPW = async (e: any) => {
     e.preventDefault();
     try {
-      const res = await fetchSignupUser(userData);
+      const res = await AxiosAuth.fetchSignupUser(userData);
       if (res.status === 201) navigate(paths.LOGIN);
     } catch (e: any) {
       const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";

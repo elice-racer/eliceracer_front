@@ -37,6 +37,10 @@ import AdminSettingsChat from "./pages/admin/AdminSettingsChat";
 import FindId from "./pages/login/FindId.page";
 import FindPW from "./pages/login/FindPW.page";
 
+// recoil
+
+import { tokenAtom } from "./recoil/TokenAtom";
+
 const router = createBrowserRouter([
   {
     path: "/hello",
@@ -88,8 +92,8 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  // recoil
   const [isLoading, setLoading] = useRecoilState(loadingAtom);
+  const [token, setToken] = useRecoilState(tokenAtom);
 
   const init = async () => {
     setLoading(false);
@@ -99,7 +103,8 @@ function App() {
   }, []);
 
   useEffect(() => {
-    localStorage.getItem("user");
+    const access_token = localStorage.getItem("userToken");
+    setToken(access_token);
   }, []);
 
   return (

@@ -36,35 +36,34 @@ export const RefreshToken = () => {
   return localStorage.getItem("refresh_token");
 };
 
-/** 관리자 회원가입 */
-export const fetchSignupAdmin = async (data: CreateAdmin) => {
-  const url = `admins/signup`;
-  return api.post(url, data);
-};
+export namespace AxiosAuth {
+  /** 관리자 회원가입 */
+  export const fetchSignupAdmin = async (data: CreateAdmin) => {
+    const url = `admins/signup`;
+    return api.post(url, data);
+  };
 
-/** 유저 전화번호 인증 요청 */
-export const fetchAuthUserNumber = async (data: AuthUserNumber) => {
-  const url = `auth/send-verification`;
-  return api.post(url, data);
-};
+  /** 유저 전화번호 인증 요청 */
+  export const fetchAuthUserNumber = async (data: AuthUserNumber) => {
+    const url = `auth/send-verification`;
+    return api.post(url, data);
+  };
 
-/** 유저 인증번호 확인 */
-export const fetchCheckedAuthCode = async (data: CheckedUserNumber) => {
-  const url = `auth/verify-code`;
-  return api.post(url, data);
-};
+  /** 유저 인증번호 확인 */
+  export const fetchCheckedAuthCode = async (data: CheckedUserNumber) => {
+    const url = `auth/verify-code`;
+    return api.post(url, data);
+  };
 
-/** 유저 회원가입 */
-export const fetchSignupUser = async (data: SignupUser) => {
-  const url = `users/signup`;
-  return api.patch(url, data);
-};
+  /** 유저 회원가입 */
+  export const fetchSignupUser = async (data: SignupUser) => {
+    const url = `users/signup`;
+    return api.patch(url, data);
+  };
 
-/** 로그인 */
-export const fetchLogin = async (data: UserLogin) => {
-  const res = await api.post(`auth/login`, data);
-  // const res = await api.post(`auth/login`, data).then(res => {
-  //   res;
-  // });
-  return res;
-};
+  /** 로그인 */
+  export const fetchLogin = async (data: UserLogin) => {
+    const res = await api.post(`auth/login`, data);
+    return res;
+  };
+}

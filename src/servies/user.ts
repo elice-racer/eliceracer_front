@@ -14,9 +14,11 @@
 
 import { api } from "./api";
 
-/** 현재 유저 정보 가져오기 */
-export const getUserInfo = async () => {
-  const url = `users/current`;
-  const res = await api.get(url);
-  return res;
-};
+export namespace AxiosUser {
+  /** 현재 유저 정보 가져오기 */
+  export const getUserInfo = async () => {
+    const url = `users/current`;
+    const res = await api.get(url);
+    return res;
+  };
+}

@@ -1,50 +1,50 @@
 import { styled } from "styled-components";
 import GetUsers from "./components/GetUsers";
-// import { postUsersFile } from "../../../servies/admin";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
-import { postUsersFile } from "../../../servies/api";
-// import { readExcelFile, getExtensionOfFilename, workbookToJsonArray } from "../../../utils/exelUtils";
+import { AxiosAdmin } from "../../../servies/admin";
 import DataBoard from "./components/DataBoad";
-import { useRecoilValue } from "recoil";
-import { isLoginSelector, tokenAtom } from "../../../recoil/TokenAtom";
-import { useNavigate } from "react-router-dom";
-import { paths } from "../../../utils/path";
 import * as XLSX from "xlsx";
 
 interface RowData {
   [key: string]: any;
 }
 
+const OPTIONS = [
+  { value: "ai", name: "AI" },
+  { value: "cloud", name: "CLOUD" },
+  { value: "sw", name: "SW" },
+];
+
 function AdminAddFile() {
-  const navigate = useNavigate();
-
   const [data, setData] = useState<RowData[]>([]);
-
-  const user = useRecoilValue(tokenAtom);
-  const isLogin = useRecoilValue(isLoginSelector);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       try {
         // 서버에 파일 업로드
-        await postUsersFile(file);
-        alert("파일이 성공적으로 업로드되었습니다.");
+        const res = await AxiosAdmin.uploadUserFile(file);
 
-        // 파일을 읽고 파싱하여 상태로 관리
-        const reader = new FileReader();
-        reader.onload = e => {
-          const binaryStr = e.target?.result;
-          const wb = XLSX.read(binaryStr, { type: "binary" });
-          const sheetName = wb.SheetNames[0];
-          const ws = wb.Sheets[sheetName];
-          const jsonData: RowData[] = XLSX.utils.sheet_to_json(ws);
-          setData(jsonData);
-        };
-        reader.readAsBinaryString(file);
-      } catch (error) {
-        alert("파일 업로드 중 오류가 발생했습니다.");
+        console.log(res);
+
+        if (res.status === 200) {
+          alert("파일이 성공적으로 업로드되었습니다.");
+
+          // 파일을 읽고 파싱하여 상태로 관리
+          const reader = new FileReader();
+          reader.onload = e => {
+            const binaryStr = e.target?.result;
+            const wb = XLSX.read(binaryStr, { type: "binary" });
+            const sheetName = wb.SheetNames[0];
+            const ws = wb.Sheets[sheetName];
+            const jsonData: RowData[] = XLSX.utils.sheet_to_json(ws);
+            setData(jsonData);
+          };
+          reader.readAsBinaryString(file);
+        }
+      } catch (error: any) {
+        alert(error.response.data.message);
         console.error(error);
       }
     }
@@ -57,16 +57,17 @@ function AdminAddFile() {
     setData([]);
   };
 
-  useEffect(() => {
-    console.log(isLogin);
-    if (isLogin) return;
-    else {
-      navigate(paths.LOGIN);
-    }
-  }, []);
-
   return (
     <Container>
+      <Title>트랙 생성하기</Title>
+      <select>
+        {OPTIONS.map(option => (
+          <option key={option.value} value={option.value}>
+            {option.name}
+          </option>
+        ))}
+      </select>
+      <Input type="text" />
       <Title>유저 정보 등록하기</Title>
       <Text>유저 정보를 등록하려면 아래 파일을 업로드하세요.</Text>
       <button onClick={handleClear}>Clear</button>

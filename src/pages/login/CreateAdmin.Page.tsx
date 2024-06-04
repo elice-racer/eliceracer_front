@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { imgPaths, paths } from "../../utils/path";
 import InputFiled from "./components/InputField";
-import { fetchSignupAdmin } from "../../servies/auth";
+import { AxiosAuth } from "../../servies/auth";
 import AfterSendEmailInfo from "./components/AfterSendEmailInfo";
 
 export default function CreateAdmin() {
@@ -37,7 +37,7 @@ export default function CreateAdmin() {
     e.preventDefault();
 
     try {
-      const res = await fetchSignupAdmin(createAdminForm);
+      const res = await AxiosAuth.fetchSignupAdmin(createAdminForm);
       console.log(res);
       setSendEmail(true);
     } catch (e: any) {

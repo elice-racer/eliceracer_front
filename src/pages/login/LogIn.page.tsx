@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
-import { fetchLogin } from "../../servies/auth";
+import { AxiosAuth } from "../../servies/auth";
 import { useRecoilState } from "recoil";
 import { tokenAtom } from "../../recoil/TokenAtom";
 import InputFiled from "./components/InputField";
@@ -33,7 +33,7 @@ export default function Login() {
     }
     e.preventDefault();
     try {
-      const res = await fetchLogin(userLoginForm);
+      const res = await AxiosAuth.fetchLogin(userLoginForm);
       console.log(res.headers?.authorization.replace("Bearer ", ""));
       if (res.data?.statusCode === 200) {
         const loginToken = res.headers?.authorization.replace("Bearer ", "");
@@ -47,11 +47,6 @@ export default function Login() {
       setError(errorMessage);
     }
   };
-  useEffect(() => {
-    if (token) {
-      navigate(paths.HOME);
-    }
-  }, []);
 
   return (
     <Wrapper>

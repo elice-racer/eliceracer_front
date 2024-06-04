@@ -2,6 +2,9 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { paths } from "../utils/path";
 import { imgPaths } from "../utils/path";
+import { useNavigate } from "react-router-dom";
+import { tokenAtom } from "../recoil/TokenAtom";
+import { useSetRecoilState } from "recoil";
 
 export const Navbar = () => {
   return (
@@ -26,6 +29,19 @@ const Nav = styled.div`
 `;
 
 export const AdminNavbar = () => {
+  const navigate = useNavigate();
+
+  const setToken = useSetRecoilState(tokenAtom);
+  const onClickLogout = () => {
+    // 액세스토큰 스토리지에서 삭제
+    localStorage.removeItem("userToken");
+
+    // 리코일 초기화
+    setToken(null);
+
+    // 홈으로 넘기기
+    navigate(paths.LOGIN);
+  };
   return (
     <TopNav>
       <Flex>
@@ -42,8 +58,8 @@ export const AdminNavbar = () => {
           <LinkItem>
             <Link to={paths.MYPAGE}>마이페이지</Link>
           </LinkItem>
-          <LinkItem>
-            <Link to={paths.LOGIN}>로그아웃</Link>
+          <LinkItem onClick={onClickLogout}>
+            <>로그아웃</>
           </LinkItem>
         </Wrapper>
       </Flex>
