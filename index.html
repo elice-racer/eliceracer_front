@@ -25,5 +25,16 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <!-- 
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("sw-cached-site.js", function () {
+          navigator.serviceWorker.register("sw.js", {
+            scope: "/",
+          });
+        });
+      }
+      window.process = { env: { NODE_ENV: "production" } };
+    </script> -->
   </body>
 </html>
