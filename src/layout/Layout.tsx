@@ -23,7 +23,7 @@ export const Layout = () => {
   );
 };
 
-export const AdminLayout = () => {
+export const AdminRouter = () => {
   const navigate = useNavigate();
 
   /** 유저정보를 확인하고 관리자인지 식별하는 함수 */
@@ -41,6 +41,7 @@ export const AdminLayout = () => {
       }
     } catch (e: any) {
       const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
+      console.log(errorMessage);
       navigate(paths.LOGIN);
     }
   };

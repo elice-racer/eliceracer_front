@@ -2,7 +2,7 @@ import "./App.css";
 import { paths } from "./utils/path";
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { AdminLayout, IntroLayout, Layout } from "./layout/Layout";
+import { AdminRouter, IntroLayout, Layout } from "./layout/Layout";
 
 // hooks
 import { useEffect } from "react";
@@ -56,8 +56,7 @@ const router = createBrowserRouter([
   },
   {
     path: "",
-    // element: <ProtectedRoute element={<Layout />} />,
-    element: <Layout />,
+    element: <ProtectedRoute element={<Layout />} />,
     children: [
       { path: paths.HOME, element: <Home /> },
       { path: paths.CHAT_LIST, element: <ChatList /> },
@@ -69,7 +68,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <AdminLayout />,
+    element: <AdminRouter />,
     children: [
       { path: paths.ADMIN, element: <AdminMain /> },
 
@@ -93,7 +92,7 @@ const router = createBrowserRouter([
 
 function App() {
   const [isLoading, setLoading] = useRecoilState(loadingAtom);
-  const [token, setToken] = useRecoilState(tokenAtom);
+  const [, setToken] = useRecoilState(tokenAtom);
 
   const init = async () => {
     setLoading(false);
