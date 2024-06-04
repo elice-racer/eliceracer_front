@@ -7,7 +7,7 @@ import * as XLSX from "xlsx";
 
 // components
 import SelectBox from "./components/SelectBox";
-import DataBoard from "./components/DataBoad";
+import DataBoard from "./components/DataBoard";
 
 interface RowData {
   [key: string]: any;
