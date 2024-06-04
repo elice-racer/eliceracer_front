@@ -2,7 +2,8 @@ import "./App.css";
 import { paths } from "./utils/path";
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { AdminRouter, IntroLayout, Layout } from "./layout/Layout";
+import { IntroLayout, Layout } from "./layout/Layout";
+import { AdminRouter } from "./routes/AdminRouter";
 
 // hooks
 import { useEffect } from "react";
