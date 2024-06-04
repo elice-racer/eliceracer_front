@@ -20,6 +20,7 @@ import Menu from "./pages/menu/Menu.page";
 import MyPage from "./pages/mypage/MyPage.page";
 import Settings from "./pages/settings/Settings.page";
 import AdminMain from "./pages/admin/adminMain/AdminMain.page";
+import TestAddFile from "./pages/admin/manageUsers/TestAddFile.page";
 
 // styled
 import GlobalThemeProvider from "./styles/GlobalThemeProvider";
@@ -69,6 +70,7 @@ const router = createBrowserRouter([
       { path: paths.ADMIN, element: <AdminMain /> },
 
       { path: paths.ADD_USERS, element: <AdminAddFile /> },
+      { path: "/admin/test", element: <TestAddFile /> },
       { path: paths.ADMIN_SEARCH_USERS, element: <AdminSearchUser /> },
 
       { path: paths.ADMIN_SETTINGS_CHAT, element: <AdminSettingsChat /> },

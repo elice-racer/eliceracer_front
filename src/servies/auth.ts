@@ -62,6 +62,9 @@ export const fetchSignupUser = async (data: SignupUser) => {
 
 /** 로그인 */
 export const fetchLogin = async (data: UserLogin) => {
-  const res = await api.post(`auth/login`, data).then(res => res.data);
+  const res = await api.post(`auth/login`, data);
+  // const res = await api.post(`auth/login`, data).then(res => {
+  //   res;
+  // });
   return res;
 };

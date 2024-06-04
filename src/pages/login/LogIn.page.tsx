@@ -34,14 +34,16 @@ export default function Login() {
     e.preventDefault();
     try {
       const res = await fetchLogin(userLoginForm);
-      console.log(res);
-      if (res.statusCode === 200) {
-        localStorage.setItem("userToken", res.data?.accessToken);
-        setToken(res.data.accessToken);
+      console.log(res.headers?.authorization.replace("Bearer ", ""));
+      if (res.data?.statusCode === 200) {
+        const loginToken = res.headers?.authorization.replace("Bearer ", "");
+        setToken(loginToken);
+        localStorage.setItem("userToken", loginToken);
         navigate(from);
       }
     } catch (e: any) {
-      const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
+      console.log(e);
+      const errorMessage = e.res?.data?.message || "에러가 발생했습니다.";
       setError(errorMessage);
     }
   };
@@ -50,7 +52,7 @@ export default function Login() {
       navigate(paths.HOME);
     }
   }, []);
-  // State = 컴포넌트 내부에서 변화할 수 있는 값
+
   return (
     <Wrapper>
       <Img src={imgPaths.ELICE_LOGO} />
@@ -76,7 +78,7 @@ const Wrapper = styled.div`
   gap: 12px;
   height: 100%;
   margin-top: 50px;
-  @media ${({ theme }) => theme.device.tablet} {
+  /* @media ${({ theme }) => theme.device.tablet} {
     background-color: blue;
   }
   @media ${({ theme }) => theme.device.mobileM} {
@@ -84,7 +86,7 @@ const Wrapper = styled.div`
   }
   @media ${({ theme }) => theme.device.mobileS} {
     background-color: green;
-  }
+  } */
 `;
 
 const Img = styled.img`

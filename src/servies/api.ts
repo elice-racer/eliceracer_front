@@ -25,10 +25,23 @@ const configs = {
   headers: { "Content-Type": "multipart/form-data" },
 };
 
-export const postExcelFile = async (file: File) => {
+export const postUsersFile = async (file: File) => {
   const form = new FormData();
   form.append("excelfile", file);
-  const res = await api.post(baseURL, form, configs);
+  const url = `admins/members/racers`;
+  const res = await api.post(url, form, configs);
   return res;
 };
-export const formApi = axios.create({ baseURL, headers: { "Content-Type": "multipart/form-data" } });
+
+// export const formApi = axios.create({ baseURL, headers: { "Content-Type": "multipart/form-data" } });
+
+// export const postUsersFile = async (data: File) => {
+//   const url = `admins/members/racers`;
+//   const formData = new FormData();
+//   formData.append("file", data);
+//   return await formApi.post(url, formData, {
+//     headers: {
+//       "Content-Type": "multipart/form-data",
+//     },
+//   });
+// };

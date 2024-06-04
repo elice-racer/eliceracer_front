@@ -9,12 +9,14 @@ function Home() {
 
   const user = useRecoilValue(tokenAtom);
   const isLogin = useRecoilValue(isLoginSelector);
+
   useEffect(() => {
     if (isLogin) return;
     else {
       navigate(paths.LOGIN);
     }
   }, []);
+
   // user 정보
   return <div>home</div>;
 }
