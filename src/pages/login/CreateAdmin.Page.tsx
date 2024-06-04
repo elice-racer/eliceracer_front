@@ -18,10 +18,11 @@ export default function CreateAdmin() {
 
   const [sendEmail, setSendEmail] = useState(false);
 
-  const onCheckedPassword = () => {
-    if (createAdminForm.password === createAdminForm.confirmPassword) {
-    }
-  };
+  // todo 정규식 추가 하기
+  // const onCheckedPassword = () => {
+  //   if (createAdminForm.password === createAdminForm.confirmPassword) {
+  //   }
+  // };
 
   const onChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -107,10 +108,10 @@ const Title = styled.h1`
   font-size: 1.2rem;
   margin-bottom: 14px;
 `;
-const Error = styled.p`
-  color: tomato;
-  font-size: 0.8rem;
-`;
+// const Error = styled.p`
+//   color: tomato;
+//   font-size: 0.8rem;
+// `;
 const Btn = styled.button`
   width: 230px;
   height: 30px;
