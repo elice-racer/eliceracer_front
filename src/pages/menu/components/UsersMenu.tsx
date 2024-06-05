@@ -1,8 +1,7 @@
 import styled from "styled-components";
-import { paths } from "../../utils/path";
+import { paths } from "../../../utils/path";
 import { Link } from "react-router-dom";
-
-function Menu() {
+function UsersMenu() {
   return (
     <Container>
       <Wrapper>
@@ -13,7 +12,7 @@ function Menu() {
         <LinkItem to={paths.MYPAGE}>
           <Text>마이페이지</Text>
         </LinkItem>
-        <LinkItem to={paths.CHAT_LIST}>
+        <LinkItem to={paths.CHAT_HOME}>
           <Text>채팅 바로가기</Text>
         </LinkItem>
         <LinkItem to={paths.MY_ALERT}>
@@ -25,24 +24,16 @@ function Menu() {
         <LinkItem to={paths.SETTINGS}>
           <Text>설정</Text>
         </LinkItem>
-        <LinkItem to={paths.ADMIN_SETTINGS_CHAT}>서비스 문의 및 버전</LinkItem>
+        <LinkItem to={paths.ADMIN_SETTINGS_CHAT}>
+          <Text>서비스 문의</Text>
+          <Text> 및 버전 </Text>
+        </LinkItem>
       </Wrapper>
     </Container>
   );
 }
 
-export default Menu;
-
-/**
- * menu안에 있을 것들
- * mypage^
- * 설정^
- * 오피스아워 확인^
- * 내 프로젝트 확인^
- * 공지확인^
- * 서비스 문의 및 버전 확인^
- *
- */
+export default UsersMenu;
 
 const Container = styled.div`
   display: flex;

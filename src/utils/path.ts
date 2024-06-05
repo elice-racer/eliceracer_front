@@ -9,15 +9,15 @@ const paths = {
   FIND_PW: "/hello/find-pw",
 
   // 채팅
-  CHAT_LIST: "/chat",
+  CHAT_HOME: "/chat",
   CHAT_ROOM: "/chat/:id",
 
   // 상대 프로필 조회
   USERS_PAGE: "/elicer/:id",
 
   // 공지 게시판
-  NOTICE_LIST: "/notice",
-  NOTICE: "/notice/:id",
+  NOTICE_LIST: "/user/notice",
+  NOTICE: "/user/notice/:id",
 
   //유저 메뉴 관련 Paths
   MENU: "/user",

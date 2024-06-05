@@ -1,5 +1,5 @@
 function ChatList() {
-  return <div>Chat</div>;
+  return <div>ChatList</div>;
 }
 
 export default ChatList;

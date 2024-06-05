@@ -23,9 +23,10 @@ import FindId from "./pages/login/FindId.page";
 import FindPW from "./pages/login/FindPW.page";
 
 import Home from "./pages/home/Home.page";
-import ChatList from "./pages/chat/ChatList.page";
-import Menu from "./pages/menu/Menu.page";
-import MyPage from "./pages/mypage/MyPage.page";
+import ChatHome from "./pages/chat/ChatHome.page";
+import MenuHome from "./pages/menu/MenuHome.page";
+import MyPage from "./pages/Profile/MyPage.page";
+import OfficeHour from "./pages/officeHour/OfficeHour.page";
 import Settings from "./pages/settings/Settings.page";
 
 // 관리자 page
@@ -52,6 +53,11 @@ import GlobalThemeProvider from "./styles/GlobalThemeProvider";
 import { useRecoilState } from "recoil";
 import { loadingAtom } from "./recoil/LoadingAtom";
 import { tokenAtom } from "./recoil/TokenAtom";
+import MyAlert from "./pages/alert/MyAlert.Page";
+import AboutProjects from "./pages/myProjects/AboutProjects.page";
+import UsersPage from "./pages/Profile/UsersPage.page";
+import ChatRoom from "./pages/chat/ChatRoom.page";
+import NoticeList from "./pages/notice/NoticeList.page";
 
 const router = createBrowserRouter([
   {
@@ -71,21 +77,21 @@ const router = createBrowserRouter([
     element: <ProtectedRoute element={<Layout />} />,
     children: [
       { path: paths.HOME, element: <Home /> },
-      { path: paths.CHAT_LIST, element: <ChatList /> },
-      { path: paths.CHAT_ROOM, element: <ChatList /> },
-      { path: paths.USERS_PAGE, element: <ChatList /> },
-      { path: paths.SETTINGS, element: <Settings /> },
+      { path: paths.CHAT_HOME, element: <ChatHome /> },
+      { path: paths.CHAT_ROOM, element: <ChatRoom /> },
+      { path: paths.USERS_PAGE, element: <UsersPage /> },
     ],
   },
   {
     path: "/user",
     element: <ProtectedRoute element={<Layout />} />,
     children: [
-      { path: paths.MENU, element: <Menu /> },
+      { path: paths.MENU, element: <MenuHome /> },
       { path: paths.MYPAGE, element: <MyPage /> },
-      { path: paths.OFFICE_HOUR_SCHEDULE, element: <MyPage /> },
-      { path: paths.MY_ALERT, element: <MyPage /> },
-      { path: paths.MY_PROJECT_LIST, element: <MyPage /> },
+      { path: paths.NOTICE_LIST, element: <NoticeList /> },
+      { path: paths.OFFICE_HOUR_SCHEDULE, element: <OfficeHour /> },
+      { path: paths.MY_ALERT, element: <MyAlert /> },
+      { path: paths.MY_PROJECT_LIST, element: <AboutProjects /> },
       { path: paths.SETTINGS, element: <Settings /> },
     ],
   },
