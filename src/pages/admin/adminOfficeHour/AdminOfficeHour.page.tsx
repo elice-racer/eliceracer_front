@@ -1,5 +1,15 @@
+import AdminAddOfficeHour from "./components/AdminAddOfficeHour";
+import AdminUpdateOfficeHour from "./components/AdminUpdateOfficeHour";
+import OfficeHourDataBoard from "./components/OfficeHourDataBoard";
+
 function AdminOfficeHour() {
-  return <div>AdminOfficeHour.page</div>;
+  return (
+    <div>
+      <AdminAddOfficeHour />
+      <AdminUpdateOfficeHour />
+      <OfficeHourDataBoard />
+    </div>
+  );
 }
 
 export default AdminOfficeHour;

@@ -13,9 +13,7 @@ function MyPage() {
       </Header>
       <Wrapper>
         <BasicInfoWrapper>
-          <ImgWrapper>
-            <Img src={imgPaths.DEFAULT_PROFILE_IMG} alt="기본이미지" />
-          </ImgWrapper>
+          <ImgWrapper>{<Img src={imgPaths.DEFAULT_PROFILE_IMG} alt="기본이미지" />}</ImgWrapper>
           <UserInfoWrapper></UserInfoWrapper>
         </BasicInfoWrapper>
         <SubTitle>업적</SubTitle>

@@ -9,37 +9,48 @@ import { AdminRouter } from "./routes/AdminRouter";
 import { useEffect } from "react";
 import LoadingScreen from "./components/LoadingScreen";
 
-// page
+//router
 import { ProtectedRoute } from "./routes/ProtectedRoute";
+
+// page
 import Intro from "./pages/intro/Intro.page";
-import CreateAdmin from "./pages/login/CreateAdmin.Page";
 import Login from "./pages/login/LogIn.page";
-import Home from "./pages/home/Home.page";
+
+import CreateAdmin from "./pages/login/CreateAdmin.Page";
 import CreateAccount from "./pages/login/CreateAccount.page";
+
+import FindId from "./pages/login/FindId.page";
+import FindPW from "./pages/login/FindPW.page";
+
+import Home from "./pages/home/Home.page";
 import ChatList from "./pages/chat/ChatList.page";
 import Menu from "./pages/menu/Menu.page";
 import MyPage from "./pages/mypage/MyPage.page";
 import Settings from "./pages/settings/Settings.page";
-import AdminMain from "./pages/admin/adminMain/AdminMain.page";
-import TestAddFile from "./pages/admin/manageUsers/TestAddFile.page";
 
-// styled
-import GlobalThemeProvider from "./styles/GlobalThemeProvider";
-import { useRecoilState } from "recoil";
-import { loadingAtom } from "./recoil/LoadingAtom";
-import AdminAddNotice from "./pages/admin/adminNotice/AdminAddNotice.page";
+// 관리자 page
+import AdminMain from "./pages/admin/adminMain/AdminMain.page";
 import AdminAddFile from "./pages/admin/manageUsers/AdminAddFile.page";
-import AdminNotice from "./pages/admin/adminNotice/AdminNotice.page";
+import AdminSearchUser from "./pages/admin/manageUsers/AdminSearchUser.page";
+
+// 관리자 공지 page
+import AdminNoticeList from "./pages/admin/adminNotice/AdminNoticeList.page";
+import AdminNoticeId from "./pages/admin/adminNotice/AdminNoticeId.page";
+import AdminEditNotice from "./pages/admin/adminNotice/AdminEditNotice.page";
+import AdminAddNotice from "./pages/admin/adminNotice/AdminAddNotice.page";
+
+import AdminSettingsChat from "./pages/admin/AdminSettingsChat";
+
 import AdminOfficeHour from "./pages/admin/adminOfficeHour/AdminOfficeHour.page";
 import AdminAlert from "./pages/admin/AdminAlert.page";
 import AdminProject from "./pages/admin/AdminProject.page";
-import AdminSearchUser from "./pages/admin/manageUsers/AdminSearchUser.page";
-import AdminSettingsChat from "./pages/admin/AdminSettingsChat";
-import FindId from "./pages/login/FindId.page";
-import FindPW from "./pages/login/FindPW.page";
+
+// styled
+import GlobalThemeProvider from "./styles/GlobalThemeProvider";
 
 // recoil
-
+import { useRecoilState } from "recoil";
+import { loadingAtom } from "./recoil/LoadingAtom";
 import { tokenAtom } from "./recoil/TokenAtom";
 
 const router = createBrowserRouter([
@@ -62,8 +73,19 @@ const router = createBrowserRouter([
       { path: paths.HOME, element: <Home /> },
       { path: paths.CHAT_LIST, element: <ChatList /> },
       { path: paths.CHAT_ROOM, element: <ChatList /> },
+      { path: paths.USERS_PAGE, element: <ChatList /> },
+      { path: paths.SETTINGS, element: <Settings /> },
+    ],
+  },
+  {
+    path: "/user",
+    element: <ProtectedRoute element={<Layout />} />,
+    children: [
       { path: paths.MENU, element: <Menu /> },
       { path: paths.MYPAGE, element: <MyPage /> },
+      { path: paths.OFFICE_HOUR_SCHEDULE, element: <MyPage /> },
+      { path: paths.MY_ALERT, element: <MyPage /> },
+      { path: paths.MY_PROJECT_LIST, element: <MyPage /> },
       { path: paths.SETTINGS, element: <Settings /> },
     ],
   },
@@ -74,19 +96,20 @@ const router = createBrowserRouter([
       { path: paths.ADMIN, element: <AdminMain /> },
 
       { path: paths.ADD_USERS, element: <AdminAddFile /> },
-      { path: "/admin/test", element: <TestAddFile /> },
       { path: paths.ADMIN_SEARCH_USERS, element: <AdminSearchUser /> },
 
       { path: paths.ADMIN_SETTINGS_CHAT, element: <AdminSettingsChat /> },
 
-      { path: paths.ADMIN_NOTICE_LIST, element: <AdminNotice /> },
+      { path: paths.ADMIN_NOTICE_LIST, element: <AdminNoticeList /> },
+      { path: paths.ADMIN_NOTICE_ID, element: <AdminNoticeId /> },
       { path: paths.ADMIN_ADD_NOTICE, element: <AdminAddNotice /> },
+      { path: paths.ADMIN_UPDATE_NOTICE, element: <AdminEditNotice /> },
 
       { path: paths.OFFICE_HOUR, element: <AdminOfficeHour /> },
 
       { path: paths.ALERT, element: <AdminAlert /> },
 
-      { path: paths.USERS_PROJECTS, element: <AdminProject /> },
+      { path: paths.ADMIN_PROJECTS, element: <AdminProject /> },
     ],
   },
 ]);

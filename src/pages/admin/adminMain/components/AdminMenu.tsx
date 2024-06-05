@@ -22,7 +22,7 @@ function AdminMenu() {
         </LinkItem>
       </Wrapper>
       <Wrapper>
-        <LinkItem to={paths.USERS_PROJECTS}>프로젝트</LinkItem>
+        <LinkItem to={paths.ADMIN_PROJECTS}>프로젝트</LinkItem>
         <LinkItem to={paths.ADMIN_SEARCH_USERS}>
           <Text>트랙 및 </Text>
           <Text>레이서 조회</Text>
