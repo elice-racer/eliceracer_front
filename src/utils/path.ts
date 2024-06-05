@@ -52,6 +52,7 @@ const paths = {
 
 const imgPaths = {
   ELICE_LOGO: "/imgs/elice-logo.svg",
+  DEFAULT_PROFILE_IMG: "/imgs/defaultProfileImg.png",
 };
 /**
  * menu안에 있을 것들

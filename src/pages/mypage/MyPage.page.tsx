@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import Btn from "../../components/commons/Btn";
+import { imgPaths } from "../../utils/path";
 
 function MyPage() {
   return (
@@ -12,7 +13,9 @@ function MyPage() {
       </Header>
       <Wrapper>
         <BasicInfoWrapper>
-          <ImgWrapper></ImgWrapper>
+          <ImgWrapper>
+            <Img src={imgPaths.DEFAULT_PROFILE_IMG} alt="기본이미지" />
+          </ImgWrapper>
           <UserInfoWrapper></UserInfoWrapper>
         </BasicInfoWrapper>
         <SubTitle>업적</SubTitle>
@@ -26,6 +29,7 @@ function MyPage() {
 export default MyPage;
 
 const Container = styled.div`
+  width: 470px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -46,6 +50,7 @@ const Wrapper = styled.div`
 const Title = styled.h1``;
 
 const SubTitle = styled.h2``;
+
 const BtnWrapper = styled.div``;
 
 const BasicInfoWrapper = styled.div`
@@ -54,8 +59,19 @@ const BasicInfoWrapper = styled.div`
 `;
 
 const ImgWrapper = styled.div`
+  display: flex;
+  align-items: start;
+  justify-content: center;
   width: 160px;
+  padding-top: 30px;
   background-color: ${({ theme }) => theme.colors.gray1};
+`;
+
+const Img = styled.img`
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+  object-position: center center;
 `;
 
 const UserInfoWrapper = styled.div`
