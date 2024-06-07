@@ -58,6 +58,7 @@ import AboutProjects from "./pages/myProjects/AboutProjects.page";
 import UsersPage from "./pages/Profile/UsersPage.page";
 import ChatRoom from "./pages/chat/ChatRoom.page";
 import NoticeList from "./pages/notice/NoticeList.page";
+import EditMyPage from "./pages/Profile/EditMyPage.page";
 
 const router = createBrowserRouter([
   {
@@ -75,6 +76,7 @@ const router = createBrowserRouter([
   {
     path: "",
     element: <ProtectedRoute element={<Layout />} />,
+    // element: <Layout />,
     children: [
       { path: paths.HOME, element: <Home /> },
       { path: paths.CHAT_HOME, element: <ChatHome /> },
@@ -85,9 +87,11 @@ const router = createBrowserRouter([
   {
     path: "/user",
     element: <ProtectedRoute element={<Layout />} />,
+    // element: <Layout />,
     children: [
       { path: paths.MENU, element: <MenuHome /> },
       { path: paths.MYPAGE, element: <MyPage /> },
+      { path: paths.EDIT_MYPAGE, element: <EditMyPage /> },
       { path: paths.NOTICE_LIST, element: <NoticeList /> },
       { path: paths.OFFICE_HOUR_SCHEDULE, element: <OfficeHour /> },
       { path: paths.MY_ALERT, element: <MyAlert /> },

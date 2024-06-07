@@ -9,7 +9,7 @@ function CheckedVersion({ ...props }) {
       <Text>모르겠으면 일루~: jieunlim@elicer.com</Text>
       <Text>클라이언트 (프론트) : chaemaa00@gmail.com</Text>
       <Text>서버 : nib@gmail.com</Text>
-      <Btn childen="문의" />
+      <Btn children="문의" onClick={() => {}} />
     </Container>
   );
 }

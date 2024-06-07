@@ -40,6 +40,7 @@ const SideSection = styled.div`
   width: 420px;
   display: flex;
   justify-content: center;
+  background-color: ${({ theme }) => theme.colors.puple1};
 `;
 
 const MainSection = styled.div`

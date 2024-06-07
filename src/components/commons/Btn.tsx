@@ -1,11 +1,16 @@
 import styled from "styled-components";
-import { ButtonHTMLAttributes, ReactNode } from "react";
+import { ButtonHTMLAttributes, MouseEventHandler, ReactNode } from "react";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  childen: ReactNode;
+  children: ReactNode;
+  onClick: MouseEventHandler;
 }
 
-function Btn({ children, ...props }: ButtonProps) {
-  return <Button {...props}>{children}</Button>;
+function Btn({ children, onClick, ...props }: ButtonProps) {
+  return (
+    <Button {...props} onClick={onClick}>
+      {children}
+    </Button>
+  );
 }
 
 export default Btn;

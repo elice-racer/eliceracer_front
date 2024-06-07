@@ -25,6 +25,7 @@ const paths = {
   MY_ALERT: "/user/alert",
   MY_PROJECT_LIST: "/user/my-projects",
   MYPAGE: "/user/mypage",
+  EDIT_MYPAGE: "/user/edit",
   SETTINGS: "/user/settings",
 
   //서비스 문의 및 버전확인
