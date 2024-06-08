@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import UsersMenu from "./components/UsersMenu";
 import NoticeChatRoom from "./components/NoticeChatRoom";
-import UsersMiniProfile from "../../components/UsersMiniProfile";
+import UsersMiniProfile from "../../components/user/UsersMiniProfile";
 
 function MenuHome() {
   return (

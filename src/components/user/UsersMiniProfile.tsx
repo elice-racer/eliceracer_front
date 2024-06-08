@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { imgPaths, paths } from "../utils/path";
+import { imgPaths, paths } from "../../utils/path";
 import { Link, useNavigate } from "react-router-dom";
-import Btn from "./commons/Btn";
+import Btn from "../commons/Btn";
 
 const UsersData = {
   id: 1,

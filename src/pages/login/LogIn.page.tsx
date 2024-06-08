@@ -6,16 +6,20 @@ import { useSetRecoilState } from "recoil";
 import { tokenAtom } from "../../recoil/TokenAtom";
 import InputFiled from "./components/InputField";
 import { imgPaths, paths } from "../../utils/path";
+import { loadingAtom } from "../../recoil/LoadingAtom";
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const setLoading = useSetRecoilState(loadingAtom);
   const from = location?.state?.redirectedFrom?.pathname || paths.HOME;
 
   const [userLoginForm, setUserLoginForm] = useState({
     identifier: "jiop96@naver.com",
     password: "12341234",
   });
+
   const [error, setError] = useState("");
   const setToken = useSetRecoilState(tokenAtom);
 
@@ -32,6 +36,8 @@ export default function Login() {
       return alert("비밀번호를 입력해주세요!");
     }
     e.preventDefault();
+    setLoading(true);
+
     try {
       const res = await AxiosAuth.fetchLogin(userLoginForm);
       console.log(res.headers?.authorization.replace("Bearer ", ""));
@@ -41,10 +47,12 @@ export default function Login() {
         localStorage.setItem("userToken", loginToken);
         navigate(from);
       }
+      setLoading(false);
     } catch (e: any) {
       console.log(e);
       const errorMessage = e.res?.data?.message || "에러가 발생했습니다.";
       setError(errorMessage);
+      setLoading(false);
     }
   };
 
@@ -57,7 +65,6 @@ export default function Login() {
       <TextWrapper>
         <StyledLink to={paths.FIND_ID}>아이디</StyledLink> | <StyledLink to={paths.FIND_PW}>비밀번호 찾기</StyledLink>
       </TextWrapper>
-
       <Text>
         처음 방문하셨나요? <Link to={paths.INTRO}>회원가입하기 &rarr;</Link>
       </Text>

@@ -2,12 +2,11 @@ import "./App.css";
 import { paths } from "./utils/path";
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { IntroLayout, Layout } from "./layout/Layout";
-import { AdminRouter } from "./routes/AdminRouter";
+import { AdminRoute } from "./routes/AdminRoute";
 
 // hooks
 import { useEffect } from "react";
-import LoadingScreen from "./components/LoadingScreen";
+import LoadingScreen from "./components/commons/Loading";
 
 //router
 import { ProtectedRoute } from "./routes/ProtectedRoute";
@@ -50,7 +49,7 @@ import AdminProject from "./pages/admin/AdminProject.page";
 import GlobalThemeProvider from "./styles/GlobalThemeProvider";
 
 // recoil
-import { useRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { loadingAtom } from "./recoil/LoadingAtom";
 import { tokenAtom } from "./recoil/TokenAtom";
 import MyAlert from "./pages/alert/MyAlert.Page";
@@ -59,11 +58,12 @@ import UsersPage from "./pages/Profile/UsersPage.page";
 import ChatRoom from "./pages/chat/ChatRoom.page";
 import NoticeList from "./pages/notice/NoticeList.page";
 import EditMyPage from "./pages/Profile/EditMyPage.page";
+import BasicRoute from "./routes/BasicRoute";
 
 const router = createBrowserRouter([
   {
     path: "/hello",
-    element: <IntroLayout />,
+    element: <BasicRoute />,
     children: [
       { path: paths.LOGIN, element: <Login /> },
       { path: paths.INTRO, element: <Intro /> },
@@ -75,8 +75,7 @@ const router = createBrowserRouter([
   },
   {
     path: "",
-    element: <ProtectedRoute element={<Layout />} />,
-    // element: <Layout />,
+    element: <ProtectedRoute />,
     children: [
       { path: paths.HOME, element: <Home /> },
       { path: paths.CHAT_HOME, element: <ChatHome /> },
@@ -86,8 +85,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/user",
-    element: <ProtectedRoute element={<Layout />} />,
-    // element: <Layout />,
+    element: <ProtectedRoute />,
     children: [
       { path: paths.MENU, element: <MenuHome /> },
       { path: paths.MYPAGE, element: <MyPage /> },
@@ -101,7 +99,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/admin",
-    element: <AdminRouter />,
+    element: <AdminRoute />,
     children: [
       { path: paths.ADMIN, element: <AdminMain /> },
 
@@ -125,15 +123,8 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  const [isLoading, setLoading] = useRecoilState(loadingAtom);
-  const [, setToken] = useRecoilState(tokenAtom);
-
-  const init = async () => {
-    setLoading(false);
-  };
-  useEffect(() => {
-    init();
-  }, []);
+  const setToken = useSetRecoilState(tokenAtom);
+  const isLoading = useRecoilValue(loadingAtom);
 
   useEffect(() => {
     const access_token = localStorage.getItem("userToken");

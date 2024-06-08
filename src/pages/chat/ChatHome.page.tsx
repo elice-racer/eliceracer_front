@@ -1,4 +1,4 @@
-import ChatList from "../../components/ChatList";
+import ChatList from "../../components/chat/ChatList";
 
 function ChatHome() {
   return (

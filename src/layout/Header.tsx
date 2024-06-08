@@ -97,6 +97,8 @@ const LinkItem = styled.p`
   width: 68px;
   text-align: center;
   color: #000;
+
+  cursor: pointer;
   /* background-color: blue; */
 
   /* &::after {

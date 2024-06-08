@@ -1,22 +1,32 @@
 import styled from "styled-components";
+
+// component
 import Btn from "../../components/commons/Btn";
+
+// paths
 import { imgPaths, paths } from "../../utils/path";
+
+// api
 import { AxiosUser, UsersInfo } from "../../servies/user";
+
+// hooks
 import { useEffect, useState } from "react";
+
+// router
 import { useNavigate } from "react-router-dom";
 
 function MyPage() {
   const navigate = useNavigate();
   const [usersInfo, setUsersInfo] = useState<UsersInfo | null>();
+
   const fetchMyInfo = async () => {
     const res = await AxiosUser.getMyInfo();
-    console.log(res);
+    setUsersInfo(res);
     return res;
   };
 
   useEffect(() => {
-    fetchMyInfo().then(info => setUsersInfo(info));
-    console.log(usersInfo);
+    fetchMyInfo();
   }, []);
 
   return (
