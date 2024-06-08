@@ -59,8 +59,7 @@ export default function CreateAccount() {
     try {
       const { authCode, confirmPassword, ...props } = userData;
       const res = await AxiosAuth.fetchSignupUser({ ...props });
-
-      if (res.status === 201) navigate(paths.LOGIN);
+      if (res.status === 200) navigate(paths.SUCCESS_USER);
     } catch (e: any) {
       const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
       setError(errorMessage);

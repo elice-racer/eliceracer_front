@@ -4,6 +4,7 @@ const paths = {
   LOGIN: "/auth/login",
   CREATE_USER: "/auth/create-account",
   CREATE_ADMIN: "/auth/create-admin",
+  SUCCESS_USER: "/auth/complate",
 
   FIND_ID: "/auth/find-id",
   FIND_PW: "/auth/find-pw",
@@ -64,6 +65,7 @@ const imgPaths = {
   DEFAULT_PROFILE_IMG: "/imgs/defaultProfileImg.png",
   NOT_FOUND: "/imgs/404page.png",
   FILE_UPLOAD: "/imgs/file-upload.png",
+  SUCCESS_CREATE_USERS: "/imgs/success.webp",
 };
 
 /**

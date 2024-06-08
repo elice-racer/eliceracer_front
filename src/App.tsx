@@ -60,6 +60,7 @@ import NoticeList from "./pages/notice/NoticeList.page";
 import EditMyPage from "./pages/Profile/EditMyPage.page";
 import BasicRoute from "./routes/BasicRoute";
 import Notfound from "./pages/404/Notfound.page";
+import SuccessCreateUsers from "./pages/login/SuccessCreateUsers.page";
 
 const router = createBrowserRouter([
   {
@@ -82,6 +83,7 @@ const router = createBrowserRouter([
       { path: paths.CREATE_ADMIN, element: <CreateAdmin /> },
       { path: paths.FIND_ID, element: <FindId /> },
       { path: paths.FIND_PW, element: <FindPW /> },
+      { path: paths.SUCCESS_USER, element: <SuccessCreateUsers /> },
     ],
   },
   {
