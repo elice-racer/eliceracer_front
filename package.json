@@ -19,6 +19,7 @@
     "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.15.19",
     "axios": "^1.6.8",
+    "js-cookie": "^3.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.1",
@@ -28,6 +29,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",

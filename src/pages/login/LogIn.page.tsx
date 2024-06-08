@@ -7,6 +7,7 @@ import { tokenAtom } from "../../recoil/TokenAtom";
 import InputFiled from "./components/InputField";
 import { imgPaths, paths } from "../../utils/path";
 import { loadingAtom } from "../../recoil/LoadingAtom";
+import Cookies from "js-cookie";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -16,8 +17,8 @@ export default function Login() {
   const from = location?.state?.redirectedFrom?.pathname || paths.HOME;
 
   const [userLoginForm, setUserLoginForm] = useState({
-    identifier: "jiop96@naver.com",
-    password: "12341234",
+    identifier: "",
+    password: "",
   });
 
   const [error, setError] = useState("");
@@ -41,6 +42,12 @@ export default function Login() {
     try {
       const res = await AxiosAuth.fetchLogin(userLoginForm);
       console.log(res.headers?.authorization.replace("Bearer ", ""));
+      console.log(res);
+
+      const test = Cookies.get("refreshToken");
+
+      console.log("refresh _token ");
+      console.log(test);
       if (res.data?.statusCode === 200) {
         const loginToken = res.headers?.authorization.replace("Bearer ", "");
         setToken(loginToken);

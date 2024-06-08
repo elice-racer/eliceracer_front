@@ -1,12 +1,12 @@
 const paths = {
   HOME: "/",
-  INTRO: "/hello",
-  LOGIN: "/hello/login",
-  CREATE_USER: "/hello/create-account",
-  CREATE_ADMIN: "/hello/create-admin",
+  INTRO: "/auth",
+  LOGIN: "/auth/login",
+  CREATE_USER: "/auth/create-account",
+  CREATE_ADMIN: "/auth/create-admin",
 
-  FIND_ID: "/hello/find-id",
-  FIND_PW: "/hello/find-pw",
+  FIND_ID: "/auth/find-id",
+  FIND_PW: "/auth/find-pw",
 
   // 채팅
   CHAT_HOME: "/chat",

@@ -62,7 +62,17 @@ import BasicRoute from "./routes/BasicRoute";
 
 const router = createBrowserRouter([
   {
-    path: "/hello",
+    path: "",
+    element: <ProtectedRoute />,
+    children: [
+      { path: paths.HOME, element: <Home /> },
+      { path: paths.CHAT_HOME, element: <ChatHome /> },
+      { path: paths.CHAT_ROOM, element: <ChatRoom /> },
+      { path: paths.USERS_PAGE, element: <UsersPage /> },
+    ],
+  },
+  {
+    path: "/auth",
     element: <BasicRoute />,
     children: [
       { path: paths.LOGIN, element: <Login /> },
@@ -71,16 +81,6 @@ const router = createBrowserRouter([
       { path: paths.CREATE_ADMIN, element: <CreateAdmin /> },
       { path: paths.FIND_ID, element: <FindId /> },
       { path: paths.FIND_PW, element: <FindPW /> },
-    ],
-  },
-  {
-    path: "",
-    element: <ProtectedRoute />,
-    children: [
-      { path: paths.HOME, element: <Home /> },
-      { path: paths.CHAT_HOME, element: <ChatHome /> },
-      { path: paths.CHAT_ROOM, element: <ChatRoom /> },
-      { path: paths.USERS_PAGE, element: <UsersPage /> },
     ],
   },
   {
