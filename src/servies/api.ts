@@ -1,5 +1,6 @@
 import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 // import { getAccessToken } from "./auth";
+import Cookies from "js-cookie";
 
 const baseURL = import.meta.env.VITE_BASE_URL;
 
@@ -44,13 +45,12 @@ const onRejected = async (e: AxiosError<ErrorType>) => {
 
   if (response?.status === 401) {
     // 쿠키에서 들고오기
-    const refreshToken = "";
+    const refreshToken = Cookies.get("refreshToken");
 
     const url = `${baseURL}/auth/refresh`;
 
     const res = await axios.post(url, { refreshToken }, {});
-
-    const new_access_token = res.data.access_token;
+    const new_access_token = res.headers?.authorization.replace("Bearer ", "");
 
     localStorage.setItem("userToken", new_access_token);
 
