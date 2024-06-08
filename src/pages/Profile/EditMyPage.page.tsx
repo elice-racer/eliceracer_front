@@ -6,46 +6,46 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EditInput from "./components/EditInput";
 import SkillsModal from "./components/SkillsModal";
-import { useRecoilState } from "recoil";
-import modalState from "../../recoil/Modal";
 
 function EditMyPage() {
   const navigate = useNavigate();
 
-  const [, setIsModalOpen] = useRecoilState(modalState);
-  const [usersInfo, setUsersInfo] = useState<UsersInfo | null>();
-  const [updateInfo, setUpdateInfo] = useState({
-    id: null,
-    email: null,
-    username: null,
-    realName: "",
-    phoneNumber: null,
-    comment: null,
-    position: null,
-    github: null,
-    blog: null,
-    sns: null,
-    description: null,
-    role: "",
-    skill: null,
-    status: 0,
-    track: null,
-    teams: null,
-    tmi: null,
-  });
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [usersInfo, setUsersInfo] = useState<UsersInfo | null>(null);
   const onChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!usersInfo) return;
     const { name, value } = e.target;
-    setUpdateInfo(userInfo => ({ ...userInfo, [name]: value }));
+    setUsersInfo({ ...usersInfo, [name]: value });
   };
 
-  const handleClick = async (e: any) => {
-    e.preventDefault();
+  const onChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!usersInfo) return;
+    const { name, value } = e.target;
+    setUsersInfo({ ...usersInfo, [name]: value });
+  };
 
+  const handleClick = async () => {
     try {
-      await AxiosUser.patchMyInfo(updateInfo);
+      if (!usersInfo) return;
+      const { comment, realName, position, description, github, blog, sns, tmi } = usersInfo;
+      const res = await AxiosUser.patchMyInfo({
+        comment,
+        realName,
+        position,
+        description,
+        github,
+        blog,
+        sns,
+        tmi,
+      });
+      console.log(res);
+
+      if (res.status === 200) {
+        console.log("업데이트 완료!");
+        const newMypage = res.data.data as UsersInfo;
+        setUsersInfo(newMypage);
+      }
       navigate(paths.MYPAGE);
-      console.log("업데이트 완료!");
     } catch (e) {
       console.error(e);
     }
@@ -61,7 +61,7 @@ function EditMyPage() {
 
   return (
     <Container>
-      <SkillsModal />
+      <SkillsModal isModalOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <Header>
         <TextWrapper>
           {usersInfo?.position ? (
@@ -87,21 +87,30 @@ function EditMyPage() {
             </RoleWrapper>
           </ProfileWrapper>
           <UserInfoWrapper>
+            {/* <ItemWrapper>
+              <SubTitle>Email</SubTitle>
+              <EditInput onChange={onChangeForm} value={usersInfo?.email || ""} placeholder="이메일을 입력해주세요." name="email" />
+            </ItemWrapper> */}
             <ItemWrapper>
               <SubTitle>한줄 소개</SubTitle>
-              <EditInput onChnage={onChangeForm} data={usersInfo?.comment} placeholder="나를 한 줄로 표현해주세요." />
+              <EditInput onChange={onChangeForm} value={usersInfo?.comment || ""} placeholder="나를 한 줄로 표현해주세요." name="comment" />
             </ItemWrapper>
-            <ItemWrapper>
-              <SubTitle>Email</SubTitle>
-              <EditInput onChnage={onChangeForm} data={usersInfo?.email} placeholder="이메일을 입력해주세요." />
-            </ItemWrapper>
+
             <ItemWrapper>
               <SubTitle>Blog</SubTitle>
-              <EditInput onChnage={onChangeForm} data={usersInfo?.blog} placeholder="블로그 url을 추가해주세요." />
+              <EditInput onChange={onChangeForm} value={usersInfo?.blog || ""} placeholder="블로그 url을 추가해주세요." name="blog" />
+            </ItemWrapper>
+            <ItemWrapper>
+              <SubTitle>Github</SubTitle>
+              <EditInput onChange={onChangeForm} value={usersInfo?.github || ""} placeholder="깃허브 url을 추가해주세요." name="github" />
+            </ItemWrapper>
+            <ItemWrapper>
+              <SubTitle>position</SubTitle>
+              <EditInput onChange={onChangeForm} value={usersInfo?.position || ""} placeholder="포지션을 입력해주세요" name="position" />
             </ItemWrapper>
             <ItemWrapper>
               <SubTitle>SNS</SubTitle>
-              <EditInput onChnage={onChangeForm} data={usersInfo?.sns} placeholder="sns 계정 url을 추가해주세요." />
+              <EditInput onChange={onChangeForm} value={usersInfo?.sns || ""} placeholder="sns 계정 url을 추가해주세요." name="sns" />
             </ItemWrapper>
             <ItemWrapper>
               <SubTitle>연락처</SubTitle>
@@ -144,18 +153,21 @@ function EditMyPage() {
             </TextWrapper>
           </SubTitleWrapper>
           <DescriptBox>
-            {usersInfo?.description ? (
-              <Text>{usersInfo?.description}</Text>
-            ) : (
-              <Text>자유롭게 작성해주세요. (ex : MBTI, 목표하는 개발자의 모습 등등)</Text>
-            )}
+            <TextArea
+              value={usersInfo?.description || ""}
+              onChange={onChangeTextArea}
+              name="description"
+              placeholder="자유롭게 작성해주세요. (ex : MBTI, 목표하는 개발자의 모습 등등"
+            />
           </DescriptBox>
         </>
-        <TextWrapper className="sub-title">
-          <SubTitle>나의 TMI</SubTitle>
-        </TextWrapper>
+        <SubTitleWrapper>
+          <TextWrapper className="sub-title">
+            <SubTitle>나의 TMI</SubTitle>
+          </TextWrapper>
+        </SubTitleWrapper>
         <TMIBox>
-          <Text></Text>
+          <TextArea value={usersInfo?.tmi || ""} onChange={onChangeTextArea} name="tmi" />
         </TMIBox>
       </Wrapper>
     </Container>
@@ -211,6 +223,23 @@ const SubTitleWrapper = styled.div`
   width: 590px;
   height: 30px;
   border-bottom: 1px soild ${({ theme }) => theme.colors.gray2};
+`;
+
+const TMIBox = styled.div`
+  width: 590px;
+  height: 200px;
+  padding: 12px;
+  border-radius: 6px;
+  background-color: ${({ theme }) => theme.colors.gray1};
+`;
+
+const TextArea = styled.textarea`
+  width: 100%;
+  height: 100%;
+  background-color: ${({ theme }) => theme.colors.gray1};
+
+  border: none;
+  padding: 12px;
 `;
 
 const SubTitle = styled.h2``;
@@ -292,12 +321,6 @@ const AchievBox = styled.div`
   border-radius: 6px;
   width: 590px;
   height: 60px;
-  background-color: ${({ theme }) => theme.colors.gray1};
-`;
-
-const TMIBox = styled.div`
-  width: 590px;
-  height: 200px;
   background-color: ${({ theme }) => theme.colors.gray1};
 `;
 

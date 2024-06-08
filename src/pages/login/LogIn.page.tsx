@@ -13,8 +13,8 @@ export default function Login() {
   const from = location?.state?.redirectedFrom?.pathname || paths.HOME;
 
   const [userLoginForm, setUserLoginForm] = useState({
-    identifier: "",
-    password: "",
+    identifier: "jiop96@naver.com",
+    password: "12341234",
   });
   const [error, setError] = useState("");
   const setToken = useSetRecoilState(tokenAtom);

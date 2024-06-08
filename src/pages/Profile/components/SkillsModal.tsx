@@ -1,25 +1,23 @@
 import styled from "styled-components";
-import modalState from "../../../recoil/Modal";
-import { useRecoilState } from "recoil";
 
-function SkillsModal() {
-  const [isModalOpen, setIsModalOpen] = useRecoilState(modalState);
+interface SkillModalProps {
+  isModalOpen: boolean;
+  onClose: () => void;
+}
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
+function SkillsModal({ isModalOpen, onClose }: SkillModalProps) {
   return (
     <>
       <Container className={isModalOpen ? "" : "disable"}>
         SkillsModal
         <ButtonWrapper>
           <Button onClick={() => {}}></Button>
-          <Button className="close" onClick={handleCloseModal}>
+          <Button className="close" onClick={onClose}>
             닫기
           </Button>
         </ButtonWrapper>
       </Container>
-      <Dimed className={isModalOpen ? "" : "disable"} onClick={handleCloseModal} />
+      <Dimed className={isModalOpen ? "" : "disable"} onClick={onClose} />
     </>
   );
 }
@@ -38,6 +36,10 @@ const Container = styled.div`
   z-index: 11;
   width: 100%;
   max-width: 435px;
+  height: 300px;
+
+  border-radius: 10px;
+  background-color: #fff;
 
   &.disable {
     display: none;
@@ -54,7 +56,7 @@ const Button = styled.button`
   border-radius: 6px;
   background-color: ${({ theme }) => theme.colors.puple2};
   &.close {
-    background-color: ${({ theme }) => theme.colos.gray1};
+    background-color: ${({ theme }) => theme.colors.gray1};
   }
 `;
 

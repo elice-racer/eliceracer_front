@@ -1,15 +1,10 @@
+import { InputHTMLAttributes } from "react";
 import styled from "styled-components";
 
-function EditInput({ onChange, data, placeholder }: any) {
-  return (
-    <>
-      {data ? (
-        <TextInput onChange={onChange} type="text" placeholder={data} value={data} name="comment" />
-      ) : (
-        <TextInput onChange={onChange} type="text" placeholder={placeholder} value={data} name="comment" />
-      )}
-    </>
-  );
+interface EditInputProps extends InputHTMLAttributes<HTMLInputElement> {}
+
+function EditInput({ ...props }: EditInputProps) {
+  return <TextInput {...props} />;
 }
 
 export default EditInput;

@@ -34,6 +34,8 @@ export interface UsersInfo {
   tmi: string | null;
 }
 
+export type OmitUserInfo = Omit<UsersInfo, "username" | "email" | "id" | "skill" | "role" | "teams" | "track" | "status">;
+export type UpdateUserInfo = Partial<OmitUserInfo>;
 export namespace AxiosUser {
   /** 현재 유저 정보 가져오기 */
   export const getCurrentUser = async () => {
@@ -63,9 +65,9 @@ export namespace AxiosUser {
     return res;
   };
 
-  export const patchMyInfo = async (data: UsersInfo) => {
+  export const patchMyInfo = async (updateUserInfo: UpdateUserInfo) => {
     const url = `users/mypage`;
-    const res = await api.patch(url, data);
+    const res = await api.patch(url, updateUserInfo);
     return res;
   };
 }
