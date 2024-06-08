@@ -59,6 +59,7 @@ import ChatRoom from "./pages/chat/ChatRoom.page";
 import NoticeList from "./pages/notice/NoticeList.page";
 import EditMyPage from "./pages/Profile/EditMyPage.page";
 import BasicRoute from "./routes/BasicRoute";
+import Notfound from "./pages/404/Notfound.page";
 
 const router = createBrowserRouter([
   {
@@ -119,6 +120,10 @@ const router = createBrowserRouter([
 
       { path: paths.ADMIN_PROJECTS, element: <AdminProject /> },
     ],
+  },
+  {
+    path: "*",
+    element: <Notfound />,
   },
 ]);
 

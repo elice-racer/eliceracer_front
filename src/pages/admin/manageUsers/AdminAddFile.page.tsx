@@ -15,9 +15,9 @@ interface RowData {
 
 const OPTIONS = [
   { value: "", name: "트랙을 선택해주세요." },
-  { value: "ai", name: "AI" },
-  { value: "cloud", name: "CLOUD" },
-  { value: "sw", name: "SW" },
+  { value: "AI", name: "AI" },
+  { value: "CLOUD", name: "CLOUD" },
+  { value: "SW", name: "SW" },
 ];
 
 function AdminAddFile() {
@@ -103,7 +103,7 @@ function AdminAddFile() {
       <Label>
         <Input type="file" accept=".xlsx, .xls .csv" onChange={handleFileUpload} ref={inputFileRef} />
       </Label>
-      <Text>아래는 파일에서 받아온 유저정보입니다.</Text>
+      <Text style={{ paddingTop: "24px" }}>아래는 파일에서 받아온 유저정보입니다.</Text>
       <DataBoard data={data} />
     </Container>
   );
@@ -127,7 +127,11 @@ const Wrapper = styled.div`
   gap: 5px;
 `;
 
-const Text = styled.p``;
+const Text = styled.p`
+  font-weight: bold;
+
+  font-size: 14px;
+`;
 
 const Label = styled.label``;
 const Input = styled.input``;

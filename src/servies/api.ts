@@ -64,6 +64,7 @@ const onRejected = async (e: AxiosError<ErrorType>) => {
       throw new Error("original request is not define");
     }
   }
+  console.log(e);
   return Promise.reject(e);
 };
 api.interceptors.request.use(requestPrev, requestError);

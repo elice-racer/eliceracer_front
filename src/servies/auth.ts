@@ -2,7 +2,7 @@ import { api } from "./api";
 
 // role 타입을 role: "racer"|"coach"라고 해줄 때, 페이지딴에서 어떻게 입력을 주지?
 interface SignupUser {
-  userName: string;
+  username: string;
   password: string;
   realName: string;
   phoneNumber: string;
