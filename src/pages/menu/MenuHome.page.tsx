@@ -40,7 +40,7 @@ const SideSection = styled.div`
   width: 420px;
   display: flex;
   justify-content: center;
-  background-color: ${({ theme }) => theme.colors.puple1};
+  background-color: ${({ theme }) => theme.colors.purple1};
 `;
 
 const MainSection = styled.div`
@@ -59,7 +59,7 @@ const TitleWrapper = styled.div`
   gap: 10px;
   width: 500px;
   height: 120px;
-  background-color: ${({ theme }) => theme.colors.puple1};
+  background-color: ${({ theme }) => theme.colors.purple1};
 `;
 
 const QuotesWrapper = styled.div``;

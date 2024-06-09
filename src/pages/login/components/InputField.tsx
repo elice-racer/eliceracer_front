@@ -45,6 +45,6 @@ const Input = styled.input`
   padding-left: 10px;
   border-width: 0;
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.colors.puple1};
+  background-color: ${({ theme }) => theme.colors.purple1};
   color: ${({ theme }) => theme.colors.gray2};
 `;

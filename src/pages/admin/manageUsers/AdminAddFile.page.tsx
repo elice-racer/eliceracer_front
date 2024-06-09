@@ -141,6 +141,6 @@ const CreateTrackBtn = styled.button`
   height: 30px;
   border-radius: 8px;
   border: none;
-  background-color: ${({ theme }) => theme.colors.puple1};
+  background-color: ${({ theme }) => theme.colors.purple1};
   color: ${({ theme }) => theme.colors.gray2};
 `;

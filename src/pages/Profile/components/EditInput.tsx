@@ -11,4 +11,7 @@ export default EditInput;
 
 const TextInput = styled.input`
   border: none;
+  border-radius: 6px;
+  padding: 2px 6px;
+  background-color: ${({ theme }) => theme.colors.purple1};
 `;

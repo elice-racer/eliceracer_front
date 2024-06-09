@@ -1,15 +1,23 @@
 import styled from "styled-components";
-
+import Select from "react-select";
+import { Skills } from "../../../servies/user";
 interface SkillModalProps {
   isModalOpen: boolean;
   onClose: () => void;
+  defaultData: Skills[] | null | undefined;
+  optionsData: Skills[] | undefined;
 }
 
-function SkillsModal({ isModalOpen, onClose }: SkillModalProps) {
+function SkillsModal({ isModalOpen, onClose, defaultData, optionsData }: SkillModalProps) {
   return (
     <>
       <Container className={isModalOpen ? "" : "disable"}>
-        SkillsModal
+        <TitleWrapper>
+          <Title>보유 기술 스택</Title>
+        </TitleWrapper>
+        <SkillsWrapper>
+          <Select defaultValue={defaultData} isMulti name="skills" options={optionsData} className="basic-multi-select" classNamePrefix="select" />
+        </SkillsWrapper>
         <ButtonWrapper>
           <Button onClick={() => {}}></Button>
           <Button className="close" onClick={onClose}>
@@ -46,6 +54,28 @@ const Container = styled.div`
   }
 `;
 
+const TitleWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: rgb(255, 255, 255);
+`;
+
+const Title = styled.p`
+  line-height: 1.5;
+  user-select: auto;
+`;
+
+const SkillsWrapper = styled.div`
+  position: relative;
+  padding: 1.5rem;
+  flex: 1 1 auto;
+  overflow: auto;
+`;
+
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -54,7 +84,7 @@ const ButtonWrapper = styled.div`
 const Button = styled.button`
   border: none;
   border-radius: 6px;
-  background-color: ${({ theme }) => theme.colors.puple2};
+  background-color: ${({ theme }) => theme.colors.purple2};
   &.close {
     background-color: ${({ theme }) => theme.colors.gray1};
   }

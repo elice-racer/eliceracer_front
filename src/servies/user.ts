@@ -14,6 +14,16 @@
 
 import { api } from "./api";
 
+export interface Track {
+  cardinalNo: number | null;
+  id: string | null;
+  trackName: "AI" | "SW" | "CLOUD";
+}
+
+export interface Skills {
+  id?: string;
+  skillName: string;
+}
 export interface UsersInfo {
   id: string | null;
   email: string | null;
@@ -27,9 +37,9 @@ export interface UsersInfo {
   sns: string | null;
   description: string | null;
   role: string;
-  skill: [] | null;
+  skills: Skills[] | [];
   status: number;
-  track: string | null;
+  track: Track | null;
   teams: [] | null;
   tmi: string | null;
 }
@@ -48,6 +58,8 @@ export namespace AxiosUser {
   export const getMyInfo = async (): Promise<UsersInfo> => {
     const url = `users/mypage`;
     const res = await api.get(url).then(res => res.data.data);
+    console.log(res);
+
     return res;
   };
 
@@ -68,6 +80,19 @@ export namespace AxiosUser {
   export const patchMyInfo = async (updateUserInfo: UpdateUserInfo) => {
     const url = `users/mypage`;
     const res = await api.patch(url, updateUserInfo);
+    return res;
+  };
+  export const getUsersSkills = async (searchs: string) => {
+    const url = `users/skills?search=${searchs}}`;
+    const res = await api.get(url);
+
+    return res;
+  };
+
+  export const putUsersSkills = async (data: Skills[]) => {
+    const url = `users/skills`;
+    const res = await api.put(url, data);
+    console.log(res);
     return res;
   };
 }

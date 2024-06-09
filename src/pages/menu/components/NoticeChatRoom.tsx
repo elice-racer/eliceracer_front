@@ -69,7 +69,7 @@ const Header = styled.div`
   justify-content: center;
   align-items: center;
   height: 46px;
-  background-color: ${({ theme }) => theme.colors.puple1};
+  background-color: ${({ theme }) => theme.colors.purple1};
 `;
 
 const Title = styled.h1``;
@@ -115,14 +115,14 @@ const FooterTypingBar = styled.div`
   gap: 6px;
   height: 180px;
   padding: 10px;
-  background-color: ${({ theme }) => theme.colors.puple1};
+  background-color: ${({ theme }) => theme.colors.purple1};
 `;
 
 const OptionBar = styled.div`
   height: 54px;
   width: 400px;
   border-radius: 6px;
-  background-color: ${({ theme }) => theme.colors.puple2};
+  background-color: ${({ theme }) => theme.colors.purple2};
 `;
 const TypingBar = styled.div`
   height: 88px;

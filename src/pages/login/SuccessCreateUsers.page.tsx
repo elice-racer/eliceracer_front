@@ -40,5 +40,5 @@ const Img = styled.img`
 
 const Text = styled.h1`
   font-size: 1.4rem;
-  color: ${({ theme }) => theme.colors.puple3};
+  color: ${({ theme }) => theme.colors.purple3};
 `;

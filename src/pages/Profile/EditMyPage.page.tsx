@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Btn from "../../components/commons/Btn";
 import { imgPaths, paths } from "../../utils/path";
-import { AxiosUser, UsersInfo } from "../../servies/user";
+import { AxiosUser, Skills, UsersInfo } from "../../servies/user";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EditInput from "./components/EditInput";
@@ -12,6 +12,8 @@ function EditMyPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [usersInfo, setUsersInfo] = useState<UsersInfo | null>(null);
+
+  const [skills, setSkills] = useState<Skills[] | undefined>([]);
   const onChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!usersInfo) return;
     const { name, value } = e.target;
@@ -24,6 +26,16 @@ function EditMyPage() {
     setUsersInfo({ ...usersInfo, [name]: value });
   };
 
+  const fetchUploadSkills = async () => {};
+
+  const fetchSearchSkills = async (id: string) => {
+    try {
+      const res = await AxiosUser.getUsersSkills(id);
+      return res;
+    } catch (e) {
+      console.error(e);
+    }
+  };
   const handleClick = async () => {
     try {
       if (!usersInfo) return;
@@ -52,16 +64,21 @@ function EditMyPage() {
   };
 
   useEffect(() => {
+    fetchSearchSkills("React");
+  }, []);
+
+  useEffect(() => {
     const fetchMyInfo = async () => {
       const res = await AxiosUser.getMyInfo();
       setUsersInfo(res);
+      setSkills(usersInfo?.skills);
     };
     fetchMyInfo();
   }, []);
 
   return (
     <Container>
-      <SkillsModal isModalOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <SkillsModal isModalOpen={isModalOpen} onClose={() => setIsModalOpen(false)} defaultData={usersInfo?.skills} optionsData={skills} />
       <Header>
         <TextWrapper>
           {usersInfo?.position ? (
@@ -83,14 +100,24 @@ function EditMyPage() {
             <Input type="file" accept=".jpg, .jpeg, .png" />
             <RoleWrapper>
               {usersInfo?.role ? <Text>{usersInfo?.role}🏁</Text> : <Text>환영합니다! {usersInfo?.realName && `${usersInfo?.realName}님`}</Text>}
-              {usersInfo?.track && <Text>{usersInfo.track}</Text>}
+              {usersInfo?.track && (
+                <Text className="sun-info">
+                  {usersInfo.track.trackName}
+                  {usersInfo.track.cardinalNo} |
+                </Text>
+              )}
             </RoleWrapper>
+            <ItemWrapper>
+              <SubTitle>Email</SubTitle>
+              <Text>{usersInfo?.email || "이메일 인증 후 등록가능합니다."}</Text>
+            </ItemWrapper>
+            <ItemWrapper>
+              <SubTitle>연락처</SubTitle>
+              <Text className="sun-info">연락처는 본인만 확인가능합니다.</Text>
+              <Text>{usersInfo?.phoneNumber}</Text>
+            </ItemWrapper>
           </ProfileWrapper>
           <UserInfoWrapper>
-            {/* <ItemWrapper>
-              <SubTitle>Email</SubTitle>
-              <EditInput onChange={onChangeForm} value={usersInfo?.email || ""} placeholder="이메일을 입력해주세요." name="email" />
-            </ItemWrapper> */}
             <ItemWrapper>
               <SubTitle>한줄 소개</SubTitle>
               <EditInput onChange={onChangeForm} value={usersInfo?.comment || ""} placeholder="나를 한 줄로 표현해주세요." name="comment" />
@@ -112,11 +139,6 @@ function EditMyPage() {
               <SubTitle>SNS</SubTitle>
               <EditInput onChange={onChangeForm} value={usersInfo?.sns || ""} placeholder="sns 계정 url을 추가해주세요." name="sns" />
             </ItemWrapper>
-            <ItemWrapper>
-              <SubTitle>연락처</SubTitle>
-              <Text className="sun-info">연락처는 본인만 확인가능합니다.</Text>
-              {usersInfo?.phoneNumber ? <Text>{usersInfo?.phoneNumber}</Text> : <Text className="sub-info">전화 번호를 등록해주세요.</Text>}
-            </ItemWrapper>
           </UserInfoWrapper>
         </BasicInfoWrapper>
         <>
@@ -133,8 +155,11 @@ function EditMyPage() {
             </AddSkillBtn>
           </SubTitleWrapper>
           <AchievBox>
-            {usersInfo?.skill?.map(item => (
-              <Text>{item}</Text>
+            {usersInfo?.skills?.map(item => (
+              <SKillItem key={item.id}>
+                <Text>{item.skillName}</Text>
+                <DelBtn>Ⅹ</DelBtn>
+              </SKillItem>
             ))}
           </AchievBox>
         </>
@@ -324,6 +349,13 @@ const AchievBox = styled.div`
   background-color: ${({ theme }) => theme.colors.gray1};
 `;
 
+const SKillItem = styled.div`
+  padding: 2px 6px;
+  background-color: ${({ theme }) => theme.colors.purple1};
+  border-radius: 4px;
+`;
+
+const DelBtn = styled.button``;
 const DescriptBox = styled.div`
   border-radius: 6px;
   padding: 12px;

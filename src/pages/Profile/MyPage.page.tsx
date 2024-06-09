@@ -50,8 +50,13 @@ function MyPage() {
           <ProfileWrapper>
             <ImgWrapper>{<Img src={imgPaths.DEFAULT_PROFILE_IMG} alt="기본이미지" />}</ImgWrapper>
             <RoleWrapper>
-              {usersInfo?.role ? <Text>{usersInfo.role}🏁</Text> : <Text>환영합니다! {usersInfo?.realName && `${usersInfo?.realName}님`}</Text>}
-              {usersInfo?.track && <Text>{usersInfo.track}</Text>}
+              {usersInfo?.track && (
+                <Text className="sun-info">
+                  {usersInfo.track.trackName}
+                  {usersInfo.track.cardinalNo} |
+                </Text>
+              )}
+              {usersInfo?.role ? <Text> {usersInfo.role}🏁</Text> : <Text>환영합니다! {usersInfo?.realName && `${usersInfo?.realName}님`}</Text>}
             </RoleWrapper>
           </ProfileWrapper>
           <UserInfoWrapper>
@@ -84,9 +89,13 @@ function MyPage() {
             </TextWrapper>
           </SubTitleWrapper>
           <AchievBox>
-            {usersInfo?.skill?.map(item => (
-              <Text>{item}</Text>
-            ))}
+            {usersInfo?.skills?.map(item => {
+              return (
+                <SKillItem key={item.id}>
+                  <Text>{item.skillName}</Text>
+                </SKillItem>
+              );
+            })}
           </AchievBox>
         </>
         <>
@@ -241,6 +250,12 @@ const AchievBox = styled.div`
   width: 590px;
   height: 60px;
   background-color: ${({ theme }) => theme.colors.gray1};
+`;
+
+const SKillItem = styled.div`
+  padding: 2px 6px;
+  background-color: ${({ theme }) => theme.colors.purple1};
+  border-radius: 4px;
 `;
 
 const TMIBox = styled.div`
