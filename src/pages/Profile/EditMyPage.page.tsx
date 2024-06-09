@@ -26,7 +26,7 @@ function EditMyPage() {
     setUsersInfo({ ...usersInfo, [name]: value });
   };
 
-  const fetchUploadSkills = async () => {};
+  // const fetchUploadSkills = async () => {};
 
   const fetchSearchSkills = async (id: string) => {
     try {
