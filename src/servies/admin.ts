@@ -33,7 +33,7 @@ export namespace AxiosAdmin {
   export const uploadMembersCoachFile = async (file: File) => {
     const form = new FormData();
     form.append("file", file);
-    const url = `admins/coach`;
+    const url = `admins/members/coaches`;
     const res = await api.post(url, form, configs);
     console.log(res);
     return res;

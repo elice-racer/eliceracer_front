@@ -6,7 +6,7 @@ import { AxiosAdmin, TeamsInfo } from "../../../servies/admin";
 import * as XLSX from "xlsx";
 import UploadRacers from "./components/UploadRacers";
 import DataBoard from "./components/DataBoard";
-import UploadCoach from "./components/UploadCoach";
+import UploadCoachs from "./components/UploadCoach";
 import UploadTeamBuilding from "./components/UploadTeamBuilding";
 
 //recoil
@@ -40,6 +40,32 @@ function AdminAddFile() {
 
   const handleChangeTabIndex = (idx: number) => setTabIdx(idx);
 
+  const handleUploadCoachsFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setLoading(true);
+    if (file) {
+      try {
+        const res = await AxiosAdmin.uploadMembersCoachFile(file);
+        if (res.status === 201) {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const binaryStr = e.target?.result;
+            const wb = XLSX.read(binaryStr, { type: "binary" });
+            const sheetName = wb.SheetNames[0];
+            const ws = wb.Sheets[sheetName];
+            const jsonData: RowData[] = XLSX.utils.sheet_to_json(ws);
+            setData(jsonData);
+          };
+          reader.readAsBinaryString(file);
+          setLoading(false);
+          alert("파일이 성공적으로 업로드되었습니다.");
+        }
+      } catch (e) {
+        console.error(e);
+        setLoading(false);
+      }
+    }
+  };
   /** 팀 정보 조회 */
   const fetchGetTeamsInfo = async () => {
     if (track.trackName === "") return alert("트랙을 선택해주세요.");
@@ -69,8 +95,6 @@ function AdminAddFile() {
     if (file) {
       try {
         const res = await AxiosAdmin.uploadTeamBuildFile(file);
-        console.log("팀 빌딩 파일 확인");
-        console.log(res);
         setLoading(true);
         if (res.status === 201) {
           const reader = new FileReader();
@@ -181,7 +205,7 @@ function AdminAddFile() {
                 onFileUpload={handleUploadUsersFile}
                 inputFileRef={inputFileRef}
               />,
-              <UploadCoach />,
+              <UploadCoachs onFileUpload={handleUploadCoachsFile} onClear={handleClear} inputFileRef={inputFileRef} />,
               <UploadTeamBuilding
                 options={OPTIONS}
                 onChange={handleChangeTrackInfo}
@@ -195,8 +219,6 @@ function AdminAddFile() {
             ][tabIdx]
           }
         </SectionWrapper>
-        <SectionWrapper></SectionWrapper>
-        <SectionWrapper></SectionWrapper>
         <Text style={{ paddingTop: "24px" }}>아래는 업로드된 파일 양식입니다.</Text>
         <DataBoard data={data} />
       </Wrapper>
