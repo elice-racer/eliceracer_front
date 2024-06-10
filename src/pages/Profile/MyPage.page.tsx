@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 // component
 import Btn from "../../components/commons/Btn";
+import SkillBadge from "./components/SkillBadge";
 
 // paths
 import { imgPaths, paths } from "../../utils/path";
@@ -88,15 +89,11 @@ function MyPage() {
               <SubTitle>기술</SubTitle>
             </TextWrapper>
           </SubTitleWrapper>
-          <AchievBox>
-            {usersInfo?.skills?.map(item => {
-              return (
-                <SKillItem key={item.id}>
-                  <Text>{item.skillName}</Text>
-                </SKillItem>
-              );
-            })}
-          </AchievBox>
+          <SKillWrapper>
+            {usersInfo?.skills?.map(item => (
+              <SkillBadge key={item.id} skillName={item.skillName} />
+            ))}
+          </SKillWrapper>
         </>
         <>
           <SubTitleWrapper>
@@ -252,10 +249,15 @@ const AchievBox = styled.div`
   background-color: ${({ theme }) => theme.colors.gray1};
 `;
 
-const SKillItem = styled.div`
-  padding: 2px 6px;
-  background-color: ${({ theme }) => theme.colors.purple1};
-  border-radius: 4px;
+const SKillWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  display: flex;
+  min-height: 60px;
+  background-color: ${({ theme }) => theme.colors.gray1};
+  align-items: center;
+  gap: 4px;
+  padding-left: 12px;
 `;
 
 const TMIBox = styled.div`

@@ -24,6 +24,7 @@ export const ProtectedRoute = () => {
     } catch (e: any) {
       const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
       console.log(errorMessage);
+      navigate(paths.LOGIN);
     }
   };
 

@@ -83,15 +83,15 @@ export namespace AxiosUser {
     return res;
   };
   export const getUsersSkills = async (searchs: string) => {
-    const url = `users/skills?search=${searchs}}`;
+    const url = `users/skills?search=${searchs}`;
     const res = await api.get(url);
-
     return res;
   };
 
-  export const putUsersSkills = async (data: Skills[]) => {
+  export const putUsersSkills = async (skills: string[]) => {
     const url = `users/skills`;
-    const res = await api.put(url, data);
+
+    const res = await api.put(url, { skills });
     console.log(res);
     return res;
   };

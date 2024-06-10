@@ -2,18 +2,36 @@ import styled from "styled-components";
 import Btn from "../../components/commons/Btn";
 import { imgPaths, paths } from "../../utils/path";
 import { AxiosUser, Skills, UsersInfo } from "../../servies/user";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import EditInput from "./components/EditInput";
 import SkillsModal from "./components/SkillsModal";
+import SkillBadge from "./components/SkillBadge";
+import { loadingAtom } from "../../recoil/LoadingAtom";
+import { useSetRecoilState } from "recoil";
 
 function EditMyPage() {
   const navigate = useNavigate();
 
+  const setLoading = useSetRecoilState(loadingAtom);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [usersInfo, setUsersInfo] = useState<UsersInfo | null>(null);
 
-  const [skills, setSkills] = useState<Skills[] | undefined>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // 검색어
+  const [searchSkillValue, setSearchSkillValue] = useState("");
+
+  // 서버 검색 데이터
+  const [searchSkills, setSearchSkills] = useState<Skills[]>([]);
+
+  const [tempSkills, setTempSkills] = useState<string[]>([]);
+
+  const [debounceTimeout, setDebounceTimeout] = useState<number | null>(null);
+
+  const [skills, setSkills] = useState<string[]>([]);
+
   const onChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!usersInfo) return;
     const { name, value } = e.target;
@@ -26,16 +44,52 @@ function EditMyPage() {
     setUsersInfo({ ...usersInfo, [name]: value });
   };
 
-  // const fetchUploadSkills = async () => {};
+  /** 검색 스킬을 미리보기에 추가하기 */
+  const onAddTempSkill = (skillName: string) => {
+    const findSkill = skills.find(skill => skill === skillName);
+    const findTempSkill = tempSkills.find(skill => skill == skillName);
 
-  const fetchSearchSkills = async (id: string) => {
+    if (findSkill || findTempSkill) return;
+
+    setTempSkills(tempSkills.concat(skillName));
+    setSearchSkillValue("");
+  };
+
+  const onDeleteTempSkill = (skillName: string) => {
+    setTempSkills(tempSkills.filter(skill => skill !== skillName));
+  };
+
+  /** 검색어 받아오기 */
+  const fetchSearchSkills = async () => {
     try {
-      const res = await AxiosUser.getUsersSkills(id);
+      const res = await AxiosUser.getUsersSkills(searchSkillValue);
+      if (res.status === 200) {
+        setSearchSkills(res.data.data);
+      }
       return res;
     } catch (e) {
       console.error(e);
     }
   };
+
+  /** 스킬 추가하기 */
+  const fetchAddSkills = async () => {
+    setLoading(true);
+    try {
+      const res = await AxiosUser.putUsersSkills(tempSkills);
+
+      console.log(res);
+      if (res.status === 200) {
+        setSkills(res.data.data.map((skill: Skills) => skill.skillName));
+      }
+      setLoading(false);
+      setIsModalOpen(false);
+    } catch (e) {
+      console.error(e);
+      setLoading(false);
+    }
+  };
+
   const handleClick = async () => {
     try {
       if (!usersInfo) return;
@@ -64,21 +118,65 @@ function EditMyPage() {
   };
 
   useEffect(() => {
-    fetchSearchSkills("React");
-  }, []);
-
-  useEffect(() => {
     const fetchMyInfo = async () => {
       const res = await AxiosUser.getMyInfo();
       setUsersInfo(res);
-      setSkills(usersInfo?.skills);
+      setSkills(res?.skills.map(skill => skill.skillName) || []);
+      setTempSkills(res?.skills.map(skill => skill.skillName) || []);
     };
     fetchMyInfo();
   }, []);
 
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+      inputRef.current?.focus();
+    } else {
+      document.body.style.overflow = "auto";
+      setSearchSkillValue("");
+    }
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    if (searchSkillValue !== "") {
+      if (debounceTimeout) {
+        clearTimeout(debounceTimeout);
+      }
+
+      const timeout = setTimeout(() => {
+        fetchSearchSkills();
+      }, 300);
+
+      setDebounceTimeout(timeout);
+    } else {
+      setSearchSkills([]);
+    }
+  }, [searchSkillValue]);
+
+  useEffect(() => {
+    console.log(tempSkills);
+  }, [tempSkills]);
+
   return (
     <Container>
-      <SkillsModal isModalOpen={isModalOpen} onClose={() => setIsModalOpen(false)} defaultData={usersInfo?.skills} optionsData={skills} />
+      <SkillsModal
+        searchValue={searchSkillValue}
+        onChangeValue={e => setSearchSkillValue(e.target.value)}
+        isModalOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setTempSkills(skills);
+        }}
+        showSkills={tempSkills}
+        searchSkills={searchSkills}
+        onAddSkill={fetchAddSkills}
+        onAddTempSkill={onAddTempSkill}
+        onDeleteTempSkill={onDeleteTempSkill}
+        ref={inputRef}
+      />
       <Header>
         <TextWrapper>
           {usersInfo?.position ? (
@@ -154,14 +252,11 @@ function EditMyPage() {
               기술스택 추가하기
             </AddSkillBtn>
           </SubTitleWrapper>
-          <AchievBox>
-            {usersInfo?.skills?.map(item => (
-              <SKillItem key={item.id}>
-                <Text>{item.skillName}</Text>
-                <DelBtn>Ⅹ</DelBtn>
-              </SKillItem>
+          <SKillWrapper>
+            {skills?.map(item => (
+              <SkillBadge key={item} skillName={item} />
             ))}
-          </AchievBox>
+          </SKillWrapper>
         </>
         <>
           <SubTitleWrapper>
@@ -205,7 +300,6 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  width: 470px;
   width: 100%;
 `;
 
@@ -349,13 +443,22 @@ const AchievBox = styled.div`
   background-color: ${({ theme }) => theme.colors.gray1};
 `;
 
-const SKillItem = styled.div`
-  padding: 2px 6px;
-  background-color: ${({ theme }) => theme.colors.purple1};
-  border-radius: 4px;
+const SKillWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  width: 590px;
+  min-height: 60px;
+
+  gap: 4px;
+  padding-left: 12px;
+
+  border-radius: 6px;
+  background-color: ${({ theme }) => theme.colors.gray1};
 `;
 
-const DelBtn = styled.button``;
 const DescriptBox = styled.div`
   border-radius: 6px;
   padding: 12px;
