@@ -1,10 +1,14 @@
-import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from "axios";
+import axios, { InternalAxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 // import { getAccessToken } from "./auth";
+import Cookies from "js-cookie";
 
 const baseURL = import.meta.env.VITE_BASE_URL;
 
+type ErrorType = AxiosError["response"];
+
 export const api = axios.create({
   baseURL,
+  // 쿠키가 모든 요청에 자동으로 포함되게 하는 옵션
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -31,29 +35,36 @@ const requestError = (e: AxiosError): Promise<AxiosError> => {
 const onFulfilled = (res: AxiosResponse) => {
   return res;
 };
+const onRejected = async (e: AxiosError<ErrorType>) => {
+  const { config, response } = e;
+  const originalRequest = config;
 
-// 요청 시 응답에 에러 발생하면 콘메시지 출력하기
-const onRejected = async (e: AxiosError) => {
-  // const { config, response } = e;
-  // const originalRequest = config;
+  if (response?.config?.url === "auth/login") {
+    return Promise.reject(e);
+  }
 
+  if (response?.status === 401) {
+    // 쿠키에서 들고오기
+    const refreshToken = Cookies.get("refreshToken");
+
+    const url = `${baseURL}auth/refresh`;
+    const res = await axios.post(url, { refreshToken }, { withCredentials: true });
+    const new_access_token = res.headers?.authorization.replace("Bearer ", "");
+
+    localStorage.setItem("userToken", new_access_token);
+
+    api.defaults.headers.common["Authorization"] = `Bearer ${new_access_token}`;
+
+    if (originalRequest) {
+      originalRequest.headers["Authorization"] = `Bearer ${new_access_token}`;
+
+      return await axios(originalRequest);
+    } else {
+      throw new Error("original request is not define");
+    }
+  }
   console.log(e);
-
   return Promise.reject(e);
-  // 여기에 access_token 만료되었을 때 refresh token 가지고와서 재요청 보내는 로직 짜야함
 };
 api.interceptors.request.use(requestPrev, requestError);
 api.interceptors.response.use(onFulfilled, onRejected);
-
-// export const formApi = axios.create({ baseURL, headers: { "Content-Type": "multipart/form-data" } });
-
-// export const postUsersFile = async (data: File) => {
-//   const url = `admins/members/racers`;
-//   const formData = new FormData();
-//   formData.append("file", data);
-//   return await formApi.post(url, formData, {
-//     headers: {
-//       "Content-Type": "multipart/form-data",
-//     },
-//   });
-// };

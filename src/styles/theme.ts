@@ -15,11 +15,11 @@ const device = {
 } as const;
 
 const colors = {
-  puple1: "#EEEAFE",
-  puple2: "#B67BFF",
-  puple3: "#954AF5",
-  puple4: "#7353EA",
-  puple5: "#6700E6",
+  purple1: "#EEEAFE",
+  purple2: "#B67BFF",
+  purple3: "#954AF5",
+  purple4: "#7353EA",
+  purple5: "#6700E6",
   blue1: "#E7F8F9",
   blue2: "#32C7DB",
   blue3: "#60B5C5",

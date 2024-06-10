@@ -22,7 +22,7 @@ function AdminMenu() {
         </LinkItem>
       </Wrapper>
       <Wrapper>
-        <LinkItem to={paths.USERS_PROJECTS}>프로젝트</LinkItem>
+        <LinkItem to={paths.ADMIN_PROJECTS}>프로젝트</LinkItem>
         <LinkItem to={paths.ADMIN_SEARCH_USERS}>
           <Text>트랙 및 </Text>
           <Text>레이서 조회</Text>
@@ -57,14 +57,14 @@ const FastLinkItem = styled(Link)`
   align-items: center;
   cursor: pointer;
 
-  background-color: ${({ theme }) => theme.colors.puple2};
+  background-color: ${({ theme }) => theme.colors.purple2};
   color: #000;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 
   &:hover {
     transform: scale(1.06);
 
-    background-color: ${({ theme }) => theme.colors.puple3};
+    background-color: ${({ theme }) => theme.colors.purple3};
     color: #fff;
     transition: 0.5s;
     /* box-shadow: inset 0 0 10px; */
@@ -81,7 +81,7 @@ const LinkItem = styled(Link)`
   align-items: center;
   cursor: pointer;
 
-  background-color: ${({ theme }) => theme.colors.puple1};
+  background-color: ${({ theme }) => theme.colors.purple1};
   color: #000;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 

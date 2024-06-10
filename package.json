@@ -15,16 +15,23 @@
     "prepare": "chmod ug+x .husky/* && husky install /.husky"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.15.19",
     "axios": "^1.6.8",
+    "js-cookie": "^3.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.23.1",
+    "react-select": "^5.8.0",
     "recoil": "^0.7.7",
+    "socket.io-client": "^4.7.5",
     "styled-components": "^6.1.11",
     "styled-reset": "^4.5.2",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",

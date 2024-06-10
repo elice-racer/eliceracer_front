@@ -1,23 +1,58 @@
-import { useRecoilValue } from "recoil";
-import { isLoginSelector } from "../recoil/TokenAtom";
-import { Navigate, useLocation } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import { paths } from "../utils/path";
+import { useEffect, useState } from "react";
+import { AxiosUser } from "../servies/user";
+import Header from "../layout/Header";
+import styled from "styled-components";
 
-interface ProtectedRouteProps {
-  element: React.ReactNode;
-}
+export const ProtectedRoute = () => {
+  const [adminMenu, setAdminMenu] = useState(false);
 
-export const ProtectedRoute = ({ element }: ProtectedRouteProps) => {
-  const isLogin = useRecoilValue(isLoginSelector);
-  const curruntLocation = useLocation();
+  const navigate = useNavigate();
 
-  return isLogin ? <>{element} </> : <Navigate to={paths.LOGIN} replace state={{ redirectedFrom: curruntLocation }} />;
+  /** 유저정보를 확인하고 관리자인지 식별하는 함수 */
+  const fetchGetUser = async () => {
+    try {
+      const res = await AxiosUser.getCurrentUser();
+
+      if (res.status === 200) {
+        const { data } = res.data;
+        if (data.role === "ADMIN") {
+          setAdminMenu(true);
+        }
+      }
+    } catch (e: any) {
+      const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
+      console.log(errorMessage);
+      navigate(paths.LOGIN);
+    }
+  };
+
+  useEffect(() => {
+    const access_token = localStorage.getItem("userToken");
+    if (!access_token) {
+      navigate(paths.LOGIN);
+    } else {
+      fetchGetUser();
+    }
+  }, []);
+
+  return (
+    <Container>
+      <Header adminMenu={adminMenu} />
+      <Wrapper>
+        <Outlet />
+      </Wrapper>
+    </Container>
+  );
+
+  // return isLogin ? <>{element} </> : <Navigate to={paths.LOGIN} replace state={{ redirectedFrom: curruntLocation }} />;
 };
 
-//location.replace('보낼 라우터')
-// 브라우저가 제공하는 location api 메서드로 새로운 히스토리 스택을 쌓지 않고 현재 스택을 대체함
-// Replace옵션은 이 location.replace를 직접 조작하는 것과 같은 효과를 내는 react-router의 옵션이다.
-// 현재 위치한 스택을 이동하고자하는 페이지(스택?)에 대체 시킨다.
+const Container = styled.div`
+  position: relative;
+  width: 100dvw;
+  height: 100%;
+`;
 
-// 브라우저 History 객체
-// history 객체의 state항목을 담아주면 지나왔던 페이지의 스택을 확인할 수 있다.
+const Wrapper = styled.div``;

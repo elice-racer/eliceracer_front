@@ -33,6 +33,9 @@ const Header = ({ adminMenu }: any) => {
             </LinkItem>
           )}
           <LinkItem>
+            <Link to={paths.MENU}>메뉴</Link>
+          </LinkItem>
+          <LinkItem>
             <Link to={"https://elice-lab.imweb.me/"}>엘리스랩</Link>
           </LinkItem>
           <LinkItem>
@@ -41,6 +44,7 @@ const Header = ({ adminMenu }: any) => {
           <LinkItem>
             <Link to={paths.MYPAGE}>마이페이지</Link>
           </LinkItem>
+
           <LinkItem onClick={onClickLogout}>
             <>로그아웃</>
           </LinkItem>
@@ -93,6 +97,8 @@ const LinkItem = styled.p`
   width: 68px;
   text-align: center;
   color: #000;
+
+  cursor: pointer;
   /* background-color: blue; */
 
   /* &::after {

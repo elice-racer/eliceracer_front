@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import UserInfoBox from "./components/UserInfoBox";
 import { imgPaths, paths } from "../../utils/path";
 import { AxiosAuth } from "../../servies/auth";
 
@@ -11,33 +10,27 @@ export default function CreateAccount() {
   const [error, setError] = useState("");
   const [confirmUser, setConfirmUser] = useState(false);
 
-  const [userAuth, setUserAuth] = useState({
+  const [userData, setUserData] = useState({
     realName: "",
     phoneNumber: "",
-  });
-
-  const [authCode, setAuthCode] = useState("");
-
-  const [userData, setUserData] = useState({
-    realName: userAuth.realName,
-    phoneNumber: userAuth.phoneNumber,
-    userName: "",
+    username: "",
     password: "",
+    confirmPassword: "",
+    authCode: "",
     role: "racer",
   });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setUserAuth(userInfo => ({ ...userInfo, [name]: value }));
-    setAuthCode(authCode);
-    setUserData(userInfo => ({ ...userInfo, [name]: value }));
+
+    setUserData({ ...userData, [name]: value });
   };
 
   /** 유저 전화번호 인증 */
-  const handleAuthUserPhoneNumber = async (e: any) => {
-    e.preventDefault();
+  const handleAuthUserPhoneNumber = async () => {
     try {
-      const res = await AxiosAuth.fetchAuthUserNumber(userAuth);
+      const { realName, phoneNumber } = userData;
+      const res = await AxiosAuth.fetchAuthUserNumber({ realName, phoneNumber });
       if (res.status === 200) {
         setError("인증번호가 전송되었습니다.");
       }
@@ -48,10 +41,12 @@ export default function CreateAccount() {
   };
 
   /** 인증번호 확인 */
-  const handleCheckedAuthCode = async (e: any) => {
-    e.prevenDefualt();
+  const handleCheckedAuthCode = async () => {
     try {
-      const res = await AxiosAuth.fetchCheckedAuthCode({ ...userAuth, authCode });
+      const { authCode, realName, phoneNumber } = userData;
+      const res = await AxiosAuth.fetchCheckedAuthCode({ realName, phoneNumber, authCode });
+      console.log("here--");
+      console.log(res);
       if (res.status === 201) setConfirmUser(true);
     } catch (e: any) {
       const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
@@ -60,11 +55,11 @@ export default function CreateAccount() {
   };
 
   /** 유저 회원가입 완료! */
-  const handleAddUsersEmailAndPW = async (e: any) => {
-    e.preventDefault();
+  const handleAddUsersEmailAndPW = async () => {
     try {
-      const res = await AxiosAuth.fetchSignupUser(userData);
-      if (res.status === 201) navigate(paths.LOGIN);
+      const { authCode, confirmPassword, ...props } = userData;
+      const res = await AxiosAuth.fetchSignupUser({ ...props });
+      if (res.status === 200) navigate(paths.SUCCESS_USER);
     } catch (e: any) {
       const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
       setError(errorMessage);
@@ -76,14 +71,19 @@ export default function CreateAccount() {
       <Img src={imgPaths.ELICE_LOGO} />
       <h1>본인 인증</h1>
       {error && <Error>{error}</Error>}
-      <Input onChange={onChange} name="realName" value={userAuth.realName} placeholder="name" />
-      <Input onChange={onChange} name="phoneNumber" value={userAuth.phoneNumber} placeholder="phone number" />
+      <Input onChange={onChange} name="realName" value={userData.realName} placeholder="name" />
+      <Input onChange={onChange} name="phoneNumber" value={userData.phoneNumber} placeholder="phone number" />
       <AuthSendBtn onClick={handleAuthUserPhoneNumber}>인증문자 보내기</AuthSendBtn>
 
-      <Input onChange={onChange} name="authCode" value={authCode} placeholder="auth code" />
+      <Input onChange={onChange} name="authCode" value={userData.authCode} placeholder="auth code" />
       <Btn onClick={handleCheckedAuthCode}>본인 인증 완료</Btn>
       {confirmUser ? (
-        <UserInfoBox onClick={handleAddUsersEmailAndPW} password={userData.password} />
+        <Wrapper>
+          <Input name="username" placeholder="Id" value={userData.username} onChange={onChange} />
+          <Input name="password" placeholder="비밀번호를 입력하세요." value={userData.password} onChange={onChange} />
+          <Input name="confirmPassword" placeholder="checked password" value={userData.confirmPassword} onChange={onChange} />
+          <Btn onClick={handleAddUsersEmailAndPW}>회원가입!</Btn>
+        </Wrapper>
       ) : (
         <Text>
           이미 회원이신가요? <Link to={paths.LOGIN}>로그인하기&rarr;</Link>

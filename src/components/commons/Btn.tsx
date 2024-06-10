@@ -1,11 +1,16 @@
 import styled from "styled-components";
-import { ButtonHTMLAttributes, ReactNode } from "react";
+import { ButtonHTMLAttributes, MouseEventHandler, ReactNode } from "react";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  childen: ReactNode;
+  children: ReactNode;
+  onClick: MouseEventHandler;
 }
 
-function Btn({ children, ...props }: ButtonProps) {
-  return <Button {...props}>{children}</Button>;
+function Btn({ children, onClick, ...props }: ButtonProps) {
+  return (
+    <Button {...props} onClick={onClick}>
+      {children}
+    </Button>
+  );
 }
 
 export default Btn;
@@ -18,7 +23,7 @@ const Button = styled.button`
 
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   color: #000;
-  background-color: ${({ theme }) => theme.colors.puple2};
+  background-color: ${({ theme }) => theme.colors.purple2};
   @media ${({ theme }) => theme.device.mobileS} {
   }
 `;

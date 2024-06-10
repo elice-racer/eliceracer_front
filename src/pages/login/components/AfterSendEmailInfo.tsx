@@ -43,7 +43,7 @@ const Text = styled.p`
 const Btn = styled(Link)`
   text-align: center;
   border-radius: 8px;
-  background-color: ${({ theme }) => theme.colors.puple2};
+  background-color: ${({ theme }) => theme.colors.purple2};
   width: 160px;
   height: 52px;
 `;

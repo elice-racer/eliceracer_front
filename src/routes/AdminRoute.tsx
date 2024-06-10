@@ -5,13 +5,13 @@ import { paths } from "../utils/path";
 import styled from "styled-components";
 import { AxiosUser } from "../servies/user";
 
-export const AdminRouter = () => {
+export const AdminRoute = () => {
   const navigate = useNavigate();
 
   /** 유저정보를 확인하고 관리자인지 식별하는 함수 */
   const fetchGetUser = async () => {
     try {
-      const res = await AxiosUser.getUserInfo();
+      const res = await AxiosUser.getCurrentUser();
 
       if (res.status === 200) {
         const { data } = res.data;
