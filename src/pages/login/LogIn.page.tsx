@@ -55,7 +55,6 @@ export default function Login() {
       }
       setLoading(false);
     } catch (e: any) {
-      console.log(e);
       const errorMessage = e.res?.data?.message || "에러가 발생했습니다.";
       setError(errorMessage);
       setLoading(false);

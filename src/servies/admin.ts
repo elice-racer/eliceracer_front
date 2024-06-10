@@ -56,7 +56,6 @@ export namespace AxiosAdmin {
     form.append("file", file);
     const url = `admins/members/coaches`;
     const res = await api.post(url, form, configs);
-    console.log(res);
     return res;
   };
 
@@ -66,7 +65,6 @@ export namespace AxiosAdmin {
     form.append("file", file);
     const url = `admins/teams`;
     const res = await api.post(url, form, configs);
-    console.log(res);
     return res;
   };
 

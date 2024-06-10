@@ -127,7 +127,6 @@ function AdminAddFile() {
     try {
       const { trackName, cardinalNo } = track;
       const res = await AxiosAdmin.createTrack({ trackName, cardinalNo });
-      console.log(res);
       setLoading(true);
       if (res.data?.statusCode === 200) {
         setLoading(false);
@@ -136,7 +135,7 @@ function AdminAddFile() {
     } catch (e: any) {
       const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
       setError(errorMessage);
-      console.log(error);
+      console.error(error);
       setLoading(false);
     }
   };
