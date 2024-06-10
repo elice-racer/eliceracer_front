@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { AxiosAdmin } from "../../../servies/admin";
+import { AxiosAdmin, TeamsInfo } from "../../../servies/admin";
 
 import * as XLSX from "xlsx";
 import UploadRacers from "./components/UploadRacers";
@@ -9,24 +9,61 @@ import DataBoard from "./components/DataBoard";
 import UploadCoach from "./components/UploadCoach";
 import UploadTeamBuilding from "./components/UploadTeamBuilding";
 
+//recoil
+import { loadingAtom } from "../../../recoil/LoadingAtom";
+import { useSetRecoilState } from "recoil";
+
 export interface RowData {
   [key: string]: any;
 }
+const OPTIONS = [
+  { value: "", name: "트랙을 선택해주세요." },
+  { value: "AI", name: "AI" },
+  { value: "CLOUD", name: "CLOUD" },
+  { value: "SW", name: "SW" },
+];
 
 const tabList = ["레이서 및 트랙 생성", "코치 멤버 등록", "프로젝트 팀빌딩"];
 
 function AdminAddFile() {
+  const setLoading = useSetRecoilState(loadingAtom);
+  const [teamsInfo, setTeamsInfo] = useState<TeamsInfo[]>();
   const [tabIdx, setTabIdx] = useState(2);
 
   const [track, setTrack] = useState({
     trackName: "",
     cardinalNo: "",
+    lastRound: "",
   });
   const [data, setData] = useState<RowData[]>([]);
   const [error, setError] = useState("");
 
   const handleChangeTabIndex = (idx: number) => setTabIdx(idx);
 
+  /** 팀 정보 조회 */
+  const fetchGetTeamsInfo = async () => {
+    if (track.trackName === "") return alert("트랙을 선택해주세요.");
+    if (track.cardinalNo === "") return alert("기수를 입력해주세요.");
+    if (track.lastRound === "") return alert("프로젝트 회차를 입력해주세요.");
+    if (Number.isNaN(parseInt(track.cardinalNo)) || Number.isNaN(parseInt(track.lastRound))) return alert("기수에 숫자만 입력해주세요.");
+    try {
+      const { trackName, cardinalNo, lastRound } = track;
+      const res = await AxiosAdmin.getTrackTeamList({ trackName, cardinalNo, lastRound });
+      console.log(res);
+      setLoading(true);
+      if (res.statusCode === 200) {
+        if (res.data.length === 0) setError("생성된 팀을 확인할 수 없습니다.");
+        setTeamsInfo(res.data);
+        setLoading(false);
+      }
+    } catch (e: any) {
+      setLoading(false);
+      setError(e.response.data.message);
+      console.error(e);
+    }
+  };
+
+  /** 팀 빌딩 파일 업로드 */
   const handleUploadTeamBuildFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -34,10 +71,8 @@ function AdminAddFile() {
         const res = await AxiosAdmin.uploadTeamBuildFile(file);
         console.log("팀 빌딩 파일 확인");
         console.log(res);
+        setLoading(true);
         if (res.status === 201) {
-          alert("파일이 성공적으로 업로드되었습니다.");
-
-          // 파일을 읽고 파싱하여 상태로 관리
           const reader = new FileReader();
           reader.onload = e => {
             const binaryStr = e.target?.result;
@@ -48,10 +83,13 @@ function AdminAddFile() {
             setData(jsonData);
           };
           reader.readAsBinaryString(file);
+          setLoading(false);
+          alert("파일이 성공적으로 업로드되었습니다.");
         }
       } catch (error: any) {
         alert(error.response.data.message);
         console.error(error);
+        setLoading(false);
       }
     }
   };
@@ -65,11 +103,16 @@ function AdminAddFile() {
       const { trackName, cardinalNo } = track;
       const res = await AxiosAdmin.createTrack({ trackName, cardinalNo });
       console.log(res);
-      if (res.data?.statusCode === 200) return console.log(res.data?.message);
+      setLoading(true);
+      if (res.data?.statusCode === 200) {
+        setLoading(false);
+        return console.log(res.data?.message);
+      }
     } catch (e: any) {
       const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
       setError(errorMessage);
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -79,9 +122,8 @@ function AdminAddFile() {
       try {
         // 서버에 파일 업로드
         const res = await AxiosAdmin.uploadUserFile(file);
+        setLoading(true);
         if (res.status === 201) {
-          alert("파일이 성공적으로 업로드되었습니다.");
-
           // 파일을 읽고 파싱하여 상태로 관리
           const reader = new FileReader();
           reader.onload = e => {
@@ -93,10 +135,13 @@ function AdminAddFile() {
             setData(jsonData);
           };
           reader.readAsBinaryString(file);
+          setLoading(false);
+          alert("파일이 성공적으로 업로드되었습니다.");
         }
       } catch (error: any) {
         alert(error.response.data.message);
         console.error(error);
+        setLoading(false);
       }
     }
   };
@@ -112,7 +157,7 @@ function AdminAddFile() {
     if (inputFileRef.current) inputFileRef.current.value = "";
     setData([]);
   };
-
+  useEffect(() => {}, [teamsInfo]);
   return (
     <Container>
       <Wrapper>
@@ -124,9 +169,11 @@ function AdminAddFile() {
           ))}
         </TabWrapper>
         <SectionWrapper>
+          <Error>{error}</Error>
           {
             [
               <UploadRacers
+                options={OPTIONS}
                 onChange={handleChangeTrackInfo}
                 track={track}
                 onCreateTrack={handleCreateTrack}
@@ -135,13 +182,22 @@ function AdminAddFile() {
                 inputFileRef={inputFileRef}
               />,
               <UploadCoach />,
-              <UploadTeamBuilding onFileUpload={handleUploadTeamBuildFile} inputFileRef={inputFileRef} onClear={handleClear} />,
+              <UploadTeamBuilding
+                options={OPTIONS}
+                onChange={handleChangeTrackInfo}
+                onClicktoGet={fetchGetTeamsInfo}
+                track={track}
+                teamsInfo={teamsInfo}
+                onFileUpload={handleUploadTeamBuildFile}
+                inputFileRef={inputFileRef}
+                onClear={handleClear}
+              />,
             ][tabIdx]
           }
         </SectionWrapper>
         <SectionWrapper></SectionWrapper>
         <SectionWrapper></SectionWrapper>
-        <Text style={{ paddingTop: "24px" }}>아래는 파일에서 받아온 유저정보입니다.</Text>
+        <Text style={{ paddingTop: "24px" }}>아래는 업로드된 파일 양식입니다.</Text>
         <DataBoard data={data} />
       </Wrapper>
     </Container>
@@ -176,7 +232,6 @@ const Wrapper = styled.div`
 
 const Tab = styled.div<{ selected: boolean }>`
   display: flex;
-
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -202,4 +257,8 @@ const SectionWrapper = styled.div`
 const Text = styled.p`
   overflow: hidden;
   white-space: inherit;
+`;
+
+const Error = styled.p`
+  color: tomato;
 `;

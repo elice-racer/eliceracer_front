@@ -2,14 +2,8 @@ import styled from "styled-components";
 import SelectBox from "./SelectBox";
 import { RefObject } from "react";
 
-const OPTIONS = [
-  { value: "", name: "트랙을 선택해주세요." },
-  { value: "AI", name: "AI" },
-  { value: "CLOUD", name: "CLOUD" },
-  { value: "SW", name: "SW" },
-];
-
 interface UploadRacersProps {
+  options: any;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   track: { trackName: string; cardinalNo: string };
   onCreateTrack: any;
@@ -18,12 +12,12 @@ interface UploadRacersProps {
   inputFileRef: RefObject<HTMLInputElement>;
 }
 
-function UploadRacers({ onChange, track, onCreateTrack, onClear, onFileUpload, inputFileRef }: UploadRacersProps) {
+function UploadRacers({ options, onChange, track, onCreateTrack, onClear, onFileUpload, inputFileRef }: UploadRacersProps) {
   return (
     <Container>
       <Title>파일업로드 : 트랙 생성하기</Title>
       <Wrapper>
-        <SelectBox options={OPTIONS} name="trackName" value={track.trackName} onChange={onChange} />
+        <SelectBox options={options} name="trackName" value={track.trackName} onChange={onChange} />
         <Input type="text" name="cardinalNo" value={track.cardinalNo} onChange={onChange} placeholder="기수를 입력해주세요." required />
       </Wrapper>
       <CreateTrackBtn onClick={onCreateTrack}>트랙 생성하기</CreateTrackBtn>

@@ -5,11 +5,25 @@ interface CreateTrack {
   cardinalNo: number | string;
 }
 
+interface GetTrackTeamsQuery extends CreateTrack {
+  lastRound: number | string;
+}
 // period : "2023.05.15~2023.11.15 형태
 
-// 네임스페이스란?? 별명을 단다.
-// 실제 기능은 없고 별명만 다는거야
+export interface TeamsInfo {
+  id: string;
+  teamNumber: number;
+  teamName: string | null;
+  gitlab: string | null;
+  notion: string | null;
+}
 
+interface TeamsData {
+  data: TeamsInfo[];
+  message: string;
+  statusCode: number;
+  pagination: { next: string | null; count: number };
+}
 const configs = {
   headers: { "Content-Type": "multipart/form-data" },
 };
@@ -48,6 +62,20 @@ export namespace AxiosAdmin {
   export const createTrack = async (createTrack: CreateTrack) => {
     const url = `admins/tracks`;
     const res = await api.post(url, createTrack);
+    return res;
+  };
+
+  /** 등록된 프로젝트팀 전체 조회 */
+  export const getAllTeamList = async () => {
+    const url = `teams/all?pageSize=10`;
+    const res = await api.get(url);
+    return res;
+  };
+
+  /** 트랙 + 기수로 조회 */
+  export const getTrackTeamList = async (TeamsInfo: GetTrackTeamsQuery): Promise<TeamsData> => {
+    const url = `teams/cardinals/all?pageSize=10&trackName=${TeamsInfo.trackName}&cardinalNo=${TeamsInfo.cardinalNo}&lastRound=${TeamsInfo.lastRound}&lastTeamNumber=1`;
+    const res = await api.get(url).then(res => res.data);
     return res;
   };
 }
