@@ -120,9 +120,9 @@ function EditMyPage() {
   useEffect(() => {
     const fetchMyInfo = async () => {
       const res = await AxiosUser.getMyInfo();
-      setUsersInfo(res);
-      setSkills(res?.skills.map(skill => skill.skillName) || []);
-      setTempSkills(res?.skills.map(skill => skill.skillName) || []);
+      setUsersInfo(res.data);
+      setSkills(res?.data.skills.map(skill => skill.skillName) || []);
+      setTempSkills(res?.data.skills.map(skill => skill.skillName) || []);
     };
     fetchMyInfo();
   }, []);

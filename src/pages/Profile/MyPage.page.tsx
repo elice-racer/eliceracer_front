@@ -21,9 +21,12 @@ function MyPage() {
   const [usersInfo, setUsersInfo] = useState<UsersInfo | null>();
 
   const fetchMyInfo = async () => {
-    const res = await AxiosUser.getMyInfo();
-    setUsersInfo(res);
-    return res;
+    try {
+      const res = await AxiosUser.getMyInfo();
+      if (res.statusCode === 200) setUsersInfo(res.data);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   useEffect(() => {

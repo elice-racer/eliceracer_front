@@ -17,7 +17,7 @@ export default function Login() {
   const from = location?.state?.redirectedFrom?.pathname || paths.HOME;
 
   const [userLoginForm, setUserLoginForm] = useState({
-    identifier: "jiop96@naver.com",
+    identifier: "chaemaa00@gmail.com",
     password: "12341234",
   });
 
@@ -46,7 +46,6 @@ export default function Login() {
 
     try {
       const res = await AxiosAuth.fetchLogin(userLoginForm);
-      console.log(res.headers?.authorization.replace("Bearer ", ""));
       // const test = Cookies.get("refreshToken");
       if (res.data?.statusCode === 200) {
         const loginToken = res.headers?.authorization.replace("Bearer ", "");
