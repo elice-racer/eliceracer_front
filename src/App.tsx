@@ -62,12 +62,6 @@ import BasicRoute from "./routes/BasicRoute";
 import Notfound from "./pages/404/Notfound.page";
 import SuccessCreateUsers from "./pages/login/SuccessCreateUsers.page";
 
-import io from "socket.io-client";
-
-const socket = io(import.meta.env.VITE_SOKET_IO);
-
-socket.emit("sendMessage", "혜빈님~.~ 보이시나요");
-
 const router = createBrowserRouter([
   {
     path: "",

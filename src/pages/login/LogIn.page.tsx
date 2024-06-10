@@ -17,8 +17,8 @@ export default function Login() {
   const from = location?.state?.redirectedFrom?.pathname || paths.HOME;
 
   const [userLoginForm, setUserLoginForm] = useState({
-    identifier: "chaemaa00@gmail.com",
-    password: "12341234",
+    identifier: "",
+    password: "",
   });
 
   const [error, setError] = useState("");

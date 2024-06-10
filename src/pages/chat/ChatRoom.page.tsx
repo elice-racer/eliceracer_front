@@ -1,4 +1,13 @@
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
+import io from "socket.io-client";
+import ChatList from "./components/ChatList";
+import ChatRoomUsersList from "./components/ChatRoomUsersList";
+import TeamChatInfo from "./components/TeamChatInfo";
+
+const socket = io(import.meta.env.VITE_SOKET_IO, { autoConnect: false });
 
 const CHAT_ROOM_DATA = {
   roomId: 1,
@@ -28,30 +37,98 @@ const MESSAGE = [
 ];
 
 function ChatRoom() {
+  const { id: roomId } = useParams();
+
+  if (!roomId) return;
+
+  const [_messages, setMessages] = useState<any[]>([]);
+
+  const [chatInput, setChatInput] = useState("");
+
+  /** 채팅 보내기 */
+  const handleSendMessage = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== "Enter" || chatInput.trim().length === 0) return;
+
+    socket.emit("sendMessage", { chatId: "", userId: "", content: "" });
+
+    setChatInput("");
+  };
+
+  /** 방 입장 */
+  const handleJoinChat = (roomId: string) => {
+    socket.emit("joinChat", roomId);
+  };
+
+  useEffect(() => {
+    socket.connect();
+
+    socket.on("connect", () => {
+      console.log("Socket connected");
+      handleJoinChat(roomId);
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Socket disconnected");
+    });
+
+    socket.on("roomCreate", (roodId: string) => {
+      console.log("room Created succeeded roomId : ", roodId);
+    });
+
+    socket.on("joinChat", (roomId: string) => {
+      console.log("joinChat roomId: ", roomId);
+    });
+
+    socket.on("sendMessage", (newMessage: any) => {
+      setMessages(prevMessages => [...prevMessages, newMessage]);
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("sendMessage");
+    };
+  }, []);
+
   return (
-    <Container id={String(CHAT_ROOM_DATA.roomId)}>
-      <Header>
-        <SubTitle>⬅️</SubTitle>
-        <Title>{CHAT_ROOM_DATA.roomname}</Title>
-        <SubTitle>🧑‍💻</SubTitle>
-      </Header>
-      <Body>
-        {MESSAGE.map(message => {
-          return (
-            <ChatItem>
-              <NameWrapper>
-                <Text className="track">{message.userTrack}</Text>
-                <Text className="user">{message.realName}</Text>
-              </NameWrapper>
-              <Text>{message.message}</Text>
-            </ChatItem>
-          );
-        })}
-      </Body>
-      <FooterTypingBar>
-        <OptionBar></OptionBar>
-        <TypingBar></TypingBar>
-      </FooterTypingBar>
+    <Container>
+      <Section>
+        <ChatList />
+      </Section>
+      <Section>
+        <ChatContainer id={String(CHAT_ROOM_DATA.roomId)}>
+          <Header>
+            <SubTitle>⬅️</SubTitle>
+            <Title>{CHAT_ROOM_DATA.roomname}</Title>
+            <SubTitle>🧑‍💻</SubTitle>
+          </Header>
+          <Body>
+            {MESSAGE.map(message => {
+              return (
+                <ChatItem>
+                  <NameWrapper>
+                    <Text className="track">{message.userTrack}</Text>
+                    <Text className="user">{message.realName}</Text>
+                  </NameWrapper>
+                  <Text>{message.message}</Text>
+                </ChatItem>
+              );
+            })}
+          </Body>
+          <FooterTypingBar>
+            <OptionBar></OptionBar>
+            <TypingBar>
+              {/* commit 용 */}
+              <Input onChange={() => handleSendMessage} />
+            </TypingBar>
+          </FooterTypingBar>
+        </ChatContainer>
+      </Section>
+
+      <Section>
+        <TeamChatInfo />
+        <ChatRoomUsersList />
+      </Section>
     </Container>
   );
 }
@@ -59,10 +136,20 @@ function ChatRoom() {
 export default ChatRoom;
 
 const Container = styled.div`
-  width: 420px;
-  height: 100vh;
+  width: 100vw;
+  display: flex;
+  gap: 12px;
+  justify-content: space-around;
 `;
 
+const Section = styled.div`
+  width: 33%;
+  padding: 0 12px;
+`;
+const ChatContainer = styled.div`
+  width: 100%;
+  height: 100vh;
+`;
 const Header = styled.div`
   display: flex;
   justify-content: center;
@@ -129,3 +216,5 @@ const TypingBar = styled.div`
   border-radius: 6px;
   background-color: #fff;
 `;
+
+const Input = styled.input``;

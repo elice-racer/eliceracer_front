@@ -81,7 +81,6 @@ const UserWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 2px 12px;
-  border: red solid 1px;
 `;
 
 const NameWrapper = styled.div`
