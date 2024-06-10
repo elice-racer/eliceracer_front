@@ -15,6 +15,7 @@ const device = {
 } as const;
 
 const colors = {
+  purple0: "#C4D0F3",
   purple1: "#EEEAFE",
   purple2: "#B67BFF",
   purple3: "#954AF5",

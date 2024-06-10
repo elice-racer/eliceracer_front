@@ -15,14 +15,32 @@ const configs = {
 };
 
 export namespace AxiosAdmin {
-  const form = new FormData();
+  /** 코치 등록 파일 업로드 */
+  export const uploadMembersCoachFile = async (file: File) => {
+    const form = new FormData();
+    form.append("file", file);
+    const url = `admins/coach`;
+    const res = await api.post(url, form, configs);
+    console.log(res);
+    return res;
+  };
+
+  /** 팀 빌딩 파일 업로드 */
+  export const uploadTeamBuildFile = async (file: File) => {
+    const form = new FormData();
+    form.append("file", file);
+    const url = `admins/teams`;
+    const res = await api.post(url, form, configs);
+    console.log(res);
+    return res;
+  };
 
   /** 유저 엑셀파일 업로드 */
   export const uploadUserFile = async (file: File) => {
+    const form = new FormData();
     form.append("file", file);
     const url = `admins/members/racers`;
     const res = await api.post(url, form, configs);
-    console.log(res);
     return res;
   };
 

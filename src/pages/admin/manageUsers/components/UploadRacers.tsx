@@ -1,7 +1,5 @@
 import styled from "styled-components";
 import SelectBox from "./SelectBox";
-// import DataBoard from "./DataBoard";
-import { RowData } from "../AdminAddFile.page";
 import { RefObject } from "react";
 
 const OPTIONS = [
@@ -14,31 +12,29 @@ const OPTIONS = [
 interface UploadRacersProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   track: { trackName: string; cardinalNo: string };
-  handleCreateTrack: any;
-  handleClear: () => void;
-  handleFileUpload: any;
+  onCreateTrack: any;
+  onClear: () => void;
+  onFileUpload: any;
   inputFileRef: RefObject<HTMLInputElement>;
-  data: RowData[];
 }
 
-function UploadRacers({ onChange, track, handleCreateTrack, handleClear, handleFileUpload, inputFileRef, data }: UploadRacersProps) {
+function UploadRacers({ onChange, track, onCreateTrack, onClear, onFileUpload, inputFileRef }: UploadRacersProps) {
   return (
     <Container>
-      <Title>트랙 생성하기</Title>
+      <Title>파일업로드 : 트랙 생성하기</Title>
       <Wrapper>
         <SelectBox options={OPTIONS} name="trackName" value={track.trackName} onChange={onChange} />
         <Input type="text" name="cardinalNo" value={track.cardinalNo} onChange={onChange} placeholder="기수를 입력해주세요." required />
       </Wrapper>
-      <CreateTrackBtn onClick={handleCreateTrack}>트랙 생성하기</CreateTrackBtn>
+      <CreateTrackBtn onClick={onCreateTrack}>트랙 생성하기</CreateTrackBtn>
       <Title>유저 정보 등록하기</Title>
       <Text>유저 정보를 등록하려면 아래 파일을 업로드하세요.</Text>
       <InputWrapper>
         <Label>
-          <Input type="file" accept=".xlsx, .xls .csv" onChange={handleFileUpload} ref={inputFileRef} />
+          <Input type="file" accept=".xlsx, .xls, .csv" onChange={onFileUpload} ref={inputFileRef} />
         </Label>
-        <button onClick={handleClear}>등록 취소</button>
+        <button onClick={onClear}>등록 취소</button>
       </InputWrapper>
-      {/* <DataBoard data={data} /> */}
     </Container>
   );
 }
@@ -46,8 +42,8 @@ function UploadRacers({ onChange, track, handleCreateTrack, handleClear, handleF
 export default UploadRacers;
 
 const Container = styled.div`
-  width: 100dvw;
-  margin-top: 30px;
+  width: 100%;
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -56,18 +52,22 @@ const Container = styled.div`
 
 const Title = styled.h1`
   font-size: 1.4rem;
+  margin-bottom: 12px;
 `;
 const Wrapper = styled.div`
   display: flex;
   gap: 5px;
+  margin-bottom: 12px;
 `;
 
 const InputWrapper = styled.div`
   display: flex;
+  margin-bottom: 12px;
 `;
 const Text = styled.p`
   font-weight: bold;
-  font-size: 14px;
+  font-size: 1rem;
+  color: #777;
 `;
 
 const Label = styled.label``;
@@ -80,4 +80,5 @@ const CreateTrackBtn = styled.button`
   border: none;
   background-color: ${({ theme }) => theme.colors.purple1};
   color: ${({ theme }) => theme.colors.gray2};
+  margin-bottom: 12px;
 `;
