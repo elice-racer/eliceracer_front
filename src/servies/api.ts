@@ -39,7 +39,7 @@ const onRejected = async (e: AxiosError<ErrorType>) => {
   const { config, response } = e;
   const originalRequest = config;
 
-  if (response?.config?.url === "/auth/login") {
+  if (response?.config?.url === "auth/login") {
     return Promise.reject(e);
   }
 
@@ -47,7 +47,7 @@ const onRejected = async (e: AxiosError<ErrorType>) => {
     // 쿠키에서 들고오기
     const refreshToken = Cookies.get("refreshToken");
 
-    const url = `${baseURL}/auth/refresh`;
+    const url = `${baseURL}auth/refresh`;
 
     const res = await axios.post(url, { refreshToken }, {});
     const new_access_token = res.headers?.authorization.replace("Bearer ", "");
