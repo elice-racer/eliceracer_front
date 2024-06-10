@@ -20,12 +20,12 @@ function AdminNoticeList() {
   return (
     <Container>
       <NoticeWrapper>
-        <TitleBar>
+        <TitleWrapper>
           <Title>공지</Title>
           <Link to={paths.ADMIN_ADD_NOTICE}>
             <AddBtn>공지 등록</AddBtn>
           </Link>
-        </TitleBar>
+        </TitleWrapper>
         <NoticeListWrapper>
           {notices?.map((item, index) => (
             <NoticeItem key={item.id}>
@@ -55,7 +55,7 @@ const Container = styled.div`
 const NoticeWrapper = styled.div`
   width: 60vw;
 `;
-const TitleBar = styled.div`
+const TitleWrapper = styled.div`
   display: flex;
   border-bottom: solid 2px ${({ theme }) => theme.colors.purple2};
   align-items: center;

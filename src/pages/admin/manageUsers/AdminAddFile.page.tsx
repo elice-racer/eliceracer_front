@@ -1,18 +1,21 @@
 import { styled } from "styled-components";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { AxiosAdmin } from "../../../servies/admin";
+import { AxiosAdmin, TeamsInfo } from "../../../servies/admin";
 
 import * as XLSX from "xlsx";
-
-// components
-import SelectBox from "./components/SelectBox";
+import UploadRacers from "./components/UploadRacers";
 import DataBoard from "./components/DataBoard";
+import UploadCoachs from "./components/UploadCoach";
+import UploadTeamBuilding from "./components/UploadTeamBuilding";
 
-interface RowData {
+//recoil
+import { loadingAtom } from "../../../recoil/LoadingAtom";
+import { useSetRecoilState } from "recoil";
+
+export interface RowData {
   [key: string]: any;
 }
-
 const OPTIONS = [
   { value: "", name: "트랙을 선택해주세요." },
   { value: "AI", name: "AI" },
@@ -20,16 +23,103 @@ const OPTIONS = [
   { value: "SW", name: "SW" },
 ];
 
+const tabList = ["레이서 및 트랙 생성", "코치 멤버 등록", "프로젝트 팀빌딩"];
+
+// todo useParams로 컴포넌트 접근하게 하기
 function AdminAddFile() {
+  const setLoading = useSetRecoilState(loadingAtom);
+
+  const [teamsInfo, setTeamsInfo] = useState<TeamsInfo[]>();
   const [track, setTrack] = useState({
     trackName: "",
     cardinalNo: "",
+    lastRound: "",
   });
   const [data, setData] = useState<RowData[]>([]);
   const [error, setError] = useState("");
+  const [tabIdx, setTabIdx] = useState(0);
 
-  const handleCreateTrack = async (e: any) => {
-    e.preventDefault();
+  const handleChangeTabIndex = (idx: number) => setTabIdx(idx);
+
+  const handleUploadCoachsFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    setLoading(true);
+    if (file) {
+      try {
+        const res = await AxiosAdmin.uploadMembersCoachFile(file);
+        if (res.status === 201) {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const binaryStr = e.target?.result;
+            const wb = XLSX.read(binaryStr, { type: "binary" });
+            const sheetName = wb.SheetNames[0];
+            const ws = wb.Sheets[sheetName];
+            const jsonData: RowData[] = XLSX.utils.sheet_to_json(ws);
+            setData(jsonData);
+          };
+          reader.readAsBinaryString(file);
+          setLoading(false);
+          alert("파일이 성공적으로 업로드되었습니다.");
+        }
+      } catch (e) {
+        console.error(e);
+        setLoading(false);
+      }
+    }
+  };
+  /** 팀 정보 조회 */
+  const fetchGetTeamsInfo = async () => {
+    if (track.trackName === "") return alert("트랙을 선택해주세요.");
+    if (track.cardinalNo === "") return alert("기수를 입력해주세요.");
+    if (track.lastRound === "") return alert("프로젝트 회차를 입력해주세요.");
+    if (Number.isNaN(parseInt(track.cardinalNo)) || Number.isNaN(parseInt(track.lastRound))) return alert("기수에 숫자만 입력해주세요.");
+    try {
+      const { trackName, cardinalNo, lastRound } = track;
+      const res = await AxiosAdmin.getTrackTeamList({ trackName, cardinalNo, lastRound });
+      console.log(res);
+      setLoading(true);
+      if (res.statusCode === 200) {
+        if (res.data?.length === 0) setError("생성된 팀을 확인할 수 없습니다.");
+        setTeamsInfo(res.data);
+        setLoading(false);
+      }
+    } catch (e: any) {
+      setLoading(false);
+      setError(e.response.data.message);
+      console.error(e);
+    }
+  };
+
+  /** 팀 빌딩 파일 업로드 */
+  const handleUploadTeamBuildFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const res = await AxiosAdmin.uploadTeamBuildFile(file);
+        setLoading(true);
+        if (res.status === 201) {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const binaryStr = e.target?.result;
+            const wb = XLSX.read(binaryStr, { type: "binary" });
+            const sheetName = wb.SheetNames[0];
+            const ws = wb.Sheets[sheetName];
+            const jsonData: RowData[] = XLSX.utils.sheet_to_json(ws);
+            setData(jsonData);
+          };
+          reader.readAsBinaryString(file);
+          setLoading(false);
+          alert("파일이 성공적으로 업로드되었습니다.");
+        }
+      } catch (error: any) {
+        alert(error.response.data.message);
+        console.error(error);
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleCreateTrack = async () => {
     if (track.trackName === "") return alert("트랙을 선택해주세요.");
     if (track.cardinalNo === "") return alert("기수를 입력해주세요.");
     if (Number.isNaN(parseInt(track.cardinalNo))) return alert("기수에 숫자만 입력해주세요.");
@@ -38,26 +128,27 @@ function AdminAddFile() {
       const { trackName, cardinalNo } = track;
       const res = await AxiosAdmin.createTrack({ trackName, cardinalNo });
       console.log(res);
-      if (res.data?.statusCode === 200) return console.log(res.data?.message);
+      setLoading(true);
+      if (res.data?.statusCode === 200) {
+        setLoading(false);
+        return console.log(res.data?.message);
+      }
     } catch (e: any) {
       const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
       setError(errorMessage);
       console.log(error);
+      setLoading(false);
     }
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUploadUsersFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       try {
         // 서버에 파일 업로드
         const res = await AxiosAdmin.uploadUserFile(file);
-
-        console.log(res);
-
+        setLoading(true);
         if (res.status === 201) {
-          alert("파일이 성공적으로 업로드되었습니다.");
-
           // 파일을 읽고 파싱하여 상태로 관리
           const reader = new FileReader();
           reader.onload = e => {
@@ -69,15 +160,18 @@ function AdminAddFile() {
             setData(jsonData);
           };
           reader.readAsBinaryString(file);
+          setLoading(false);
+          alert("파일이 성공적으로 업로드되었습니다.");
         }
       } catch (error: any) {
         alert(error.response.data.message);
         console.error(error);
+        setLoading(false);
       }
     }
   };
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeTrackInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setTrack(createTrack => ({ ...createTrack, [name]: value }));
   };
@@ -88,59 +182,106 @@ function AdminAddFile() {
     if (inputFileRef.current) inputFileRef.current.value = "";
     setData([]);
   };
-
+  useEffect(() => {}, [teamsInfo]);
   return (
     <Container>
-      <Title>트랙 생성하기</Title>
       <Wrapper>
-        <SelectBox options={OPTIONS} name="trackName" value={track.trackName} onChange={onChange} />
-        <Input type="text" name="cardinalNo" value={track.cardinalNo} onChange={onChange} placeholder="기수를 입력해주세요." required />
+        <TabWrapper>
+          {tabList.map((tabName, index) => (
+            <Tab selected={tabIdx === index} onClick={() => handleChangeTabIndex(index)}>
+              <Text>{tabName}</Text>
+            </Tab>
+          ))}
+        </TabWrapper>
+        <SectionWrapper>
+          <Error>{error}</Error>
+          {
+            [
+              <UploadRacers
+                options={OPTIONS}
+                onChange={handleChangeTrackInfo}
+                track={track}
+                onCreateTrack={handleCreateTrack}
+                onClear={handleClear}
+                onFileUpload={handleUploadUsersFile}
+                inputFileRef={inputFileRef}
+              />,
+              <UploadCoachs onFileUpload={handleUploadCoachsFile} onClear={handleClear} inputFileRef={inputFileRef} />,
+              <UploadTeamBuilding
+                options={OPTIONS}
+                onChange={handleChangeTrackInfo}
+                onClicktoGet={fetchGetTeamsInfo}
+                track={track}
+                teamsInfo={teamsInfo}
+                onFileUpload={handleUploadTeamBuildFile}
+                inputFileRef={inputFileRef}
+                onClear={handleClear}
+              />,
+            ][tabIdx]
+          }
+        </SectionWrapper>
+        <Text style={{ paddingTop: "24px" }}>아래는 업로드된 파일 양식입니다.</Text>
+        <DataBoard data={data} />
       </Wrapper>
-      <CreateTrackBtn onClick={handleCreateTrack}>트랙 생성하기</CreateTrackBtn>
-      <Title>유저 정보 등록하기</Title>
-      <Text>유저 정보를 등록하려면 아래 파일을 업로드하세요.</Text>
-      <button onClick={handleClear}>Clear</button>
-      <Label>
-        <Input type="file" accept=".xlsx, .xls .csv" onChange={handleFileUpload} ref={inputFileRef} />
-      </Label>
-      <Text style={{ paddingTop: "24px" }}>아래는 파일에서 받아온 유저정보입니다.</Text>
-      <DataBoard data={data} />
     </Container>
   );
 }
+
 export default AdminAddFile;
 
 const Container = styled.div`
-  width: 100dvw;
-  margin-top: 30px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 6px;
+
+  width: 100%;
+
+  max-width: 540px;
+  margin: 0 auto;
 `;
 
-const Title = styled.h1`
-  font-size: 1.4rem;
-`;
-const Wrapper = styled.div`
+const TabWrapper = styled.div`
   display: flex;
-  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 24px;
+`;
+
+const Wrapper = styled.div`
+  margin-top: 48px;
+`;
+
+const Tab = styled.div<{ selected: boolean }>`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
+  height: 40px;
+  border-radius: 12px 12px 0 0;
+
+  background-color: ${({ theme, selected }) => (selected ? theme.colors.purple2 : theme.colors.purple1)};
+  color: ${({ selected }) => (selected ? "#fff" : "#333")};
+
+  transition: all 0.3s ease-in-out;
+`;
+
+const SectionWrapper = styled.div`
+  &.selected {
+    display: block;
+  }
+  &.unselected {
+    display: none;
+  }
 `;
 
 const Text = styled.p`
-  font-weight: bold;
-
-  font-size: 14px;
+  overflow: hidden;
+  white-space: inherit;
 `;
 
-const Label = styled.label``;
-const Input = styled.input``;
-
-const CreateTrackBtn = styled.button`
-  width: 140px;
-  height: 30px;
-  border-radius: 8px;
-  border: none;
-  background-color: ${({ theme }) => theme.colors.purple1};
-  color: ${({ theme }) => theme.colors.gray2};
+const Error = styled.p`
+  color: tomato;
 `;

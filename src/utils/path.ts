@@ -58,6 +58,7 @@ const paths = {
 
   // 프로젝트 관리
   ADMIN_PROJECTS: "/admin/projects",
+  ADMIN_PROJECTS_DETAIL: "/admin/projects/:id",
 };
 
 const imgPaths = {
@@ -65,7 +66,8 @@ const imgPaths = {
   DEFAULT_PROFILE_IMG: "/imgs/defaultProfileImg.png",
   NOT_FOUND: "/imgs/404page.png",
   FILE_UPLOAD: "/imgs/file-upload.png",
-  SUCCESS_CREATE_USERS: "/imgs/success.webp",
+  SUCCESS_CREATE_USERS: "/imgs/success.png",
+  EMPTY: "/imgs/empty.png",
 };
 
 /**
