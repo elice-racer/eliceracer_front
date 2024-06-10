@@ -97,14 +97,13 @@ export namespace AxiosUser {
   /** 유저 스킬 추가 */
   export const putUsersSkills = async (skills: string[]) => {
     const url = `users/skills`;
-
     const res = await api.put(url, { skills });
     return res;
   };
 
   /** 유저 메인에서 친구 목록 조회 */
   export const getChatUsersList = async (pageSize = 10) => {
-    const url = `users?pageSize=${pageSize}`;
+    const url = `users/participants?pageSize=${pageSize}`;
     const res = await api.get(url);
     return res;
   };

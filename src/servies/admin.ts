@@ -10,13 +10,15 @@ interface CreateTrack {
 // 네임스페이스란?? 별명을 단다.
 // 실제 기능은 없고 별명만 다는거야
 
+const configs = {
+  headers: { "Content-Type": "multipart/form-data" },
+};
+
 export namespace AxiosAdmin {
+  const form = new FormData();
+
   /** 유저 엑셀파일 업로드 */
   export const uploadUserFile = async (file: File) => {
-    const configs = {
-      headers: { "Content-Type": "multipart/form-data" },
-    };
-    const form = new FormData();
     form.append("file", file);
     const url = `admins/members/racers`;
     const res = await api.post(url, form, configs);

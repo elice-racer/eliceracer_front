@@ -4,29 +4,33 @@ import { useRef, useState } from "react";
 import { AxiosAdmin } from "../../../servies/admin";
 
 import * as XLSX from "xlsx";
-
-// components
-import SelectBox from "./components/SelectBox";
+import UploadRacers from "./components/UploadRacers";
 import DataBoard from "./components/DataBoard";
+import UploadCoach from "./components/UploadCoach";
+import UploadTeamBuilding from "./components/UploadTeamBuilding";
 
-interface RowData {
+export interface RowData {
   [key: string]: any;
 }
 
-const OPTIONS = [
-  { value: "", name: "트랙을 선택해주세요." },
-  { value: "AI", name: "AI" },
-  { value: "CLOUD", name: "CLOUD" },
-  { value: "SW", name: "SW" },
-];
-
 function AdminAddFile() {
+  const [tabIdx, _setTabIdx] = useState(0);
+
   const [track, setTrack] = useState({
     trackName: "",
     cardinalNo: "",
   });
   const [data, setData] = useState<RowData[]>([]);
   const [error, setError] = useState("");
+
+  // const tabBtnRef = useRef(null);
+  // const tabClick = (idx:number) => {
+  //   if (tabIdx !== idx) {
+  //     tabBtnRef?.current?[tabIdx].classList.remove("selected");
+  //     tabBtnRef?.current?[idx].classList += " selected";
+  //     setTabIdx(idx);
+  //   }
+  // };
 
   const handleCreateTrack = async (e: any) => {
     e.preventDefault();
@@ -46,7 +50,7 @@ function AdminAddFile() {
     }
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUsersFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       try {
@@ -91,18 +95,39 @@ function AdminAddFile() {
 
   return (
     <Container>
-      <Title>트랙 생성하기</Title>
-      <Wrapper>
-        <SelectBox options={OPTIONS} name="trackName" value={track.trackName} onChange={onChange} />
-        <Input type="text" name="cardinalNo" value={track.cardinalNo} onChange={onChange} placeholder="기수를 입력해주세요." required />
-      </Wrapper>
-      <CreateTrackBtn onClick={handleCreateTrack}>트랙 생성하기</CreateTrackBtn>
-      <Title>유저 정보 등록하기</Title>
-      <Text>유저 정보를 등록하려면 아래 파일을 업로드하세요.</Text>
-      <button onClick={handleClear}>Clear</button>
-      <Label>
-        <Input type="file" accept=".xlsx, .xls .csv" onChange={handleFileUpload} ref={inputFileRef} />
-      </Label>
+      <TitleWrapper>
+        <Title>파일 업로드하기</Title>
+      </TitleWrapper>
+      <NavWrapper>
+        <Item>
+          <Text className="racer">레이서 및 트랙 생성</Text>
+        </Item>
+        <Item>
+          <Text>코치 멤버 등록</Text>
+        </Item>
+        <Item>
+          <Text>프로젝트 팀빌딩</Text>
+        </Item>
+      </NavWrapper>
+      <SectionWrapper>
+        {
+          [
+            <UploadRacers
+              onChange={onChange}
+              track={track}
+              handleCreateTrack={handleCreateTrack}
+              handleClear={handleClear}
+              handleFileUpload={handleUsersFileUpload}
+              inputFileRef={inputFileRef}
+              data={data}
+            />,
+            <UploadCoach />,
+            <UploadTeamBuilding />,
+          ][tabIdx]
+        }
+      </SectionWrapper>
+      <SectionWrapper></SectionWrapper>
+      <SectionWrapper></SectionWrapper>
       <Text style={{ paddingTop: "24px" }}>아래는 파일에서 받아온 유저정보입니다.</Text>
       <DataBoard data={data} />
     </Container>
@@ -112,35 +137,43 @@ export default AdminAddFile;
 
 const Container = styled.div`
   width: 100dvw;
-  margin-top: 30px;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 6px;
 `;
 
-const Title = styled.h1`
-  font-size: 1.4rem;
+const TitleWrapper = styled.div`
+  margin-top: 20px;
 `;
-const Wrapper = styled.div`
+const NavWrapper = styled.div`
   display: flex;
-  gap: 5px;
-`;
-
-const Text = styled.p`
-  font-weight: bold;
-
-  font-size: 14px;
-`;
-
-const Label = styled.label``;
-const Input = styled.input``;
-
-const CreateTrackBtn = styled.button`
-  width: 140px;
+  align-items: center;
+  justify-content: auto;
+  gap: 4px;
   height: 30px;
-  border-radius: 8px;
-  border: none;
-  background-color: ${({ theme }) => theme.colors.purple1};
-  color: ${({ theme }) => theme.colors.gray2};
+  padding-left: 10px;
 `;
+const SectionWrapper = styled.div`
+  &.selected {
+    display: block;
+  }
+  &.unselected {
+    display: none;
+  }
+`;
+
+const Item = styled.div`
+  display: flex;
+  overflow: hidden;
+  white-space: inherit;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
+  height: 56px;
+  background-color: ${({ theme }) => theme.colors.blue2};
+  border-radius: 12px 12px 0 0;
+`;
+
+const Title = styled.h1``;
+const Text = styled.p``;
