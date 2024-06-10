@@ -49,7 +49,7 @@ const onRejected = async (e: AxiosError<ErrorType>) => {
 
     const url = `${baseURL}auth/refresh`;
 
-    const res = await api.post(url, { refreshToken }, {});
+    const res = await axios.post(url, { refreshToken }, { withCredentials: true });
     const new_access_token = res.headers?.authorization.replace("Bearer ", "");
 
     localStorage.setItem("userToken", new_access_token);
