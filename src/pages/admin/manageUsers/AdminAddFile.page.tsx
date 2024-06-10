@@ -25,11 +25,11 @@ const OPTIONS = [
 
 const tabList = ["레이서 및 트랙 생성", "코치 멤버 등록", "프로젝트 팀빌딩"];
 
+// todo useParams로 컴포넌트 접근하게 하기
 function AdminAddFile() {
   const setLoading = useSetRecoilState(loadingAtom);
-  const [teamsInfo, setTeamsInfo] = useState<TeamsInfo[]>();
-  const [tabIdx, setTabIdx] = useState(2);
 
+  const [teamsInfo, setTeamsInfo] = useState<TeamsInfo[]>();
   const [track, setTrack] = useState({
     trackName: "",
     cardinalNo: "",
@@ -37,6 +37,7 @@ function AdminAddFile() {
   });
   const [data, setData] = useState<RowData[]>([]);
   const [error, setError] = useState("");
+  const [tabIdx, setTabIdx] = useState(0);
 
   const handleChangeTabIndex = (idx: number) => setTabIdx(idx);
 
@@ -78,7 +79,7 @@ function AdminAddFile() {
       console.log(res);
       setLoading(true);
       if (res.statusCode === 200) {
-        if (res.data.length === 0) setError("생성된 팀을 확인할 수 없습니다.");
+        if (res.data?.length === 0) setError("생성된 팀을 확인할 수 없습니다.");
         setTeamsInfo(res.data);
         setLoading(false);
       }

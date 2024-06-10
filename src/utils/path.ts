@@ -58,6 +58,7 @@ const paths = {
 
   // 프로젝트 관리
   ADMIN_PROJECTS: "/admin/projects",
+  ADMIN_PROJECTS_DETAIL: "/admin/projects/:id",
 };
 
 const imgPaths = {

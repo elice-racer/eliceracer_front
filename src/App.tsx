@@ -61,6 +61,7 @@ import EditMyPage from "./pages/Profile/EditMyPage.page";
 import BasicRoute from "./routes/BasicRoute";
 import Notfound from "./pages/404/Notfound.page";
 import SuccessCreateUsers from "./pages/login/SuccessCreateUsers.page";
+import AdminProjectDetail from "./pages/admin/AdminProjectDetail.page";
 
 const router = createBrowserRouter([
   {
@@ -121,6 +122,7 @@ const router = createBrowserRouter([
       { path: paths.ALERT, element: <AdminAlert /> },
 
       { path: paths.ADMIN_PROJECTS, element: <AdminProject /> },
+      { path: paths.ADMIN_PROJECTS_DETAIL, element: <AdminProjectDetail /> },
     ],
   },
   {
