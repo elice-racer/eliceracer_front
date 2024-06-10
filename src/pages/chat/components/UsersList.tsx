@@ -9,7 +9,6 @@ interface UsersListProps {
 }
 function UsersList({ users, myInfo }: UsersListProps) {
   const [isClick, setIsClick] = useState(false);
-
   return (
     <Container>
       <TitleWrapper>
@@ -28,7 +27,7 @@ function UsersList({ users, myInfo }: UsersListProps) {
         <UserWrapper key={myInfo?.id} onClick={() => {}}>
           <ProfileImg />
           <NameWrapper>
-            {myInfo?.track ? <Text>{`[${myInfo?.track}]`}</Text> : ""}
+            {myInfo?.track?.trackName ? <Text>{`[${myInfo?.track.trackName}]`}</Text> : ""}
             <Text className={myInfo?.role}>{myInfo?.realName || "이름없음"}</Text>
           </NameWrapper>
           <CommentWrapper>
@@ -39,7 +38,7 @@ function UsersList({ users, myInfo }: UsersListProps) {
           <UserWrapper key={user.id} onClick={() => {}}>
             <ProfileImg />
             <NameWrapper>
-              {user.track ? <Text>{`[${user.track}]`}</Text> : ""}
+              {user.track ? <Text>{`[${user.track.trackName}]`}</Text> : ""}
               <Text className={user.role}>{user.realName || "이름없음"}</Text>
             </NameWrapper>
             <CommentWrapper>
@@ -114,6 +113,7 @@ const Text = styled.p`
     color: orange;
   }
 `;
-const Item = styled.div``;
+const Item = styled.div`
+cursor`;
 
 const ItemText = styled.p``;
