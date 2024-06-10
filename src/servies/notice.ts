@@ -25,14 +25,12 @@ export namespace AxiosNotice {
   export const getNoticeList = async (page = 1, size = 10): Promise<NoticeLostRes> => {
     const url = `notices/all?page=${page}&pageSize=${size}`;
     const res = await api.get(url);
-    console.log(res);
     return res.data;
   };
 
   export const postNotice = async (data: Notice) => {
     const url = `admins/notices`;
     const res = await api.post(url, data);
-    console.log(res);
     return res;
   };
 }

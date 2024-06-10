@@ -78,7 +78,6 @@ function EditMyPage() {
     try {
       const res = await AxiosUser.putUsersSkills(tempSkills);
 
-      console.log(res);
       if (res.status === 200) {
         setSkills(res.data.data.map((skill: Skills) => skill.skillName));
       }
@@ -104,10 +103,8 @@ function EditMyPage() {
         sns,
         tmi,
       });
-      console.log(res);
 
       if (res.status === 200) {
-        console.log("업데이트 완료!");
         const newMypage = res.data.data as UsersInfo;
         setUsersInfo(newMypage);
       }
@@ -156,9 +153,7 @@ function EditMyPage() {
     }
   }, [searchSkillValue]);
 
-  useEffect(() => {
-    console.log(tempSkills);
-  }, [tempSkills]);
+  useEffect(() => {}, [tempSkills]);
 
   return (
     <Container>

@@ -76,7 +76,6 @@ function SkillsModal(
           {searchValue !== "" && !searchSkills.find(skill => skill.skillName === searchValue) && (
             <StyledAddSkillButton
               onClick={(e: React.MouseEvent) => {
-                console.log("hello");
                 e.preventDefault();
                 onAddTempSkill(searchValue);
               }}
@@ -100,7 +99,6 @@ interface SkillItemProps {
 function SkillItem({ skillName, onClick }: SkillItemProps) {
   const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    console.log("click");
     onClick();
   };
 

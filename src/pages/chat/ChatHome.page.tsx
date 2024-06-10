@@ -12,7 +12,6 @@ function ChatHome() {
   const fetchMyInfo = async () => {
     try {
       const res = await AxiosUser.getMyInfo();
-      console.log(res);
       if (res.statusCode === 200) {
         setMyInfo(res.data);
       }
@@ -23,7 +22,6 @@ function ChatHome() {
   const fetchGetUsers = async () => {
     try {
       const res = await AxiosUser.getChatUsersList();
-      console.log(res);
       if (res.status === 200) setUsers(res.data.data);
     } catch (e: any) {
       console.error(e);

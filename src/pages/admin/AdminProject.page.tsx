@@ -29,7 +29,6 @@ function AdminProject() {
   const fetchGetAllProjects = async () => {
     try {
       const res = await AxiosAdmin.getAllProjectsList();
-      console.log(res);
       if (res.statusCode === 200) setProjects(res.data);
     } catch (e) {
       console.error(e);

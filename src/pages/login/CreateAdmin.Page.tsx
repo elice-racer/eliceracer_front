@@ -36,6 +36,7 @@ export default function CreateAdmin() {
     if (createAdminForm.password === "") return alert("비밀번호를 입력해주세요.");
     if (createAdminForm.confirmPassword !== createAdminForm.password) return alert("비밀번호가 일치하지 않습니다.");
 
+    // todo 상태코드 확인후 console.log()삭제하기
     try {
       const { email, password, realName } = createAdminForm;
       const res = await AxiosAuth.fetchSignupAdmin({ email, password, realName });
