@@ -7,7 +7,7 @@ import { tokenAtom } from "../../recoil/TokenAtom";
 import InputFiled from "./components/InputField";
 import { imgPaths, paths } from "../../utils/path";
 import { loadingAtom } from "../../recoil/LoadingAtom";
-import Cookies from "js-cookie";
+// import Cookies from "js-cookie";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -17,37 +17,37 @@ export default function Login() {
   const from = location?.state?.redirectedFrom?.pathname || paths.HOME;
 
   const [userLoginForm, setUserLoginForm] = useState({
-    identifier: "",
-    password: "",
+    identifier: "jiop96@naver.com",
+    password: "12341234",
   });
 
   const [error, setError] = useState("");
   const setToken = useSetRecoilState(tokenAtom);
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setUserLoginForm(userInfo => ({ ...userInfo, [name]: value }));
   };
 
-  const handleLogin = async (e: any) => {
+  const handleLogin = async () => {
     if (userLoginForm.identifier === "") {
       return alert("아이디를 입력해주세요.");
     }
     if (userLoginForm.password === "") {
       return alert("비밀번호를 입력해주세요!");
     }
-    e.preventDefault();
     setLoading(true);
 
     try {
       const res = await AxiosAuth.fetchLogin(userLoginForm);
       console.log(res.headers?.authorization.replace("Bearer ", ""));
-      console.log(res);
-
-      const test = Cookies.get("refreshToken");
-
-      console.log("refresh _token ");
-      console.log(test);
+      // const test = Cookies.get("refreshToken");
       if (res.data?.statusCode === 200) {
         const loginToken = res.headers?.authorization.replace("Bearer ", "");
         setToken(loginToken);
@@ -66,8 +66,17 @@ export default function Login() {
   return (
     <Wrapper>
       <Img src={imgPaths.ELICE_LOGO} />
-      <InputFiled onChange={onChange} name="identifier" value={userLoginForm.identifier} placeholder="id" type="id" required />
-      <InputFiled error={error} onChange={onChange} name="password" value={userLoginForm.password} placeholder="password" type="password" required />
+      <InputFiled onChange={onChange} name="identifier" value={userLoginForm.identifier} placeholder="id" type="id" required onKeyDown={onKeyDown} />
+      <InputFiled
+        error={error}
+        onChange={onChange}
+        name="password"
+        value={userLoginForm.password}
+        placeholder="password"
+        type="password"
+        required
+        onKeyDown={onKeyDown}
+      />
       <Btn onClick={handleLogin}>로그인</Btn>
       <TextWrapper>
         <StyledLink to={paths.FIND_ID}>아이디</StyledLink> | <StyledLink to={paths.FIND_PW}>비밀번호 찾기</StyledLink>
