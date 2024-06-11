@@ -1,10 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { paths } from "../../../utils/path";
+import { Chat } from "../../../servies/chat";
 
-function ChatList() {
+interface ChatsListProps {
+  chatsList: Chat[] | undefined;
+}
+function ChatList({ chatsList }: ChatsListProps) {
   const navigate = useNavigate();
   // 유저를 눌렀을 때 채팅방 생성되게
+
   return (
     <Container>
       <Flex>
@@ -12,10 +17,16 @@ function ChatList() {
           <Title>채팅 목록</Title>
         </TitleWrapper>
         <ChatListWrapper>
-          <ChatItem onClick={() => navigate(paths.CHAT_ROOM)}>
-            <Text>1팀 꽃보다 백</Text>
-            <Text>👥 6</Text>
-          </ChatItem>
+          {chatsList ? (
+            chatsList?.map(chat => (
+              <ChatItem key={chat.id} onClick={() => navigate(`${paths.CHAT_HOME}/${chat.id}`)}>
+                <Text>{chat.chatName}</Text>
+                <Text>👥 N</Text>
+              </ChatItem>
+            ))
+          ) : (
+            <Text>생성된 채팅방이 없습니다.</Text>
+          )}
         </ChatListWrapper>
       </Flex>
     </Container>

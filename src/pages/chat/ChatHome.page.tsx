@@ -3,12 +3,33 @@ import ChatList from "./components/ChatList";
 import UsersList from "./components/UsersList";
 import { AxiosUser, UsersInfo } from "../../servies/user";
 import { useEffect, useState } from "react";
+import { AxiosChat, Chat } from "../../servies/chat";
 
 function ChatHome() {
   const [error, setError] = useState("");
   const [myInfo, setMyInfo] = useState<UsersInfo | undefined>();
   const [users, setUsers] = useState();
+  const [chatsList, setChatList] = useState<Chat[]>();
 
+  const fetchCurrentUser = async () => {
+    try {
+      const res = await AxiosUser.getCurrentUser();
+      console.log("currentusers-----------");
+      console.log(res);
+      console.log("currentusers-----------");
+    } catch (e) {
+      console.dir(e);
+    }
+  };
+  const fetchGetChatList = async () => {
+    try {
+      const res = await AxiosChat.getChats();
+      console.log(res);
+      if (res.statusCode === 200) setChatList(res.data);
+    } catch (e: any) {
+      console.error(e);
+    }
+  };
   const fetchMyInfo = async () => {
     try {
       const res = await AxiosUser.getMyInfo();
@@ -30,9 +51,12 @@ function ChatHome() {
   };
 
   useEffect(() => {
+    fetchCurrentUser();
+    fetchGetChatList();
     fetchGetUsers();
     fetchMyInfo();
   }, []);
+
   return (
     <Container>
       <Error>{error}</Error>
@@ -40,7 +64,7 @@ function ChatHome() {
         <UsersList users={users} myInfo={myInfo} />
       </Section>
       <Section>
-        <ChatList />
+        <ChatList chatsList={chatsList} />
       </Section>
       <Section></Section>
     </Container>

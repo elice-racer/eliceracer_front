@@ -49,6 +49,7 @@ interface UsersInfoRes {
   message: string;
   statusCode: number;
 }
+
 export type OmitUserInfo = Omit<UsersInfo, "username" | "email" | "id" | "skill" | "role" | "teams" | "track" | "status">;
 export type UpdateUserInfo = Partial<OmitUserInfo>;
 export namespace AxiosUser {

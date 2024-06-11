@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import ChatList from "../chat/components/ChatList";
+// import ChatList from "../chat/components/ChatList";
 // import UsersList from "../chat/components/UsersList";
 import { paths } from "../../utils/path";
 import { useNavigate } from "react-router-dom";
@@ -12,9 +12,7 @@ function Home() {
         <Button onClick={() => navigate(paths.CHAT_HOME)}>채팅홈 바로가기</Button>
         {/* <UsersList /> */}
       </Section>
-      <Section>
-        <ChatList />
-      </Section>
+      <Section>{/* <ChatList chatsList={chatsList} /> */}</Section>
       <Section></Section>
     </Container>
   );

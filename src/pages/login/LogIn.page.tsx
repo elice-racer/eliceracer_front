@@ -64,17 +64,28 @@ export default function Login() {
   return (
     <Wrapper>
       <Img src={imgPaths.ELICE_LOGO} />
-      <InputFiled onChange={onChange} name="identifier" value={userLoginForm.identifier} placeholder="id" type="id" required onKeyDown={onKeyDown} />
-      <InputFiled
-        error={error}
-        onChange={onChange}
-        name="password"
-        value={userLoginForm.password}
-        placeholder="password"
-        type="password"
-        required
-        onKeyDown={onKeyDown}
-      />
+      <Form>
+        <InputFiled
+          onChange={onChange}
+          name="identifier"
+          value={userLoginForm.identifier}
+          placeholder="id"
+          type="id"
+          required
+          onKeyDown={onKeyDown}
+        />
+        <InputFiled
+          error={error}
+          onChange={onChange}
+          name="password"
+          value={userLoginForm.password}
+          placeholder="password"
+          type="password"
+          required
+          onKeyDown={onKeyDown}
+        />
+      </Form>
+
       <Btn onClick={handleLogin}>로그인</Btn>
       <TextWrapper>
         <StyledLink to={paths.FIND_ID}>아이디</StyledLink> | <StyledLink to={paths.FIND_PW}>비밀번호 찾기</StyledLink>
@@ -105,6 +116,11 @@ const Wrapper = styled.div`
   } */
 `;
 
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
 const Img = styled.img`
   width: 230px;
   margin: 50px 0 40px 0;

@@ -61,7 +61,7 @@ const paths = {
   ADMIN_PROJECTS_DETAIL: "/admin/projects/:id",
 
   // 리다이렉트용
-  SUCCESS_AUTH_EMAIL: "/success-auth",
+  SUCCESS_AUTH_EMAIL: "/auth/success-auth",
 };
 
 const imgPaths = {

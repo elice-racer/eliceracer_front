@@ -59,7 +59,6 @@ const FastLinkItem = styled(Link)`
 
   background-color: ${({ theme }) => theme.colors.purple2};
   color: #000;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 
   &:hover {
     transform: scale(1.06);
@@ -83,7 +82,6 @@ const LinkItem = styled(Link)`
 
   background-color: ${({ theme }) => theme.colors.purple1};
   color: #000;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
 
   &:hover {
     transform: scale(1.06);

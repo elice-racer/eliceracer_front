@@ -6,6 +6,8 @@ import io from "socket.io-client";
 import ChatList from "./components/ChatList";
 import ChatRoomUsersList from "./components/ChatRoomUsersList";
 import TeamChatInfo from "./components/TeamChatInfo";
+import { AxiosChat, Chat } from "../../servies/chat";
+// import { AxiosUser } from "../../servies/user";
 
 const socket = io(import.meta.env.VITE_SOKET_IO, { autoConnect: false });
 
@@ -41,6 +43,7 @@ function ChatRoom() {
 
   if (!roomId) return;
 
+  const [chatsList, setChatList] = useState<Chat[]>();
   const [_messages, setMessages] = useState<any[]>([]);
 
   const [chatInput, setChatInput] = useState("");
@@ -59,7 +62,29 @@ function ChatRoom() {
     socket.emit("joinChat", roomId);
   };
 
+  // 로그인할 때 currentUser 값도 recoil에 저장 , useRecoilState로 가져와서 전역으로 관리하기
+
+  // const fetchCurrentUser = async () => {
+  //   try {
+  //     const res = await AxiosUser.getCurrentUser();
+  //     console.log(res);
+  //   } catch (e) {
+  //     console.dir(e);
+  //   }
+  // };
+  const fetchGetChatList = async () => {
+    try {
+      const res = await AxiosChat.getChats();
+      console.log(res);
+      if (res.statusCode === 200) setChatList(res.data);
+    } catch (e: any) {
+      console.error(e);
+    }
+  };
+
   useEffect(() => {
+    // fetchCurrentUser();
+    fetchGetChatList();
     socket.connect();
 
     socket.on("connect", () => {
@@ -79,7 +104,7 @@ function ChatRoom() {
       console.log("joinChat roomId: ", roomId);
     });
 
-    socket.emit("sendMessage", (newMessage: any) => {
+    socket.on("sendMessage", (newMessage: any) => {
       setMessages(prevMessages => [...prevMessages, newMessage]);
     });
 
@@ -95,7 +120,7 @@ function ChatRoom() {
   return (
     <Container>
       <Section>
-        <ChatList />
+        <ChatList chatsList={chatsList} />
       </Section>
       <Section>
         <ChatContainer id={String(CHAT_ROOM_DATA.roomId)}>
@@ -107,7 +132,7 @@ function ChatRoom() {
           <Body>
             {MESSAGE.map(message => {
               return (
-                <ChatItem>
+                <ChatItem key={message.id}>
                   <NameWrapper>
                     <Text className="track">{message.userTrack}</Text>
                     <Text className="user">{message.realName}</Text>

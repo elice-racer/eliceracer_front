@@ -77,10 +77,14 @@ const Title = styled.h1``;
 const SubTitle = styled.h2``;
 
 const Body = styled.div`
-  padding: 10px 20px;
+  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 4px;
   background-color: ${({ theme }) => theme.colors.gray1};
   height: 530px;
+  padding: 20px;
 `;
 // 남은 영역 차지하게 하는 css가 뭐지?
 
@@ -89,7 +93,7 @@ const ChatItem = styled.div`
   padding: 6px;
   border-radius: 16px;
   background-color: white;
-  width: 260px;
+  width: 100%;
 `;
 
 const NameWrapper = styled.div`
