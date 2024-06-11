@@ -7,12 +7,12 @@ export interface ResData<T> {
   pagination: { next: string | null; count: number };
 }
 
-interface CreateTrack {
+interface Track {
   trackName: string;
   cardinalNo: number | string;
 }
 
-interface GetTrackTeamsQuery extends CreateTrack {
+interface GetTrackTeamsQuery extends Track {
   lastRound: number | string;
 }
 // period : "2023.05.15~2023.11.15 형태
@@ -28,14 +28,10 @@ export interface TeamsInfo {
 export interface ProjectInfo {
   id: string;
   projectName: string;
+  track: Track;
   round: 3;
   startDate: string;
   endDate: string;
-}
-interface ProjectsData {
-  data: ProjectInfo[];
-  message: string;
-  statusCode: number;
 }
 
 export interface CreateChat {
@@ -78,7 +74,7 @@ export namespace AxiosAdmin {
   };
 
   /** 트랙 생성 */
-  export const createTrack = async (createTrack: CreateTrack) => {
+  export const createTrack = async (createTrack: Track) => {
     const url = `admins/tracks`;
     const res = await api.post(url, createTrack);
     return res;
@@ -99,8 +95,8 @@ export namespace AxiosAdmin {
   };
 
   /** 모든 프로젝트 조회 */
-  export const getAllProjectsList = async (): Promise<ProjectsData> => {
-    const url = `projects/tracks/all?pageSize=10&trackName=AI`;
+  export const getAllProjectsList = async (): Promise<ResData<ProjectInfo[]>> => {
+    const url = `projects/all?pageSize=10&trackName=AI`;
     const res = await api.get(url).then(res => res.data);
     return res;
   };

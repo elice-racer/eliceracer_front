@@ -4,9 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { AxiosAdmin, TeamsInfo } from "../../../servies/admin";
 
 import * as XLSX from "xlsx";
-import UploadRacers from "./components/UploadRacers";
+
 import DataBoard from "./components/DataBoard";
-import UploadCoachs from "./components/UploadCoach";
+import UploadRacers from "./components/UploadRacers";
+import UploadCoaches from "./components/UploadCoaches";
 import UploadTeamBuilding from "./components/UploadTeamBuilding";
 
 //recoil
@@ -23,7 +24,7 @@ const OPTIONS = [
   { value: "SW", name: "SW" },
 ];
 
-const tabList = ["레이서 및 트랙 생성", "코치 멤버 등록", "프로젝트 팀빌딩"];
+const tabList = ["레이서 및 트랙 생성", "코치 멤버 등록", "프로젝트 생성 및 팀빌딩"];
 
 // todo useParams로 컴포넌트 접근하게 하기
 function AdminAddFile() {
@@ -41,7 +42,7 @@ function AdminAddFile() {
 
   const handleChangeTabIndex = (idx: number) => setTabIdx(idx);
 
-  const handleUploadCoachsFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUploadCoachesFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     setLoading(true);
     if (file) {
@@ -119,6 +120,7 @@ function AdminAddFile() {
     }
   };
 
+  /**트랙 생성 */
   const handleCreateTrack = async () => {
     if (track.trackName === "") return alert("트랙을 선택해주세요.");
     if (track.cardinalNo === "") return alert("기수를 입력해주세요.");
@@ -130,7 +132,7 @@ function AdminAddFile() {
       setLoading(true);
       if (res.data?.statusCode === 200) {
         setLoading(false);
-        return console.log(res.data?.message);
+        return alert(res.data?.message);
       }
     } catch (e: any) {
       const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
@@ -205,7 +207,7 @@ function AdminAddFile() {
                 onFileUpload={handleUploadUsersFile}
                 inputFileRef={inputFileRef}
               />,
-              <UploadCoachs onFileUpload={handleUploadCoachsFile} onClear={handleClear} inputFileRef={inputFileRef} />,
+              <UploadCoaches onFileUpload={handleUploadCoachesFile} onClear={handleClear} inputFileRef={inputFileRef} />,
               <UploadTeamBuilding
                 options={OPTIONS}
                 onChange={handleChangeTrackInfo}
@@ -257,7 +259,7 @@ const Tab = styled.div<{ selected: boolean }>`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 20%;
+  width: 30%;
   height: 40px;
   border-radius: 12px 12px 0 0;
 
