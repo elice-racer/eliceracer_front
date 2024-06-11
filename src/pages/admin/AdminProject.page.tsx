@@ -75,10 +75,12 @@ export default AdminProject;
 
 const Container = styled.div`
   width: 100%;
+  display: flex;
+  justify-content: center;
 `;
 
 const Wrapper = styled.div`
-  width: 60vw;
+  width: 80%;
 `;
 
 const TitleWrapper = styled.div`
@@ -108,6 +110,7 @@ const SelectWrapper = styled.div`
 const Input = styled.input``;
 
 const ProjectListWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -120,6 +123,7 @@ const ProjectWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   background-color: ${({ theme }) => theme.colors.gray1};
+  cursor: pointer;
 `;
 const Text = styled.p`
   &.gray {

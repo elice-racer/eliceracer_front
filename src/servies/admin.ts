@@ -43,7 +43,7 @@ const configs = {
 export namespace AxiosAdmin {
   export const createTeamChat = async (teamId: CreateChat) => {
     const url = `admins/chats/teams`;
-    const res = await api.post(url, teamId);
+    const res = await api.post(url, teamId).then(res => res.data);
     return res;
   };
   /** 코치 등록 파일 업로드 */
