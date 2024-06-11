@@ -79,9 +79,11 @@ function ChatRoom() {
       console.log("joinChat roomId: ", roomId);
     });
 
-    socket.on("sendMessage", (newMessage: any) => {
+    socket.emit("sendMessage", (newMessage: any) => {
       setMessages(prevMessages => [...prevMessages, newMessage]);
     });
+
+    socket.on("receiveMessage", () => {});
 
     return () => {
       socket.off("connect");

@@ -62,6 +62,7 @@ import BasicRoute from "./routes/BasicRoute";
 import Notfound from "./pages/404/Notfound.page";
 import SuccessCreateUsers from "./pages/login/SuccessCreateUsers.page";
 import AdminProjectDetail from "./pages/admin/AdminProjectDetail.page";
+import SuccessAuthEmail from "./pages/redirects/SuccessAuthEmail.page";
 
 const router = createBrowserRouter([
   {
@@ -85,6 +86,7 @@ const router = createBrowserRouter([
       { path: paths.FIND_ID, element: <FindId /> },
       { path: paths.FIND_PW, element: <FindPW /> },
       { path: paths.SUCCESS_USER, element: <SuccessCreateUsers /> },
+      { path: paths.SUCCESS_AUTH_EMAIL, element: <SuccessAuthEmail /> },
     ],
   },
   {

@@ -13,7 +13,6 @@ const Header = ({ adminMenu }: any) => {
   const setToken = useSetRecoilState(tokenAtom);
 
   const handleClickLogout = async () => {
-    // 액세스토큰 스토리지에서 삭제
     try {
       const res = await AxiosAuth.fetchLogout();
       console.log("logout------");

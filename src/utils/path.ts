@@ -59,6 +59,9 @@ const paths = {
   // 프로젝트 관리
   ADMIN_PROJECTS: "/admin/projects",
   ADMIN_PROJECTS_DETAIL: "/admin/projects/:id",
+
+  // 리다이렉트용
+  SUCCESS_AUTH_EMAIL: "/success-auth",
 };
 
 const imgPaths = {
