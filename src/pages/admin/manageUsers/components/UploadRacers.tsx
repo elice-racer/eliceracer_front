@@ -15,20 +15,27 @@ interface UploadRacersProps {
 function UploadRacers({ options, onChange, track, onCreateTrack, onClear, onFileUpload, inputFileRef }: UploadRacersProps) {
   return (
     <Container>
-      <Title>파일업로드 : 트랙 생성하기</Title>
+      <TitleWrapper>
+        <Title>파일업로드 : 트랙 생성하기</Title>
+      </TitleWrapper>
+      <Text>파일 업로드전 트랙을 생성해주세요. "트랙 생성하기" 버튼을 누르면 트랙이 생성됩니다.</Text>
       <Wrapper>
         <SelectBox options={options} name="trackName" value={track.trackName} onChange={onChange} />
         <Input type="text" name="cardinalNo" value={track.cardinalNo} onChange={onChange} placeholder="기수를 입력해주세요." required />
       </Wrapper>
       <CreateTrackBtn onClick={onCreateTrack}>트랙 생성하기</CreateTrackBtn>
-      <Title>유저 정보 등록하기</Title>
+      <TitleWrapper>
+        <Title>유저 정보 등록하기</Title>
+      </TitleWrapper>
       <Text>유저 정보를 등록하려면 아래 파일을 업로드하세요.</Text>
-      <InputWrapper>
-        <Label>
-          <Input type="file" accept=".xlsx, .xls, .csv" onChange={onFileUpload} ref={inputFileRef} />
-        </Label>
-        <button onClick={onClear}>등록 취소</button>
-      </InputWrapper>
+      <Wrapper>
+        <InputWrapper>
+          <Label>
+            <Input type="file" accept=".xlsx, .xls, .csv" onChange={onFileUpload} ref={inputFileRef} />
+          </Label>
+          <button onClick={onClear}>등록 취소</button>
+        </InputWrapper>
+      </Wrapper>
     </Container>
   );
 }
@@ -37,26 +44,31 @@ export default UploadRacers;
 
 const Container = styled.div`
   width: 100%;
-
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 6px;
+`;
+const TitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 37px;
+
+  padding: 12px;
+  width: 100%;
+  background-color: ${({ theme }) => theme.colors.purple1};
 `;
 
 const Title = styled.h1`
   font-size: 1.4rem;
-  margin-bottom: 12px;
 `;
 const Wrapper = styled.div`
   display: flex;
   gap: 5px;
-  margin-bottom: 12px;
+  margin: 12px 0;
 `;
 
 const InputWrapper = styled.div`
   display: flex;
-  margin-bottom: 12px;
 `;
 const Text = styled.p`
   font-weight: bold;
