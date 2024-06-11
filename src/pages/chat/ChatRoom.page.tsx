@@ -91,6 +91,7 @@ const ChatRoom = () => {
     setChatInput(e.target.value);
   };
 
+  useEffect(() => {}, [messages]);
   useEffect(() => {
     fetchCurrentUser();
 
@@ -114,11 +115,12 @@ const ChatRoom = () => {
       console.log("joinChat roomId: ", roomId);
     });
 
-    socket.on("sendMessage", (newMessage: any) => {
+    // socket.on("sendMessage", (newMessage: any) => {});
+
+    socket.on("receiveMessage", (newMessage: any) => {
+      console.log("메세지 등장~");
       setMessages(prevMessages => [...prevMessages, newMessage]);
     });
-
-    socket.on("receiveMessage", () => {});
 
     return () => {
       socket.off("connect");
