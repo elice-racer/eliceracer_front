@@ -62,7 +62,8 @@ const ChatRoom = () => {
 
   /** 방 입장 */
   const handleJoinChat = (roomId: string) => {
-    socket.emit("joinChat", roomId);
+    const chatId = roomId;
+    socket.emit("joinChat", { chatId });
   };
 
   // 로그인할 때 currentUser 값도 recoil에 저장 , useRecoilState로 가져와서 전역으로 관리하기
