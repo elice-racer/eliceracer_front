@@ -92,9 +92,9 @@ const ChatRoom = () => {
   };
 
   useEffect(() => {}, [messages]);
+
   useEffect(() => {
     fetchCurrentUser();
-
     fetchGetChatList();
     socket.connect();
 
@@ -115,10 +115,13 @@ const ChatRoom = () => {
       console.log("joinChat roomId: ", roomId);
     });
 
-    // socket.on("sendMessage", (newMessage: any) => {});
+    socket.on("sendMessage", (newMessage: any) => {
+      console.log("-------------sendMessage----------");
+      setMessages(prevMessages => [...prevMessages, newMessage]);
+    });
 
     socket.on("receiveMessage", (newMessage: any) => {
-      console.log("메세지 등장~");
+      console.log("---------receiveMessage----------");
       setMessages(prevMessages => [...prevMessages, newMessage]);
     });
 
