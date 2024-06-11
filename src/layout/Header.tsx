@@ -5,14 +5,23 @@ import { imgPaths } from "../utils/path";
 import { useNavigate } from "react-router-dom";
 import { tokenAtom } from "../recoil/TokenAtom";
 import { useSetRecoilState } from "recoil";
+import { AxiosAuth } from "../servies/auth";
 
 const Header = ({ adminMenu }: any) => {
   const navigate = useNavigate();
 
   const setToken = useSetRecoilState(tokenAtom);
-  const onClickLogout = () => {
+
+  const handleClickLogout = async () => {
     // 액세스토큰 스토리지에서 삭제
-    localStorage.removeItem("userToken");
+    try {
+      const res = await AxiosAuth.fetchLogout();
+      console.log("logout------");
+      console.log(res);
+      if (res.data.statusCode === 200) localStorage.removeItem("userToken");
+    } catch (e) {
+      console.error(e);
+    }
 
     // 리코일 초기화
     setToken(null);
@@ -45,7 +54,7 @@ const Header = ({ adminMenu }: any) => {
             <Link to={paths.MYPAGE}>마이페이지</Link>
           </LinkItem>
 
-          <LinkItem onClick={onClickLogout}>
+          <LinkItem onClick={handleClickLogout}>
             <>로그아웃</>
           </LinkItem>
         </Wrapper>

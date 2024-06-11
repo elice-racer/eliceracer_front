@@ -114,4 +114,3 @@ export namespace AxiosAdmin {
     return res;
   };
 }
-// 타입스크립트도 props로 받을 수 있나?

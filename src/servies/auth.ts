@@ -66,4 +66,10 @@ export namespace AxiosAuth {
     const res = await api.post(`auth/login`, data);
     return res;
   };
+
+  /** 로그아웃 */
+  export const fetchLogout = async () => {
+    const res = await api.post(`auth/logout`);
+    return res;
+  };
 }
