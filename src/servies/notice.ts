@@ -1,3 +1,4 @@
+import { ResData } from "./admin";
 import { api } from "./api";
 
 export interface Notice {
@@ -5,32 +6,41 @@ export interface Notice {
   content: string;
 }
 
-interface NoticeUSer {
+interface NoticeUser {
   id: string;
-  realNaeme: string;
+  realName: string;
 }
 export interface Notices extends Notice {
   id?: string;
   createdAt: string;
   updatedAt: string;
-  user: NoticeUSer;
+  user: NoticeUser;
 }
 
-interface NoticeLostRes {
-  message: string;
-  statusCode: 200;
-  data: Notices[];
-}
 export namespace AxiosNotice {
-  export const getNoticeList = async (page = 1, size = 10): Promise<NoticeLostRes> => {
+  /** 관리자 공지 업로드  */
+  export const postNotice = async (data: Notice) => {
+    const url = `admins/notices`;
+    const res = await api.post(url, data);
+    return res;
+  };
+
+  export const deleteNotice = async (noticeId: string | undefined) => {
+    const url = `admins/notices/${noticeId}`;
+    const res = await api.delete(url);
+    console.log(res);
+    return res;
+  };
+
+  export const getNoticeList = async (page = 1, size = 10): Promise<ResData<Notices[]>> => {
     const url = `notices/all?page=${page}&pageSize=${size}`;
     const res = await api.get(url);
     return res.data;
   };
 
-  export const postNotice = async (data: Notice) => {
-    const url = `admins/notices`;
-    const res = await api.post(url, data);
+  export const getNoticeId = async (noticeId: string | undefined): Promise<ResData<Notices>> => {
+    const url = `notices/${noticeId}`;
+    const res = await api.get(url).then(res => res.data);
     return res;
   };
 }

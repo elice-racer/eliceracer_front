@@ -1,16 +1,21 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { paths } from "../../../utils/path";
 import { AxiosNotice, Notices } from "../../../servies/notice";
 import { useEffect, useState } from "react";
 
 function AdminNoticeList() {
+  const navigate = useNavigate();
   const [notices, setNotices] = useState<Notices[]>();
   const fetchGetNoticeList = async () => {
     const res = await AxiosNotice.getNoticeList(1, 10);
     if (res.statusCode === 200) {
       setNotices(res.data);
     }
+  };
+
+  const handleClickNotice = (id: string | undefined) => {
+    navigate(`${paths.ADMIN_NOTICE_LIST}/${id}`);
   };
 
   useEffect(() => {
@@ -27,14 +32,14 @@ function AdminNoticeList() {
           </Link>
         </TitleWrapper>
         <NoticeListWrapper>
-          {notices?.map((item, index) => (
-            <NoticeItem key={item.id}>
+          {notices?.map((notice, index) => (
+            <NoticeItem key={notice.id} onClick={() => handleClickNotice(notice.id)}>
               <Text className="index">{index + 1}</Text>
-              <Text className="title">{item.title}</Text>
-              <Text className="author">{item.user.realNaeme || "관리자"}</Text>
+              <Text className="title">{notice.title}</Text>
+              <Text className="author">{notice.user.realName || "관리자"}</Text>
               <DateWrapper>
-                <Text className="date">{item.createdAt.toString().split("T")[0]}</Text>
-                <Text className="date">{item.createdAt.toString().split("T")[1].split(".")[0]}</Text>
+                <Text className="date">{notice.createdAt.toString().split("T")[0]}</Text>
+                <Text className="date">{notice.createdAt.toString().split("T")[1].split(".")[0]}</Text>
               </DateWrapper>
             </NoticeItem>
           ))}
@@ -111,4 +116,5 @@ const NoticeItem = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 5px;
+  cursor: pointer;
 `;
