@@ -58,10 +58,11 @@ function AdminProject() {
         <ProjectListWrapper>
           {projects?.map((project, idx) => (
             <ProjectWrapper key={project.id} onClick={() => handleDetailClick(project.id)}>
+              <Text className="gray">{idx + 1}</Text>
               <Text>
-                {idx + 1}
-                {project.projectName}
+                {project.track.trackName} {project.track.cardinalNo}
               </Text>
+              <Text>{project.projectName}</Text>
             </ProjectWrapper>
           ))}
         </ProjectListWrapper>
@@ -101,6 +102,7 @@ const SelectWrapper = styled.div`
   display: flex;
   justify-content: end;
   gap: 4px;
+  padding: 12px;
 `;
 
 const Input = styled.input``;
@@ -113,6 +115,16 @@ const ProjectListWrapper = styled.div`
   gap: 4px;
 `;
 const ProjectWrapper = styled.div`
+  padding: 12px;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: ${({ theme }) => theme.colors.gray1};
 `;
-const Text = styled.p``;
+const Text = styled.p`
+  &.gray {
+    color: ${({ theme }) => theme.colors.gray2};
+  }
+  padding: 2px 4px;
+  border-radius: 4px;
+`;
