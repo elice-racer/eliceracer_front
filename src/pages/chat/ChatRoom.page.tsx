@@ -7,7 +7,7 @@ import ChatList from "./components/ChatList";
 import ChatRoomUsersList from "./components/ChatRoomUsersList";
 import TeamChatInfo from "./components/TeamChatInfo";
 import { AxiosChat, Chat } from "../../servies/chat";
-// import { AxiosUser } from "../../servies/user";
+import { AxiosUser } from "../../servies/user";
 
 const socket = io(import.meta.env.VITE_SOKET_IO, { autoConnect: false });
 
@@ -25,35 +25,38 @@ const MESSAGE = [
     message: "엘리스 공지!! 만족도 조사~~",
   },
   {
-    id: 1,
+    id: 2,
     userTrack: "AI8",
     realName: "진채영",
     message: "엘리스 공지!! 만족도 조사~~",
   },
   {
-    id: 1,
+    id: 3,
     userTrack: "AI8",
     realName: "진채영",
     message: "엘리스 공지!! 만족도 조사~~",
   },
 ];
 
-function ChatRoom() {
+const ChatRoom = () => {
   const { id: roomId } = useParams();
 
   if (!roomId) return;
 
+  const [userId, setUserIs] = useState<any>(null);
   const [chatsList, setChatList] = useState<Chat[]>();
-  const [_messages, setMessages] = useState<any[]>([]);
-
-  const [chatInput, setChatInput] = useState("");
+  const [messages, setMessages] = useState<any[]>([]);
+  const [chatInput, setChatInput] = useState<any>("");
 
   /** 채팅 보내기 */
   const handleSendMessage = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter" || chatInput.trim().length === 0) return;
-
-    socket.emit("sendMessage", { chatId: "", userId: "", content: "" });
-
+    socket.emit("sendMessage", {
+      chatId: roomId,
+      userId: userId,
+      content: chatInput,
+    });
+    console.log("-----전송됨-----");
     setChatInput("");
   };
 
@@ -64,26 +67,33 @@ function ChatRoom() {
 
   // 로그인할 때 currentUser 값도 recoil에 저장 , useRecoilState로 가져와서 전역으로 관리하기
 
-  // const fetchCurrentUser = async () => {
-  //   try {
-  //     const res = await AxiosUser.getCurrentUser();
-  //     console.log(res);
-  //   } catch (e) {
-  //     console.dir(e);
-  //   }
-  // };
+  const fetchCurrentUser = async () => {
+    try {
+      const res = await AxiosUser.getCurrentUser();
+      if (res.statusCode === 200) {
+        setUserIs(res.data?.id);
+      }
+    } catch (e) {
+      console.dir(e);
+    }
+  };
   const fetchGetChatList = async () => {
     try {
       const res = await AxiosChat.getChats();
-      console.log(res);
       if (res.statusCode === 200) setChatList(res.data);
     } catch (e: any) {
       console.error(e);
     }
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    setChatInput(e.target.value);
+  };
+
   useEffect(() => {
-    // fetchCurrentUser();
+    fetchCurrentUser();
+
     fetchGetChatList();
     socket.connect();
 
@@ -130,6 +140,9 @@ function ChatRoom() {
             <SubTitle>🧑‍💻</SubTitle>
           </Header>
           <Body>
+            {messages.map((message, idx) => (
+              <Text key={idx}>{message}</Text>
+            ))}
             {MESSAGE.map(message => {
               return (
                 <ChatItem key={message.id}>
@@ -146,7 +159,8 @@ function ChatRoom() {
             <OptionBar></OptionBar>
             <TypingBar>
               {/* commit 용 */}
-              <Input onChange={() => handleSendMessage} />
+              <Input onKeyDown={handleSendMessage} onChange={handleInputChange} name="chatInput" value={chatInput || ""} placeholder="send Message" />
+              <SendBtn></SendBtn>
             </TypingBar>
           </FooterTypingBar>
         </ChatContainer>
@@ -158,10 +172,11 @@ function ChatRoom() {
       </Section>
     </Container>
   );
-}
+};
 
 export default ChatRoom;
 
+const SendBtn = styled.div``;
 const Container = styled.div`
   width: 100vw;
   display: flex;

@@ -12,6 +12,7 @@
 	 "track”:string
    },  */
 
+import { ResData } from "./admin";
 import { api } from "./api";
 
 export interface Track {
@@ -44,26 +45,21 @@ export interface UsersInfo {
   tmi: string | null;
 }
 
-interface UsersInfoRes {
-  data: UsersInfo;
-  message: string;
-  statusCode: number;
-}
-
 export type OmitUserInfo = Omit<UsersInfo, "username" | "email" | "id" | "skill" | "role" | "teams" | "track" | "status">;
 export type UpdateUserInfo = Partial<OmitUserInfo>;
 export namespace AxiosUser {
   /** 현재 유저 정보 가져오기 */
-  export const getCurrentUser = async () => {
+  export const getCurrentUser = async (): Promise<ResData<UsersInfo>> => {
     const url = `users/current`;
-    const res = await api.get(url);
+    const res = await api.get(url).then(res => res.data);
     return res;
   };
 
   /** 마이페이지 조회 */
-  export const getMyInfo = async (): Promise<UsersInfoRes> => {
+  export const getMyInfo = async (): Promise<ResData<UsersInfo>> => {
     const url = `users/mypage`;
     const res = await api.get(url).then(res => res.data);
+    console.log(res);
     return res;
   };
 
