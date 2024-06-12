@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
 import { AxiosAuth } from "../../servies/auth";
 import { useSetRecoilState } from "recoil";
@@ -12,6 +12,8 @@ import { loadingAtom } from "../../recoil/LoadingAtom";
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const setLoading = useSetRecoilState(loadingAtom);
   const from = location?.state?.redirectedFrom?.pathname || paths.HOME;
@@ -61,11 +63,18 @@ export default function Login() {
     }
   };
 
+  useEffect(() => {
+    if (inputRef.current !== null) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   return (
     <Wrapper>
       <Img src={imgPaths.ELICE_LOGO} />
       <Form>
         <InputFiled
+          ref={inputRef}
           onChange={onChange}
           name="identifier"
           value={userLoginForm.identifier}

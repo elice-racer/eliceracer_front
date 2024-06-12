@@ -37,7 +37,6 @@ function SkillsModal(
   useEffect(() => {
     if (skillboxRef.current) {
       const height = skillboxRef.current.getBoundingClientRect().height;
-
       if (height > 32) setHeight(height);
     }
   }, [skillModalOpen]);

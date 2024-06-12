@@ -105,6 +105,7 @@ export namespace AxiosAdmin {
   export const getProject = async (id: string | undefined) => {
     const url = `projects/${id}`;
     const res = await api.get(url).then(res => res.data);
+    console.log(res);
     return res;
   };
 

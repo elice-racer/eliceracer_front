@@ -1,16 +1,17 @@
-import { InputHTMLAttributes } from "react";
+import { InputHTMLAttributes, Ref } from "react";
 import { styled } from "styled-components";
 
 interface InputFielProps extends InputHTMLAttributes<HTMLInputElement> {
+  ref?: Ref<HTMLInputElement>;
   label?: string;
   error?: string;
 }
 
-export default function InputFiled({ label, error, ...props }: InputFielProps) {
+export default function InputFiled({ ref, label, error, ...props }: InputFielProps) {
   return (
     <Wrapper>
       {label && <Label>{label}</Label>}
-      <Input {...props} />
+      <Input ref={ref} {...props} />
       {error && <Error>{error}</Error>}
     </Wrapper>
   );

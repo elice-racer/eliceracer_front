@@ -3,13 +3,13 @@ import ChatList from "./components/ChatList";
 import UsersList from "./components/UsersList";
 import { AxiosUser, UsersInfo } from "../../servies/user";
 import { useEffect, useState } from "react";
-import { AxiosChat, Chat } from "../../servies/chat";
+import { AxiosChat, Chats } from "../../servies/chat";
 
 function ChatHome() {
   const [error, setError] = useState("");
   const [myInfo, setMyInfo] = useState<UsersInfo | undefined>();
   const [users, setUsers] = useState();
-  const [chatsList, setChatList] = useState<Chat[]>();
+  const [chatsList, setChatList] = useState<Chats[]>();
 
   const fetchCurrentUser = async () => {
     try {

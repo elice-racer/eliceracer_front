@@ -6,64 +6,59 @@ import io from "socket.io-client";
 import ChatList from "./components/ChatList";
 import ChatRoomUsersList from "./components/ChatRoomUsersList";
 import TeamChatInfo from "./components/TeamChatInfo";
-import { AxiosChat, Chat } from "../../servies/chat";
+import { AxiosChat, ChatMessage, Chats } from "../../servies/chat";
 import { AxiosUser } from "../../servies/user";
 
 const socket = io(import.meta.env.VITE_SOKET_IO, { autoConnect: false });
 
 const CHAT_ROOM_DATA = {
-  roomId: 1,
+  chatId: 1,
   roomname: "2팀",
   Member: 6,
 };
 
-const MESSAGE = [
-  {
-    id: 1,
-    userTrack: "AI8",
-    realName: "진채영",
-    message: "엘리스 공지!! 만족도 조사~~",
-  },
-  {
-    id: 2,
-    userTrack: "AI8",
-    realName: "진채영",
-    message: "엘리스 공지!! 만족도 조사~~",
-  },
-  {
-    id: 3,
-    userTrack: "AI8",
-    realName: "진채영",
-    message: "엘리스 공지!! 만족도 조사~~",
-  },
-];
-
 const ChatRoom = () => {
-  const { id: roomId } = useParams();
+  const { id: chatId } = useParams();
 
-  if (!roomId) return;
+  if (!chatId) return;
 
   const [userId, setUserIs] = useState<any>(null);
-  const [chatsList, setChatList] = useState<Chat[]>();
-  const [messages, setMessages] = useState<any[]>([]);
-  const [chatInput, setChatInput] = useState<any>("");
+  const [chatsList, setChatList] = useState<Chats[]>();
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [chatInput, setChatInput] = useState<string>("");
+
+  /** 채팅방 메시지 조회 */
+  const fetchChatMessages = async () => {
+    try {
+      const res = await AxiosChat.getChatMessages(chatId);
+      if (res.statusCode === 200) {
+        if (res.data) setMessages(res.data);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   /** 채팅 보내기 */
   const handleSendMessage = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== "Enter" || chatInput.trim().length === 0) return;
-    socket.emit("sendMessage", {
-      chatId: roomId,
-      userId: userId,
-      content: chatInput,
-    });
-    console.log("-----전송됨-----");
+    if (e.key !== "Enter") return;
+    if (e.key === "Enter" && e.nativeEvent.composed && e.nativeEvent.isComposing) {
+      if (chatInput.trim() === "") return;
+      console.log(chatInput);
+      socket.emit("sendMessage", {
+        chatId: chatId,
+        userId: userId,
+        content: chatInput,
+      });
+    }
+
     setChatInput("");
   };
 
   /** 방 입장 */
-  const handleJoinChat = (roomId: string) => {
-    const chatId = roomId;
-    socket.emit("joinChat", { chatId });
+  const handleJoinChat = (chatId: string) => {
+    const id = chatId;
+    socket.emit("joinChat", { id });
   };
 
   // 로그인할 때 currentUser 값도 recoil에 저장 , useRecoilState로 가져와서 전역으로 관리하기
@@ -78,6 +73,7 @@ const ChatRoom = () => {
       console.dir(e);
     }
   };
+
   const fetchGetChatList = async () => {
     try {
       const res = await AxiosChat.getChats();
@@ -88,11 +84,14 @@ const ChatRoom = () => {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
     setChatInput(e.target.value);
   };
 
   useEffect(() => {}, [messages]);
+
+  useEffect(() => {
+    fetchChatMessages();
+  }, []);
 
   useEffect(() => {
     fetchCurrentUser();
@@ -101,27 +100,28 @@ const ChatRoom = () => {
 
     socket.on("connect", () => {
       console.log("Socket connected");
-      handleJoinChat(roomId);
+      handleJoinChat(chatId);
     });
 
     socket.on("disconnect", () => {
       console.log("Socket disconnected");
     });
 
-    socket.on("roomCreate", (roodId: string) => {
-      console.log("room Created succeeded roomId : ", roodId);
+    socket.on("roomCreate", (chatId: string) => {
+      console.log("room Created succeeded chatId : ", chatId);
     });
 
-    socket.on("joinChat", (roomId: string) => {
-      console.log("joinChat roomId: ", roomId);
+    socket.on("joinChat", (chatId: string) => {
+      console.log("joinChat chatId: ", chatId);
     });
 
     socket.on("sendMessage", (newMessage: any) => {
-      console.log("-------------sendMessage----------");
-      setMessages(prevMessages => [...prevMessages, newMessage]);
+      console.log("sendMessage", newMessage);
     });
 
     socket.on("receiveMessage", (newMessage: any) => {
+      console.log("---------receiveMessage----------");
+      console.log(newMessage);
       console.log("---------receiveMessage----------");
       setMessages(prevMessages => [...prevMessages, newMessage]);
     });
@@ -139,33 +139,44 @@ const ChatRoom = () => {
         <ChatList chatsList={chatsList} />
       </Section>
       <Section>
-        <ChatContainer id={String(CHAT_ROOM_DATA.roomId)}>
+        <ChatContainer id={String(CHAT_ROOM_DATA.chatId)}>
           <Header>
             <SubTitle>⬅️</SubTitle>
             <Title>{CHAT_ROOM_DATA.roomname}</Title>
             <SubTitle>🧑‍💻</SubTitle>
           </Header>
           <Body>
-            {messages.map((message, idx) => (
-              <Text key={idx}>{message}</Text>
-            ))}
-            {MESSAGE.map(message => {
-              return (
-                <ChatItem key={message.id}>
-                  <NameWrapper>
-                    <Text className="track">{message.userTrack}</Text>
-                    <Text className="user">{message.realName}</Text>
-                  </NameWrapper>
-                  <Text>{message.message}</Text>
-                </ChatItem>
-              );
-            })}
+            <MessagesWrapper>
+              {messages.map(message => {
+                return (
+                  <Wrapper>
+                    <ChatItem key={message.id}>
+                      <NameWrapper>
+                        <Text className="track">
+                          [트랙정보]
+                          {/* `{message.user.track.trackName}
+                      {message.user.track.cradinalNo}` */}
+                        </Text>
+                        <UserName className="{user.role}">
+                          아무개
+                          {/* {message.realName} */}
+                        </UserName>
+                      </NameWrapper>
+                      <Text>{message.content}</Text>
+                    </ChatItem>
+                    <DateWapper>
+                      <Text>{message.createdAt.split("T")[1].split(".")[0]}</Text>
+                    </DateWapper>
+                  </Wrapper>
+                );
+              })}
+            </MessagesWrapper>
           </Body>
           <FooterTypingBar>
             <OptionBar></OptionBar>
             <TypingBar>
               {/* commit 용 */}
-              <Input onKeyDown={handleSendMessage} onChange={handleInputChange} name="chatInput" value={chatInput || ""} placeholder="send Message" />
+              <Input onKeyDown={handleSendMessage} onChange={handleInputChange} name="chatInput" value={chatInput} placeholder="send Message" />
               <SendBtn></SendBtn>
             </TypingBar>
           </FooterTypingBar>
@@ -200,8 +211,9 @@ const ChatContainer = styled.div`
 `;
 const Header = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  padding: 0 12px;
   height: 46px;
   background-color: ${({ theme }) => theme.colors.purple1};
 `;
@@ -212,32 +224,55 @@ const SubTitle = styled.h2``;
 
 const Body = styled.div`
   padding: 10px 20px;
-  gap: 4px;
   background-color: ${({ theme }) => theme.colors.gray1};
   height: 530px;
+  flex-wrap: wrap;
+  overflow-y: auto;
 `;
-// 남은 영역 차지하게 하는 css가 뭐지?
-
+const MessagesWrapper = styled.div`
+  display: flex;
+  flex-direction: column-reverse;
+  flex: 1;
+`;
 const ChatItem = styled.div`
   margin-top: 10px;
   padding: 6px;
-  border-radius: 16px;
+  border-radius: 0 16px 16px 16px;
   background-color: white;
-  width: 260px;
+  max-width: 100%;
+  &.currentUsers {
+    border-radius: 16px 16px 0px 16px;
+  }
 `;
 
+const DateWapper = styled.div`
+  display: flex;
+  justify-content: end;
+`;
+const Wrapper = styled.div`
+  width: 86%;
+`;
 const NameWrapper = styled.div`
   display: flex;
   gap: 2px;
 `;
 const Text = styled.p`
-  &.user {
-    color: blue;
-    font-weight: 600;
-  }
   &.track {
     color: green;
     font-weight: 600;
+  }
+`;
+
+const UserName = styled.p`
+  font-weight: 600;
+  &.RACER {
+    color: ${({ theme }) => theme.colors.purple2};
+  }
+  &.ADMIN {
+    color: ${({ theme }) => theme.colors.green2};
+  }
+  &.COACH {
+    color: ${({ theme }) => theme.colors.blue2};
   }
 `;
 
@@ -247,22 +282,29 @@ const FooterTypingBar = styled.div`
   justify-content: center;
   align-items: center;
   gap: 6px;
-  height: 180px;
+  height: 120px;
   padding: 10px;
   background-color: ${({ theme }) => theme.colors.purple1};
 `;
 
 const OptionBar = styled.div`
-  height: 54px;
-  width: 400px;
+  height: 36px;
+  width: 100%;
   border-radius: 6px;
   background-color: ${({ theme }) => theme.colors.purple2};
 `;
+
 const TypingBar = styled.div`
-  height: 88px;
-  width: 400px;
+  height: 100%;
+  width: 100%;
   border-radius: 6px;
   background-color: #fff;
 `;
 
-const Input = styled.input``;
+const Input = styled.input`
+  width: 100%;
+  height: 100%;
+  background-color: none;
+  border: none;
+  padding: 12px;
+`;
