@@ -41,7 +41,6 @@ function UsersMiniProfile() {
             <Text className="subInfo">{UsersData.role}🏁</Text>
           </Wrapper>
           <Text className="subInfo">{UsersData.track}</Text>
-
           <SubTitle>보유 스택</SubTitle>
           <SkillInfoWrapper>
             {UserSkill.map(item => (

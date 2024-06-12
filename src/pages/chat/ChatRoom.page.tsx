@@ -120,7 +120,7 @@ const ChatRoom = () => {
       console.log("sendMessage", newMessage);
     });
 
-    socket.on("receiveMessage", (newMessage: any) => {
+    socket.on("receiveMessage", (newMessage: ChatMessage) => {
       console.log("---------receiveMessage----------");
       console.log(newMessage);
       console.log("---------receiveMessage----------");
@@ -131,6 +131,7 @@ const ChatRoom = () => {
       socket.off("connect");
       socket.off("disconnect");
       socket.off("sendMessage");
+      socket.off("receiveMessage");
     };
   }, []);
 
@@ -156,19 +157,15 @@ const ChatRoom = () => {
             <MessagesWrapper>
               {messages.map(message => {
                 return (
-                  <Wrapper>
+                  <Wrapper key={message.id}>
                     <NameWrapper>
                       <Text className="track">
-                        [트랙정보]
-                        {/* `{message.user.track.trackName}
-                      {message.user.track.cradinalNo}` */}
+                        [{message.user.track.trackName}
+                        {message.user.track.cardinalNo}]
                       </Text>
-                      <UserName className="{user.role}">
-                        아무개
-                        {/* {message.realName} */}
-                      </UserName>
+                      <UserName className="{user.role}">{message.user.realName}</UserName>
                     </NameWrapper>
-                    <ChatItem key={message.id}>
+                    <ChatItem>
                       <Text>{message.content}</Text>
                     </ChatItem>
                     <DateWapper>

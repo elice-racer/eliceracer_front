@@ -3,35 +3,38 @@ import ChatList from "../chat/components/ChatList";
 import UsersList from "../chat/components/UsersList";
 import { paths } from "../../utils/path";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 import { useEffect, useState } from "react";
 import { AxiosChat, Chats } from "../../servies/chat";
 import { AxiosUser } from "../../servies/user";
 import InfoBoard from "./components/InfoBoard";
 import { AxiosProject, ProjectInfo } from "../../servies/projects";
+import { loadingAtom } from "../../recoil/LoadingAtom";
 
 function Home() {
   const navigate = useNavigate();
   const myInfo = useRecoilValue(currentUserAtom);
 
+  const setLoading = useSetRecoilState(loadingAtom);
   const [error, setError] = useState("");
   const [users, setUsers] = useState();
   const [chatsList, setChatList] = useState<Chats[]>();
-
   const [projectsInfo, setProjectsInfo] = useState<ProjectInfo[]>([]);
 
   /** 프로젝트 조회 */
   const fetchGetProjectIdInfo = async () => {
+    setLoading(true);
     try {
       if (!myInfo?.track?.cardinalNo) return;
       const { trackName, cardinalNo } = myInfo?.track;
       const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });
       if (res.statusCode === 200) {
-        console.log(res);
         if (res.data) setProjectsInfo(res.data);
       }
+      setLoading(false);
     } catch (e) {
+      setLoading(false);
       console.error(e);
     }
   };
@@ -49,17 +52,21 @@ function Home() {
 
   /** 채팅 목록 조회 */
   const fetchGetChatList = async () => {
+    setLoading(true);
     try {
       const res = await AxiosChat.getChats();
       if (res.statusCode === 200) setChatList(res.data);
+      setLoading(false);
     } catch (e: any) {
       console.error(e);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchGetChatList();
     fetchGetProjectIdInfo();
+    if (myInfo?.role === "RACER") fetchGetUsersList();
   }, []);
 
   useEffect(() => {

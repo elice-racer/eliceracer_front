@@ -12,10 +12,23 @@ export interface ChatInfo extends Chats {
   updatedAt: string;
 }
 
+interface Track {
+  id: string;
+  cardinalNo: string;
+  trackName: string;
+}
+
+interface ChatUser {
+  id: string;
+  realName: string;
+  role: string;
+  track: Track;
+}
 export interface ChatMessage {
   id: string;
   chat: ChatInfo;
   content: string;
+  user: ChatUser;
   createdAt: string;
   updatedAt: string;
 }
