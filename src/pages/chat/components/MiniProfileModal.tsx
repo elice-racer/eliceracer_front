@@ -1,81 +1,125 @@
 import styled from "styled-components";
-import { imgPaths, paths } from "../../../utils/path";
-import { Link, useNavigate } from "react-router-dom";
-import Btn from "../../../components/commons/Btn";
+import { imgPaths } from "../../../utils/path";
+import { Link } from "react-router-dom";
+import { Dimed } from "../../Profile/components/SkillsModal";
+import { UsersInfo } from "../../../servies/user";
 
-const UsersData = {
-  id: 1,
-  email: "jiop96@naver.com",
-  username: "jiop96",
-  realName: "진채영",
-  phoneNumber: "01034663728",
-  comment: "안녕하세요. 프론트엔드 개발을 하고 있습니다.",
-  position: "프론트",
-  skill: "React",
-  github: "https://github.com/elice-racer/eliceracer_front/tree/feat/mypage",
-  blog: "velog.io",
-  sns: "https://www.instagram.com/_aeng2",
-  description: "헬로",
-  role: "racer",
-  status: 1,
-  track: "AI8",
-  teams: "최강팀",
-};
-
-const UserSkill = ["React", "Node", "Next.js"];
-
-function MiniProfileModal() {
-  const navigate = useNavigate();
-
+interface MiniProfileModalProps {
+  isModalOpen: boolean;
+  onClose: () => void;
+  userData: UsersInfo | undefined;
+}
+function MiniProfileModal({ isModalOpen, onClose, userData }: MiniProfileModalProps) {
   return (
-    <Container>
-      <Header>
-        <ImgWrapper>
-          <UserProfileImg src={imgPaths.DEFAULT_PROFILE_IMG} />
-        </ImgWrapper>
-      </Header>
-      <Body>
-        <ColWrapper>
-          <Wrapper>
-            <Title>{UsersData.realName}</Title>
-            <Text className="subInfo">{UsersData.role}🏁</Text>
-          </Wrapper>
-          <Text className="subInfo">{UsersData.track}</Text>
+    <>
+      <Container className={isModalOpen ? "" : "disable"}>
+        <ModalWrapper className={isModalOpen ? "" : "disable"}>
+          <CloseBtn onClick={onClose}>Ⅹ</CloseBtn>
+          <Header>
+            <ImgWrapper>
+              <UserProfileImg src={imgPaths.DEFAULT_PROFILE_IMG} />
+            </ImgWrapper>
+          </Header>
+          {userData ? (
+            <Body>
+              <ColWrapper>
+                <Wrapper>
+                  <Title>{userData.realName}</Title>
+                  <Text className="subInfo">{userData.role}🏁</Text>
+                </Wrapper>
+                {userData.comment ? <Text>{userData.comment}</Text> : <Text>안녕하세요. {userData.realName}입니다.</Text>}
+                {userData.track ? (
+                  <Text className="subInfo">
+                    {userData.track.trackName}
+                    {userData.track.cardinalNo}
+                  </Text>
+                ) : (
+                  ""
+                )}
+                <SubTitle>보유 스택</SubTitle>
+                <SkillInfoWrapper>
+                  {userData.skills.length === 0 ? (
+                    <Text>등록된 기술 스택이 없습니다.</Text>
+                  ) : (
+                    userData.skills.map(skill => (
+                      <Text className="skill" key={skill.id}>
+                        {skill.skillName}
+                      </Text>
+                    ))
+                  )}
+                </SkillInfoWrapper>
 
-          <SubTitle>보유 스택</SubTitle>
-          <SkillInfoWrapper>
-            {UserSkill.map(item => (
-              <Text className="skill">{item}</Text>
-            ))}
-          </SkillInfoWrapper>
-          <Link to={UsersData.github}>깃허브 바로가기</Link>
-          <Wrapper>
-            <SubTitle>진행한 프로젝트 :</SubTitle>
-            <Text>{UsersData.id}</Text>
-          </Wrapper>
-          <SubTitle>업적</SubTitle>
-          <Text>성실한 엘리스</Text>
-        </ColWrapper>
-        <ButtonWrapper>
-          <Btn children="더보기" onClick={() => navigate(paths.MYPAGE)} />
-        </ButtonWrapper>
-      </Body>
-    </Container>
+                {userData.github ? <Link to={userData.github ? userData.github : ""}>깃허브 바로가기</Link> : ""}
+                {/* <Wrapper>
+                  <SubTitle>진행한 프로젝트 :</SubTitle>
+                  <Text></Text>
+                </Wrapper> */}
+                <SubTitle>업적</SubTitle>
+                <Text className="skill">성실한 엘리스🏆</Text>
+              </ColWrapper>
+              <ButtonWrapper>
+                {/* <Button onClick={() => navigate(paths.USERS_PAGE)}>더보기</Button> */}
+                <Button>1 : 1 채팅</Button>
+              </ButtonWrapper>
+            </Body>
+          ) : (
+            ""
+          )}
+        </ModalWrapper>
+      </Container>
+      <Dimed className={isModalOpen ? "" : "disable"} onClick={onClose} />
+    </>
   );
 }
 
 export default MiniProfileModal;
 
 const Container = styled.div`
+  position: fixed;
   display: flex;
   flex-direction: column;
-  margin: 20px;
-  width: 350px;
-  height: 100vh;
-  border-radius: 8px;
-  background-color: #ffffff7d;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 11;
+  width: 100%;
+  max-width: 700px;
+  height: 100%;
+  z-index: 999;
+  border-radius: 10px;
+  background-color: transparent;
+
+  &.disable {
+    display: none;
+  }
+  padding: 24px 20px;
 `;
 
+const ModalWrapper = styled.div`
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 11;
+  width: 100%;
+  max-width: 435px;
+  height: 600px;
+  z-index: 999;
+  border-radius: 10px;
+  background-color: #fff;
+
+  &.disable {
+    display: none;
+  }
+  padding: 24px 20px;
+`;
+
+const CloseBtn = styled.div`
+  position: absolute;
+  cursor: pointer;
+`;
 const Header = styled.div`
   height: 240px;
 `;
@@ -117,9 +161,20 @@ const SkillInfoWrapper = styled.div`
 
 const ButtonWrapper = styled.div`
   display: flex;
+  gap: 2px;
+  margin-top: 10px;
+`;
+
+const Button = styled.div`
+  display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 32px;
+  background-color: ${({ theme }) => theme.colors.purple1};
+  cursor: pointer;
 `;
+
 const Title = styled.h1``;
 
 const SubTitle = styled.h2``;
@@ -129,8 +184,10 @@ const Text = styled.p`
     color: ${({ theme }) => theme.colors.gray2};
   }
   &.skill {
+    width: auto;
+    max-width: 94px;
     background-color: ${({ theme }) => theme.colors.blue2};
-    padding: 2px 6px;
+    padding: 2px 4px;
     border-radius: 12px;
   }
 `;

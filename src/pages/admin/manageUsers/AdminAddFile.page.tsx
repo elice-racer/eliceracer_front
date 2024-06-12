@@ -24,7 +24,7 @@ const OPTIONS = [
   { value: "SW", name: "SW" },
 ];
 
-const tabList = ["레이서 및 트랙 생성", "코치 멤버 등록", "프로젝트 생성 및 팀빌딩"];
+const tabList = ["레이서 및 트랙 생성", "코치 멤버 등록", "프로젝트 생성 및 팀빌딩", "오피스아워 등록"];
 
 // todo useParams로 컴포넌트 접근하게 하기
 function AdminAddFile() {

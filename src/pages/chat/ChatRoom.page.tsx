@@ -11,30 +11,53 @@ import { AxiosUser } from "../../servies/user";
 
 const socket = io(import.meta.env.VITE_SOKET_IO, { autoConnect: false });
 
-const CHAT_ROOM_DATA = {
-  chatId: 1,
-  roomname: "2팀",
-  Member: 6,
-};
-
 const ChatRoom = () => {
-  const { id: chatId } = useParams();
+  const { id: roomId } = useParams();
 
-  if (!chatId) return;
+  if (!roomId) return;
 
-  const [userId, setUserIs] = useState<any>(null);
+  const [userId, setUserId] = useState<any>(null);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [chatsList, setChatList] = useState<Chats[]>();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState<string>("");
 
+  const [users, setUsers] = useState();
+  const [chatRoomInfo, setChatRoomInfo] = useState({
+    id: roomId,
+    chatName: "",
+    createAt: "",
+    updatedAt: "",
+    team: null,
+  });
+
+  /**현재 채팅방 정보 조회 */
+  const fetchChatIdInfo = async () => {
+    try {
+      const res = await AxiosChat.getChatIdInfo(roomId);
+      if (res.statusCode === 200) setChatRoomInfo(res.data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // todo 채팅방 유저 정보 조회 api 연결시 붙이기
+  /** 채팅 친구 목록 조회 */
+  const fetchGetUsers = async () => {
+    try {
+      const res = await AxiosUser.getChatUsersList();
+      if (res.status === 200) setUsers(res.data.data);
+    } catch (e: any) {
+      console.error(e);
+    }
+  };
+
   /** 채팅방 메시지 조회 */
   const fetchChatMessages = async () => {
     try {
-      const res = await AxiosChat.getChatMessages(chatId);
+      const res = await AxiosChat.getChatMessages(roomId);
       if (res.statusCode === 200) {
-        console.log(res.data);
         if (res.data) setMessages(res.data);
       }
     } catch (e) {
@@ -48,7 +71,7 @@ const ChatRoom = () => {
     if (e.key === "Enter" && e.nativeEvent.composed && e.nativeEvent.isComposing) {
       if (chatInput.trim() === "") return;
       socket.emit("sendMessage", {
-        chatId: chatId,
+        chatId: roomId,
         userId: userId,
         content: chatInput,
       });
@@ -58,9 +81,9 @@ const ChatRoom = () => {
   };
 
   /** 방 입장 */
-  const handleJoinChat = (chatId: string) => {
-    const id = chatId;
-    socket.emit("joinChat", { id });
+  const handleJoinChat = (roomId: string) => {
+    const chatId = roomId;
+    socket.emit("joinChat", { chatId });
   };
 
   // 로그인할 때 currentUser 값도 recoil에 저장 , useRecoilState로 가져와서 전역으로 관리하기
@@ -68,7 +91,7 @@ const ChatRoom = () => {
     try {
       const res = await AxiosUser.getCurrentUser();
       if (res.statusCode === 200) {
-        setUserIs(res.data?.id);
+        setUserId(res.data?.id);
       }
     } catch (e) {
       console.dir(e);
@@ -78,6 +101,7 @@ const ChatRoom = () => {
   const fetchGetChatList = async () => {
     try {
       const res = await AxiosChat.getChats();
+      console.log(res);
       if (res.statusCode === 200) setChatList(res.data);
     } catch (e: any) {
       console.error(e);
@@ -88,20 +112,18 @@ const ChatRoom = () => {
     setChatInput(e.target.value);
   };
 
-  useEffect(() => {}, [messages]);
-
   useEffect(() => {
+    fetchGetUsers();
+    fetchChatIdInfo();
     fetchChatMessages();
-  }, []);
-
-  useEffect(() => {
     fetchCurrentUser();
     fetchGetChatList();
+
     socket.connect();
 
     socket.on("connect", () => {
       console.log("Socket connected");
-      handleJoinChat(chatId);
+      handleJoinChat(roomId);
     });
 
     socket.on("disconnect", () => {
@@ -121,9 +143,6 @@ const ChatRoom = () => {
     });
 
     socket.on("receiveMessage", (newMessage: ChatMessage) => {
-      console.log("---------receiveMessage----------");
-      console.log(newMessage);
-      console.log("---------receiveMessage----------");
       setMessages(prevMessages => [...prevMessages, newMessage]);
     });
 
@@ -147,31 +166,36 @@ const ChatRoom = () => {
         <ChatList chatsList={chatsList} />
       </Section>
       <Section>
-        <ChatContainer id={String(CHAT_ROOM_DATA.chatId)}>
+        <ChatContainer id={String(chatRoomInfo?.id)}>
           <Header>
-            <SubTitle>⬅️</SubTitle>
-            <Title>{CHAT_ROOM_DATA.roomname}</Title>
-            <SubTitle>🧑‍💻</SubTitle>
+            {/* <SubTitle>⬅️</SubTitle> */}
+            <Title>{chatRoomInfo?.chatName}</Title>
+            {/* <SubTitle>🧑‍💻</SubTitle> */}
           </Header>
           <Body ref={chatContainerRef}>
             <MessagesWrapper>
               {messages.map(message => {
+                const isCurrentUser = message.user.id === userId;
                 return (
-                  <Wrapper key={message.id}>
-                    <NameWrapper>
-                      <Text className="track">
-                        [{message.user.track.trackName}
-                        {message.user.track.cardinalNo}]
-                      </Text>
-                      <UserName className="{user.role}">{message.user.realName}</UserName>
-                    </NameWrapper>
-                    <ChatItem>
-                      <Text>{message.content}</Text>
-                    </ChatItem>
-                    <DateWapper>
-                      <Text>{message.createdAt.split("T")[1].split(".")[0]}</Text>
-                    </DateWapper>
-                  </Wrapper>
+                  <Flex key={message.id} className={isCurrentUser ? "me" : ""}>
+                    <Wrapper>
+                      <NameWrapper className={isCurrentUser ? "me" : ""}>
+                        <Text className="track">
+                          [{message.user.track.trackName}
+                          {message.user.track.cardinalNo}]
+                        </Text>
+                        <UserName className={message.user.role}>{message.user.realName}</UserName>
+                      </NameWrapper>
+                      <>
+                        <ChatItem className={isCurrentUser ? "me" : ""}>
+                          <Text>{message.content}</Text>
+                        </ChatItem>
+                      </>
+                      <DateWapper className={isCurrentUser ? "me" : ""}>
+                        <Text className="date">{message.createdAt.split("T")[1].split(".")[0]}</Text>
+                      </DateWapper>
+                    </Wrapper>
+                  </Flex>
                 );
               })}
             </MessagesWrapper>
@@ -179,17 +203,19 @@ const ChatRoom = () => {
           <FooterTypingBar>
             <OptionBar></OptionBar>
             <TypingBar>
-              {/* commit 용 */}
               <Input onKeyDown={handleSendMessage} onChange={handleInputChange} name="chatInput" value={chatInput} placeholder="send Message" />
               <SendBtn></SendBtn>
             </TypingBar>
           </FooterTypingBar>
         </ChatContainer>
       </Section>
-
       <Section>
-        <TeamChatInfo />
-        <ChatRoomUsersList />
+        <ChatInfoWrapper>
+          <TeamChatInfo />
+          <UsersWrapper>
+            <ChatRoomUsersList users={users} />
+          </UsersWrapper>
+        </ChatInfoWrapper>
       </Section>
     </Container>
   );
@@ -197,21 +223,35 @@ const ChatRoom = () => {
 
 export default ChatRoom;
 
+const UsersWrapper = styled.div`
+  border: solid ${({ theme }) => theme.colors.gray1} 3px;
+  height: 450px;
+  flex-wrap: wrap;
+  overflow-y: auto;
+`;
+
 const SendBtn = styled.div``;
+
 const Container = styled.div`
-  width: 100vw;
+  width: 100%;
   display: flex;
   gap: 12px;
   justify-content: space-around;
 `;
 
 const Section = styled.div`
-  width: 33%;
-  padding: 0 12px;
+  width: 100%;
+  height: 100%;
+`;
+
+const ChatInfoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 `;
 const ChatContainer = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 588px;
 `;
 const Header = styled.div`
   display: flex;
@@ -224,12 +264,10 @@ const Header = styled.div`
 
 const Title = styled.h1``;
 
-const SubTitle = styled.h2``;
-
 const Body = styled.div`
   padding: 10px 20px;
   background-color: ${({ theme }) => theme.colors.gray1};
-  height: 530px;
+  height: 100%;
   flex-wrap: wrap;
   overflow-y: auto;
 `;
@@ -239,39 +277,58 @@ const MessagesWrapper = styled.div`
   flex: 1;
 `;
 const ChatItem = styled.div`
-  margin-top: 10px;
+  width: auto;
+  margin-top: 2px;
   padding: 6px;
-  border-radius: 0 16px 16px 16px;
+  border-radius: 0 8px 8px 8px;
   background-color: white;
-  border: 1px solid red;
-  &.currentUsers {
-    border-radius: 16px 16px 0px 16px;
+  &.me {
+    border-radius: 8px 8px 0px 8px;
   }
 `;
 
 const DateWapper = styled.div`
   display: flex;
   justify-content: end;
+  &.me {
+    justify-content: start;
+    margin-left: 4px;
+  }
+`;
+
+const Flex = styled.div`
+  width: 100%;
+  display: flex;
+  &.me {
+    justify-content: end;
+  }
 `;
 const Wrapper = styled.div`
   width: 86%;
+  margin: 2px;
 `;
 const NameWrapper = styled.div`
   display: flex;
   gap: 2px;
-  border: 1px solid red;
+  &.me {
+    justify-content: end;
+  }
 `;
+
 const Text = styled.p`
   &.track {
-    color: green;
+    color: ${({ theme }) => theme.colors.purple2};
     font-weight: 600;
+  }
+  &.date {
+    font-size: 0.8em;
+    color: ${({ theme }) => theme.colors.gray2};
   }
 `;
 
 const UserName = styled.p`
   font-weight: 600;
   &.RACER {
-    color: ${({ theme }) => theme.colors.purple2};
   }
   &.ADMIN {
     color: ${({ theme }) => theme.colors.green2};

@@ -11,16 +11,39 @@ import { AxiosUser } from "../../servies/user";
 import InfoBoard from "./components/InfoBoard";
 import { AxiosProject, ProjectInfo } from "../../servies/projects";
 import { loadingAtom } from "../../recoil/LoadingAtom";
+import MiniProfileModal from "../chat/components/MiniProfileModal";
 
 function Home() {
   const navigate = useNavigate();
   const myInfo = useRecoilValue(currentUserAtom);
+
+  const [userInfo, setUsetInfo] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const setLoading = useSetRecoilState(loadingAtom);
   const [error, setError] = useState("");
   const [users, setUsers] = useState();
   const [chatsList, setChatList] = useState<Chats[]>();
   const [projectsInfo, setProjectsInfo] = useState<ProjectInfo[]>([]);
+
+  const handleClick = (e: any) => {
+    console.dir(e.target.id);
+
+    if (!e.target.id) return alert("유저 프로필을 확인할 수 없습니다.");
+    fetchUserInfo(e.target.id);
+    setIsModalOpen(true);
+  };
+
+  /** 유저 미니프로필 조회 */
+  const fetchUserInfo = async (id: string) => {
+    try {
+      const res = await AxiosUser.getUsersPage(id);
+      console.log(res.data);
+      if (res.statusCode === 200) setUsetInfo(res.data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   /** 프로젝트 조회 */
   const fetchGetProjectIdInfo = async () => {
@@ -75,20 +98,29 @@ function Home() {
   }, [myInfo?.role]);
 
   return (
-    <Container>
-      <Section>
-        <UsersList users={users} myInfo={myInfo} error={error} />
-      </Section>
-      <Section>
-        <Button onClick={() => navigate(paths.CHAT_HOME)}>
-          <Text>채팅홈 바로가기</Text>
-        </Button>
-        <InfoBoard projectsInfo={projectsInfo} />
-      </Section>
-      <Section>
-        <ChatList chatsList={chatsList} error={error} />
-      </Section>
-    </Container>
+    <>
+      <MiniProfileModal
+        isModalOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
+        userData={userInfo}
+      />
+      <Container>
+        <Section>
+          <UsersList users={users} myInfo={myInfo} error={error} onClick={handleClick} />
+        </Section>
+        <Section>
+          <Button onClick={() => navigate(paths.CHAT_HOME)}>
+            <Text>채팅홈 바로가기</Text>
+          </Button>
+          <InfoBoard projectsInfo={projectsInfo} />
+        </Section>
+        <Section>
+          <ChatList chatsList={chatsList} error={error} />
+        </Section>
+      </Container>
+    </>
   );
 }
 

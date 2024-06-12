@@ -42,7 +42,6 @@ function InfoBoard({ projectsInfo }: InfoBoardProps) {
           </DataWrapper>
         </Wapper>
       </ProjectInfoWrapper>
-
       <OfficeHourWeekly />
     </Container>
   );
@@ -50,7 +49,10 @@ function InfoBoard({ projectsInfo }: InfoBoardProps) {
 
 export default InfoBoard;
 
-const Container = styled.div``;
+const Container = styled.div`
+  width: 100%;
+  height: 100%;
+`;
 
 const ProjectInfoWrapper = styled.div``;
 

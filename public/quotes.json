@@ -1,0 +1,64 @@
+{
+  "quotes": [
+    {
+      "quote": "A/B 시험은 두 번 진행하고 변경사항을 한 번에 배치하라.",
+      "author": "Anonymous"
+    },
+    {
+      "quote": "게으름이 자신의 가장 좋은 친구이다. 한 번에 자동화할 수 있는 것을 두 번 하지 마라.",
+      "author": "Anonymous"
+    },
+    {
+      "quote": "최고의 요청은 아예 요청하지 않는 것이다.",
+      "author": "Anonymous"
+    },
+    {
+      "quote": "자신의 데이터 구조를 파악하면 코드는 자연히 따라갈 것이다.",
+      "author": "Anonymous"
+    },
+    {
+      "quote": "버전 관리에 신경 써야 한다.",
+      "author": "Anonymous"
+    },
+    {
+      "quote": "측정하기 전에 절대로 최적화하지 말라.",
+      "author": "Anonymous"
+    },
+    {
+      "quote": "프로그래머에게 디버깅을 가르치면 평생 일할 수 있다.",
+      "author": "Chirag Gude"
+    },
+    {
+      "quote": "개발은 하루아침에 이뤄지지 않는다.",
+      "author": "Anonymous"
+    },
+    {
+      "quote": "개발은 기초작업이 중요하다.",
+      "author": "Anonymous"
+    },
+    {
+      "quote": "코드를 간소화하라. 읽고 이해하기 힘든 코드는 골치 아픈 잔재가 될 뿐이다.",
+      "author": "Anonymous"
+    },
+    {
+      "quote": "새로운 기술을 익혀라. 오래된 도구로는 새로운 문제를 해결할 수 없다.",
+      "author": "Anonymous"
+    },
+    {
+      "quote": "오픈소스 개발자는 개인의 명성을 추구하지 않는다.",
+      "author": "Anonymous"
+    },
+    {
+      "quote": "건강이 우선이다. 건강은 지속할 수 있는 힘이다.",
+      "author": "Anonymous"
+    },
+    {
+      "quote": "페이스북은 하루아침에 만들어지지 않았다.",
+      "author": "Anonymous"
+    },
+    {
+      "quote": "아키텍처와 디자인은 실행 시간의 핵심이 아니라 문제와 변화를 위한 대비책이다.",
+      "author": "Anonymous"
+    }
+  ]
+}

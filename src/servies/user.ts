@@ -59,21 +59,20 @@ export namespace AxiosUser {
   export const getMyInfo = async (): Promise<ResData<UsersInfo>> => {
     const url = `users/mypage`;
     const res = await api.get(url).then(res => res.data);
-    console.log(res);
     return res;
   };
 
   /** 미니프로필 */
-  export const getUsersMiniProfile = async () => {
-    const url = `users/miniprofile/:id`;
-    const res = await api.get(url);
+  export const getUsersMiniProfile = async (id: string): Promise<ResData<UsersInfo>> => {
+    const url = `users/miniprofiles/${id}`;
+    const res = await api.get(url).then(res => res.data);
     return res;
   };
 
   /** 다른 유저의 프로필 */
-  export const getUsersPage = async () => {
-    const url = `users/:id `;
-    const res = await api.get(url);
+  export const getUsersPage = async (id: string) => {
+    const url = `users/${id} `;
+    const res = await api.get(url).then(res => res.data);
     return res;
   };
 

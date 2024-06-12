@@ -1,136 +1,139 @@
 import styled from "styled-components";
+import { ChatInfo, ChatMessage } from "../../../servies/chat";
 
-const CHAT_ROOM_DATA = {
-  roomId: 1,
-  roomname: "Notice",
-  Member: 6,
-};
+interface NoticeChatProps {
+  chatRoomInfo?: ChatInfo;
+  messages?: ChatMessage[];
+  chatContainerRef?: any;
+}
 
-const MESSAGE = [
-  {
-    id: 1,
-    userTrack: "AI8",
-    realName: "진채영",
-    message: "엘리스 공지!! 만족도 조사~~",
-  },
-  {
-    id: 1,
-    userTrack: "AI8",
-    realName: "진채영",
-    message: "엘리스 공지!! 만족도 조사~~",
-  },
-  {
-    id: 1,
-    userTrack: "AI8",
-    realName: "진채영",
-    message: "엘리스 공지!! 만족도 조사~~",
-  },
-];
-
-// 시간순으로 채팅 출력??
-function NoticeChatRoom() {
+function NoticeChatRoom({ chatRoomInfo, messages, chatContainerRef }: NoticeChatProps) {
   return (
-    <Container id={String(CHAT_ROOM_DATA.roomId)}>
+    <ChatContainer id={String(chatRoomInfo?.id)}>
       <Header>
-        <SubTitle>⬅️</SubTitle>
-        <Title>{CHAT_ROOM_DATA.roomname}</Title>
-        <SubTitle>🧑‍💻</SubTitle>
+        <Title>{chatRoomInfo?.chatName}</Title>
       </Header>
-      <Body>
-        {MESSAGE.map(message => {
-          return (
-            <ChatItem>
-              <NameWrapper>
-                <Text className="track">{message.userTrack}</Text>
-                <Text className="user">{message.realName}</Text>
-              </NameWrapper>
-              <Text>{message.message}</Text>
-            </ChatItem>
-          );
-        })}
+      <Body ref={chatContainerRef}>
+        <MessagesWrapper>
+          {messages ? (
+            messages.map(message => {
+              return (
+                <Flex key={message.id}>
+                  <Wrapper>
+                    <NameWrapper>
+                      <Text className="track">
+                        [{message.user.track.trackName}
+                        {message.user.track.cardinalNo}]
+                      </Text>
+                      <UserName className={message.user.role}>{message.user.realName}</UserName>
+                    </NameWrapper>
+                    <>
+                      <ChatItem>
+                        <Text>{message.content}</Text>
+                      </ChatItem>
+                    </>
+                    <DateWapper>
+                      <Text className="date">{message.createdAt.split("T")[1].split(".")[0]}</Text>
+                    </DateWapper>
+                  </Wrapper>
+                </Flex>
+              );
+            })
+          ) : (
+            <Text>활성화된 공지채널이 없습니다.</Text>
+          )}
+        </MessagesWrapper>
       </Body>
-      <FooterTypingBar>
-        <OptionBar></OptionBar>
-        <TypingBar></TypingBar>
-      </FooterTypingBar>
-    </Container>
+    </ChatContainer>
   );
 }
 
 export default NoticeChatRoom;
 
-const Container = styled.div`
-  width: 420px;
-  height: 100vh;
+const ChatContainer = styled.div`
+  width: 100%;
 `;
-
 const Header = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  padding: 0 12px;
   height: 46px;
   background-color: ${({ theme }) => theme.colors.purple1};
 `;
 
 const Title = styled.h1``;
 
-const SubTitle = styled.h2``;
-
 const Body = styled.div`
-  border: 1px solid red;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
+  padding: 10px 20px;
   background-color: ${({ theme }) => theme.colors.gray1};
-  height: 530px;
-  padding: 20px;
+  height: 100%;
+  flex-wrap: wrap;
+  overflow-y: auto;
 `;
-// 남은 영역 차지하게 하는 css가 뭐지?
-
+const MessagesWrapper = styled.div`
+  display: flex;
+  flex-direction: column-reverse;
+  flex: 1;
+`;
 const ChatItem = styled.div`
-  margin-top: 10px;
+  width: auto;
+  margin-top: 2px;
   padding: 6px;
-  border-radius: 16px;
+  border-radius: 0 8px 8px 8px;
   background-color: white;
-  width: 100%;
+  &.me {
+    border-radius: 8px 8px 0px 8px;
+  }
 `;
 
+const DateWapper = styled.div`
+  display: flex;
+  justify-content: end;
+  &.me {
+    justify-content: start;
+    margin-left: 4px;
+  }
+`;
+
+const Flex = styled.div`
+  width: 100%;
+  display: flex;
+  &.me {
+    justify-content: end;
+  }
+`;
+const Wrapper = styled.div`
+  width: 86%;
+  margin: 2px;
+`;
 const NameWrapper = styled.div`
   display: flex;
   gap: 2px;
+  &.me {
+    justify-content: end;
+  }
 `;
+
 const Text = styled.p`
-  &.user {
-    color: blue;
-    font-weight: 600;
-  }
   &.track {
-    color: green;
+    color: ${({ theme }) => theme.colors.purple2};
     font-weight: 600;
+  }
+  &.date {
+    font-size: 0.8em;
+    color: ${({ theme }) => theme.colors.gray2};
   }
 `;
 
-const FooterTypingBar = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  height: 180px;
-  padding: 10px;
-  background-color: ${({ theme }) => theme.colors.purple1};
-`;
-
-const OptionBar = styled.div`
-  height: 54px;
-  width: 400px;
-  border-radius: 6px;
-  background-color: ${({ theme }) => theme.colors.purple2};
-`;
-const TypingBar = styled.div`
-  height: 88px;
-  width: 400px;
-  border-radius: 6px;
-  background-color: #fff;
+const UserName = styled.p`
+  font-weight: 600;
+  &.RACER {
+  }
+  &.ADMIN {
+    color: ${({ theme }) => theme.colors.green2};
+  }
+  &.COACH {
+    color: ${({ theme }) => theme.colors.blue2};
+  }
 `;

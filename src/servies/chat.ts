@@ -26,11 +26,9 @@ interface ChatUser {
 }
 export interface ChatMessage {
   id: string;
-  chat: ChatInfo;
   content: string;
   user: ChatUser;
   createdAt: string;
-  updatedAt: string;
 }
 
 export namespace AxiosChat {
@@ -44,6 +42,12 @@ export namespace AxiosChat {
   /** 이전 채팅 메시지 조회 */
   export const getChatMessages = async (chatId: string): Promise<ResData<ChatMessage[]>> => {
     const url = `chats/messages?chatId=${chatId}&pageSize=50`;
+    const res = await api.get(url).then(res => res.data);
+    return res;
+  };
+
+  export const getChatIdInfo = async (chatId: string) => {
+    const url = `chats/${chatId}`;
     const res = await api.get(url).then(res => res.data);
     return res;
   };

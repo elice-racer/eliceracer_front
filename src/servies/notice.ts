@@ -34,8 +34,8 @@ export namespace AxiosNotice {
 
   export const getNoticeList = async (page = 1, size = 10): Promise<ResData<Notices[]>> => {
     const url = `notices/all?page=${page}&pageSize=${size}`;
-    const res = await api.get(url);
-    return res.data;
+    const res = await api.get(url).then(res => res.data);
+    return res;
   };
 
   export const getNoticeId = async (noticeId: string | undefined): Promise<ResData<Notices>> => {

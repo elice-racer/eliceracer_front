@@ -19,9 +19,7 @@ export default CheckedVersion;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  width: 460px;
-  height: 300px;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  width: 100%;
 `;
 
 const Text = styled.p`

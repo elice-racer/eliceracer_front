@@ -2,13 +2,17 @@ import { useState } from "react";
 import styled from "styled-components";
 import { UsersInfo } from "../../../servies/user";
 import ProfileImg from "../../Profile/components/ProfileImg";
+import { useNavigate } from "react-router-dom";
+import { paths } from "../../../utils/path";
 
 interface UsersListProps {
   users: UsersInfo[] | undefined;
   myInfo: UsersInfo | null | undefined;
   error?: string;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
 }
-function UsersList({ users, myInfo, error }: UsersListProps) {
+function UsersList({ users, myInfo, error, onClick }: UsersListProps) {
+  const navigator = useNavigate();
   const [isClick, setIsClick] = useState(false);
 
   return (
@@ -26,7 +30,7 @@ function UsersList({ users, myInfo, error }: UsersListProps) {
         </SubItemWrapper>
       </TitleWrapper>
       <UsersListWrapper>
-        <UserWrapper key={myInfo?.id} onClick={() => {}}>
+        <UserWrapper key={myInfo?.id} onClick={() => navigator(paths.MENU)}>
           <ProfileImg />
           <NameWrapper>
             {myInfo?.track?.trackName ? (
@@ -43,13 +47,13 @@ function UsersList({ users, myInfo, error }: UsersListProps) {
         {error && <Text className="error">error</Text>}
         {users ? (
           users.map(user => (
-            <UserWrapper key={user.id} onClick={() => {}}>
+            <UserWrapper key={user.id} id={user.id ? user.id : ""} onClick={onClick}>
               <ProfileImg />
               <NameWrapper>
                 {user.track && <Text>{`[${user.track.trackName}${user.track.cardinalNo}]`}</Text>}
                 {user.role === "ADMIN" && <Text className={user.role}>[매니저]</Text>}
                 {user.role === "COACH" && <Text className={user.role}>[코치]</Text>}
-                <Text className={user.role}>{user.realName || "이름없음"}</Text>
+                <Text>{user.realName || "이름없음"}</Text>
               </NameWrapper>
               <CommentWrapper>
                 <Text>{user.comment}</Text>
@@ -70,6 +74,7 @@ export default UsersList;
 
 const Container = styled.div`
   width: 100%;
+  height: 100%;
 `;
 
 const TitleWrapper = styled.div`
@@ -126,6 +131,7 @@ const Title = styled.h1`
 `;
 
 const Text = styled.p`
+  z-index: -999;
   &.ADMIN {
     color: green;
   }
