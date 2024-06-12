@@ -8,6 +8,7 @@ import ChatRoomUsersList from "./components/ChatRoomUsersList";
 import TeamChatInfo from "./components/TeamChatInfo";
 import { AxiosChat, ChatMessage, Chats } from "../../servies/chat";
 import { AxiosUser } from "../../servies/user";
+import { AxiosOffieHour } from "../../servies/officehour";
 
 const socket = io(import.meta.env.VITE_SOKET_IO, { autoConnect: false });
 
@@ -31,6 +32,18 @@ const ChatRoom = () => {
     updatedAt: "",
     team: null,
   });
+
+  /** 팀 오피스아워 조회 */
+  const fetchOfficehourTeams = async () => {
+    try {
+      const res = await AxiosOffieHour.getTeamOfficehour("be171eb7-5ab0-440a-a5bf-f13854b88dd7");
+      console.log("------------팀 오피스아워 조회~~~");
+      console.log(res);
+      console.log("------------팀 오피스아워 조회~~~");
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   /**현재 채팅방 정보 조회 */
   const fetchChatIdInfo = async () => {
@@ -113,6 +126,7 @@ const ChatRoom = () => {
   };
 
   useEffect(() => {
+    fetchOfficehourTeams();
     fetchGetUsers();
     fetchChatIdInfo();
     fetchChatMessages();
@@ -180,10 +194,12 @@ const ChatRoom = () => {
                   <Flex key={message.id} className={isCurrentUser ? "me" : ""}>
                     <Wrapper>
                       <NameWrapper className={isCurrentUser ? "me" : ""}>
-                        <Text className="track">
-                          [{message.user.track.trackName}
-                          {message.user.track.cardinalNo}]
-                        </Text>
+                        {message.user.track?.cardinalNo && (
+                          <Text className="track">
+                            [{message.user.track.trackName}
+                            {message.user.track.cardinalNo}]
+                          </Text>
+                        )}
                         <UserName className={message.user.role}>{message.user.realName}</UserName>
                       </NameWrapper>
                       <>

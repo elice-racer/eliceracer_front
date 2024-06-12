@@ -35,6 +35,7 @@ function AdminProjectDetail() {
   /** 채팅방 생성 */
   const fetchCreateChatRoom = async (e: any) => {
     const teamId = e.target.id;
+    console.log(teamId);
     try {
       const res = await AxiosAdmin.createTeamChat({ teamId });
       if (res.statusCode === 200) return alert(`${res.data.chatName} 채팅이 생성되었습니다!`);

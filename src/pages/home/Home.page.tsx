@@ -12,6 +12,7 @@ import InfoBoard from "./components/InfoBoard";
 import { AxiosProject, ProjectInfo } from "../../servies/projects";
 import { loadingAtom } from "../../recoil/LoadingAtom";
 import MiniProfileModal from "../chat/components/MiniProfileModal";
+import { AxiosOffieHour } from "../../servies/officehour";
 
 function Home() {
   const navigate = useNavigate();
@@ -34,11 +35,30 @@ function Home() {
     setIsModalOpen(true);
   };
 
+  /** 프로젝트 오피스아워 조회 */
+  const fetchOfficehourProject = async () => {
+    try {
+      const res = await AxiosOffieHour.getProjectOfficehour("8ab92d20-9835-4bc8-9f17-1da291343b82");
+      console.log(res);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  /** 팀 오피스아워 조회 */
+  const fetchOfficehourTeams = async () => {
+    try {
+      const res = await AxiosOffieHour.getTeamOfficehour("f41806f5-aec4-4758-b6ce-3dcbb6e7f59e");
+      console.log(res);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   /** 유저 미니프로필 조회 */
   const fetchUserInfo = async (id: string) => {
     try {
       const res = await AxiosUser.getUsersPage(id);
-      console.log(res.data);
       if (res.statusCode === 200) setUsetInfo(res.data);
     } catch (e) {
       console.error(e);
@@ -89,6 +109,8 @@ function Home() {
   useEffect(() => {
     fetchGetChatList();
     fetchGetProjectIdInfo();
+    fetchOfficehourProject();
+    fetchOfficehourTeams();
     if (myInfo?.role === "RACER") fetchGetUsersList();
   }, []);
 

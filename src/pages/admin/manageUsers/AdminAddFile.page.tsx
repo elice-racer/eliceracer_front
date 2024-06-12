@@ -13,6 +13,8 @@ import UploadTeamBuilding from "./components/UploadTeamBuilding";
 //recoil
 import { loadingAtom } from "../../../recoil/LoadingAtom";
 import { useSetRecoilState } from "recoil";
+import UploadOfficehour from "./components/UploadOfficehour";
+import { AxiosProject, ProjectInfo } from "../../../servies/projects";
 
 export interface RowData {
   [key: string]: any;
@@ -30,6 +32,8 @@ const tabList = ["레이서 및 트랙 생성", "코치 멤버 등록", "프로�
 function AdminAddFile() {
   const setLoading = useSetRecoilState(loadingAtom);
 
+  const [projectId, setProjectId] = useState();
+  const [projects, setProjects] = useState<ProjectInfo[]>();
   const [teamsInfo, setTeamsInfo] = useState<TeamsInfo[]>();
   const [track, setTrack] = useState({
     trackName: "",
@@ -38,10 +42,24 @@ function AdminAddFile() {
   });
   const [data, setData] = useState<RowData[]>([]);
   const [error, setError] = useState("");
-  const [tabIdx, setTabIdx] = useState(0);
+  const [tabIdx, setTabIdx] = useState(3);
 
   const handleChangeTabIndex = (idx: number) => setTabIdx(idx);
 
+  /** 프로젝트 기수별 조회 */
+  const handleGetProjects = async () => {
+    try {
+      if (track.cardinalNo) {
+        const { trackName, cardinalNo } = track;
+        const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });
+        console.log(res);
+        if (res.statusCode === 200) setProjects(res.data);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  /** 코치 멤버 파일 업로드 */
   const handleUploadCoachesFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     setLoading(true);
@@ -172,6 +190,33 @@ function AdminAddFile() {
     }
   };
 
+  const handleUploadOfficehoutFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file)
+      try {
+        if (!projectId) return alert("projectId를 먼저 선택해주세요.");
+        const res = await AxiosAdmin.uploadOfficehourFile(file, projectId);
+        setLoading(true);
+        if (res.statusCode === 200) {
+          const reader = new FileReader();
+          reader.onload = e => {
+            const binaryStr = e.target?.result;
+            const wb = XLSX.read(binaryStr, { type: "binary" });
+            const sheetName = wb.SheetNames[0];
+            const ws = wb.Sheets[sheetName];
+            const jsonData: RowData[] = XLSX.utils.sheet_to_json(ws);
+            setData(jsonData);
+          };
+          reader.readAsBinaryString(file);
+          setLoading(false);
+          alert("파일이 성공적으로 업로드되었습니다.");
+        }
+      } catch (e) {
+        console.error(e);
+        setLoading(false);
+      }
+  };
+
   const handleChangeTrackInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setTrack(createTrack => ({ ...createTrack, [name]: value }));
@@ -217,6 +262,17 @@ function AdminAddFile() {
                 onFileUpload={handleUploadTeamBuildFile}
                 inputFileRef={inputFileRef}
                 onClear={handleClear}
+              />,
+              <UploadOfficehour
+                options={OPTIONS}
+                onChange={handleChangeTrackInfo}
+                track={track}
+                onFileUpload={handleUploadOfficehoutFile}
+                inputFileRef={inputFileRef}
+                onClear={handleClear}
+                onGetProjects={handleGetProjects}
+                projects={projects}
+                setProjectId={setProjectId}
               />,
             ][tabIdx]
           }

@@ -37,6 +37,16 @@ export namespace AxiosAdmin {
     const res = await api.post(url, teamId).then(res => res.data);
     return res;
   };
+
+  /** 오피스아워 파일 업로드 */
+  export const uploadOfficehourFile = async (file: File, projectId: string) => {
+    const form = new FormData();
+    form.append("file", file);
+    const url = `admins/officehours/${projectId}`;
+    const res = await api.post(url, form, configs).then(res => res.data);
+    return res;
+  };
+
   /** 코치 등록 파일 업로드 */
   export const uploadMembersCoachFile = async (file: File) => {
     const form = new FormData();
@@ -55,7 +65,7 @@ export namespace AxiosAdmin {
     return res;
   };
 
-  /** 유저 엑셀파일 업로드 */
+  /** 유저 파일 업로드 */
   export const uploadUserFile = async (file: File) => {
     const form = new FormData();
     form.append("file", file);
