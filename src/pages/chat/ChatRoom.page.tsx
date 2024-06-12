@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 import io from "socket.io-client";
@@ -23,6 +23,8 @@ const ChatRoom = () => {
   if (!chatId) return;
 
   const [userId, setUserIs] = useState<any>(null);
+
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const [chatsList, setChatList] = useState<Chats[]>();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState<string>("");
@@ -32,6 +34,7 @@ const ChatRoom = () => {
     try {
       const res = await AxiosChat.getChatMessages(chatId);
       if (res.statusCode === 200) {
+        console.log(res.data);
         if (res.data) setMessages(res.data);
       }
     } catch (e) {
@@ -44,7 +47,6 @@ const ChatRoom = () => {
     if (e.key !== "Enter") return;
     if (e.key === "Enter" && e.nativeEvent.composed && e.nativeEvent.isComposing) {
       if (chatInput.trim() === "") return;
-      console.log(chatInput);
       socket.emit("sendMessage", {
         chatId: chatId,
         userId: userId,
@@ -62,7 +64,6 @@ const ChatRoom = () => {
   };
 
   // 로그인할 때 currentUser 값도 recoil에 저장 , useRecoilState로 가져와서 전역으로 관리하기
-
   const fetchCurrentUser = async () => {
     try {
       const res = await AxiosUser.getCurrentUser();
@@ -133,6 +134,12 @@ const ChatRoom = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   return (
     <Container>
       <Section>
@@ -145,23 +152,23 @@ const ChatRoom = () => {
             <Title>{CHAT_ROOM_DATA.roomname}</Title>
             <SubTitle>🧑‍💻</SubTitle>
           </Header>
-          <Body>
+          <Body ref={chatContainerRef}>
             <MessagesWrapper>
               {messages.map(message => {
                 return (
                   <Wrapper>
-                    <ChatItem key={message.id}>
-                      <NameWrapper>
-                        <Text className="track">
-                          [트랙정보]
-                          {/* `{message.user.track.trackName}
+                    <NameWrapper>
+                      <Text className="track">
+                        [트랙정보]
+                        {/* `{message.user.track.trackName}
                       {message.user.track.cradinalNo}` */}
-                        </Text>
-                        <UserName className="{user.role}">
-                          아무개
-                          {/* {message.realName} */}
-                        </UserName>
-                      </NameWrapper>
+                      </Text>
+                      <UserName className="{user.role}">
+                        아무개
+                        {/* {message.realName} */}
+                      </UserName>
+                    </NameWrapper>
+                    <ChatItem key={message.id}>
                       <Text>{message.content}</Text>
                     </ChatItem>
                     <DateWapper>
@@ -239,7 +246,7 @@ const ChatItem = styled.div`
   padding: 6px;
   border-radius: 0 16px 16px 16px;
   background-color: white;
-  max-width: 100%;
+  border: 1px solid red;
   &.currentUsers {
     border-radius: 16px 16px 0px 16px;
   }
@@ -255,6 +262,7 @@ const Wrapper = styled.div`
 const NameWrapper = styled.div`
   display: flex;
   gap: 2px;
+  border: 1px solid red;
 `;
 const Text = styled.p`
   &.track {

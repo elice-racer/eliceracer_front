@@ -29,7 +29,11 @@ function UsersList({ users, myInfo, error }: UsersListProps) {
         <UserWrapper key={myInfo?.id} onClick={() => {}}>
           <ProfileImg />
           <NameWrapper>
-            {myInfo?.track?.trackName ? <Text>{`[${myInfo?.track.trackName}]`}</Text> : ""}
+            {myInfo?.track?.trackName ? (
+              <Text>{`[${myInfo?.track.trackName}${myInfo?.track.cardinalNo}]`}</Text>
+            ) : (
+              <Text className={myInfo?.role}>[{myInfo?.role}]</Text>
+            )}
             <Text className={myInfo?.role}>{myInfo?.realName || "이름없음"}</Text>
           </NameWrapper>
           <CommentWrapper>
@@ -42,7 +46,9 @@ function UsersList({ users, myInfo, error }: UsersListProps) {
             <UserWrapper key={user.id} onClick={() => {}}>
               <ProfileImg />
               <NameWrapper>
-                {user.track ? <Text>{`[${user.track.trackName}]`}</Text> : ""}
+                {user.track && <Text>{`[${user.track.trackName}${user.track.cardinalNo}]`}</Text>}
+                {user.role === "ADMIN" && <Text className={user.role}>[매니저]</Text>}
+                {user.role === "COACH" && <Text className={user.role}>[코치]</Text>}
                 <Text className={user.role}>{user.realName || "이름없음"}</Text>
               </NameWrapper>
               <CommentWrapper>
@@ -104,8 +110,7 @@ const Wrapper = styled.div`
 `;
 const NameWrapper = styled.div`
   width: 100%;
-  white-space: break-spaces;
-  overflow: hidden;
+  display: flex;
 `;
 
 const CommentWrapper = styled.div`

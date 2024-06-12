@@ -53,7 +53,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { loadingAtom } from "./recoil/LoadingAtom";
 import { tokenAtom } from "./recoil/TokenAtom";
 import MyAlert from "./pages/alert/MyAlert.Page";
-import AboutProjects from "./pages/myProjects/AboutProjects.page";
+import AboutProjects from "./pages/projects/AboutProjects.page";
 import UsersPage from "./pages/Profile/UsersPage.page";
 import ChatRoom from "./pages/chat/ChatRoom.page";
 import NoticeList from "./pages/notice/NoticeList.page";
