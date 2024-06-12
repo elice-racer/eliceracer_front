@@ -5,22 +5,24 @@ import ProfileImg from "../../Profile/components/ProfileImg";
 
 interface UsersListProps {
   users: UsersInfo[] | undefined;
-  myInfo: UsersInfo | undefined;
+  myInfo: UsersInfo | null | undefined;
+  error?: string;
 }
-function UsersList({ users, myInfo }: UsersListProps) {
+function UsersList({ users, myInfo, error }: UsersListProps) {
   const [isClick, setIsClick] = useState(false);
+
   return (
     <Container>
       <TitleWrapper>
         <Title>Team Elice</Title>
         <SubItemWrapper>
-          <Item
+          <SearchItem
             onClick={prev => {
               setIsClick(!prev);
             }}
           >
             {isClick ? <Input /> : <ItemText>검색 🔎</ItemText>}
-          </Item>
+          </SearchItem>
         </SubItemWrapper>
       </TitleWrapper>
       <UsersListWrapper>
@@ -34,18 +36,25 @@ function UsersList({ users, myInfo }: UsersListProps) {
             <Text>{myInfo?.comment}</Text>
           </CommentWrapper>
         </UserWrapper>
-        {users?.map(user => (
-          <UserWrapper key={user.id} onClick={() => {}}>
-            <ProfileImg />
-            <NameWrapper>
-              {user.track ? <Text>{`[${user.track.trackName}]`}</Text> : ""}
-              <Text className={user.role}>{user.realName || "이름없음"}</Text>
-            </NameWrapper>
-            <CommentWrapper>
-              <Text>{user.comment}</Text>
-            </CommentWrapper>
-          </UserWrapper>
-        ))}
+        {error && <Text className="error">error</Text>}
+        {users ? (
+          users.map(user => (
+            <UserWrapper key={user.id} onClick={() => {}}>
+              <ProfileImg />
+              <NameWrapper>
+                {user.track ? <Text>{`[${user.track.trackName}]`}</Text> : ""}
+                <Text className={user.role}>{user.realName || "이름없음"}</Text>
+              </NameWrapper>
+              <CommentWrapper>
+                <Text>{user.comment}</Text>
+              </CommentWrapper>
+            </UserWrapper>
+          ))
+        ) : (
+          <Wrapper>
+            <Text className="info">친구가 존재하지 않습니다.</Text>
+          </Wrapper>
+        )}
       </UsersListWrapper>
     </Container>
   );
@@ -60,11 +69,10 @@ const Container = styled.div`
 const TitleWrapper = styled.div`
   padding: 2px 12px;
   align-items: center;
-  width: 500px;
+  width: 100%;
   height: 50px;
   display: flex;
   justify-content: space-between;
-  border: red solid 1px;
 `;
 
 const SubItemWrapper = styled.div``;
@@ -81,10 +89,21 @@ const UserWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 2px 12px;
+  cursor: pointer;
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
 `;
 
+const Wrapper = styled.div`
+  height: 80px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+`;
 const NameWrapper = styled.div`
-  width: 160px;
+  width: 100%;
   white-space: break-spaces;
   overflow: hidden;
 `;
@@ -111,8 +130,16 @@ const Text = styled.p`
   &.COACH {
     color: orange;
   }
+  &.error {
+    color: tomato;
+  }
+  &.info {
+    color: ${({ theme }) => theme.colors.gray2};
+  }
 `;
-const Item = styled.div`
-cursor`;
+
+const SearchItem = styled.div`
+  cursor: pointer;
+`;
 
 const ItemText = styled.p``;

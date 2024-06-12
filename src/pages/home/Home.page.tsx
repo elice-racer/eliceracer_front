@@ -1,19 +1,68 @@
 import styled from "styled-components";
-// import ChatList from "../chat/components/ChatList";
-// import UsersList from "../chat/components/UsersList";
+import ChatList from "../chat/components/ChatList";
+import UsersList from "../chat/components/UsersList";
 import { paths } from "../../utils/path";
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { currentUserAtom } from "../../recoil/UserAtom";
+import { useEffect, useState } from "react";
+import { AxiosChat, Chats } from "../../servies/chat";
+import { AxiosUser } from "../../servies/user";
+import InfoBoard from "./components/InfoBoard";
 
 function Home() {
   const navigate = useNavigate();
+  const myInfo = useRecoilValue(currentUserAtom);
+
+  const [error, setError] = useState("");
+  const [users, setUsers] = useState();
+  const [chatsList, setChatList] = useState<Chats[]>();
+
+  /** 유저 리스트 조회 */
+  const fetchGetUsersList = async () => {
+    try {
+      const res = await AxiosUser.getChatUsersList();
+      if (res.status === 200) setUsers(res.data.data);
+    } catch (e: any) {
+      console.error(e);
+      setError(e.response.data.message);
+    }
+  };
+
+  const fetchGetChatList = async () => {
+    try {
+      const res = await AxiosChat.getChats();
+      console.log("-----------");
+      console.log(res);
+      if (res.statusCode === 200) setChatList(res.data);
+    } catch (e: any) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    fetchGetChatList();
+  }, []);
+
+  useEffect(() => {
+    if (myInfo?.role === "RACER") fetchGetUsersList();
+    // todo 관리자, 코치 채팅룸 조회 api 연결
+  }, [myInfo?.role]);
+
   return (
     <Container>
       <Section>
-        <Button onClick={() => navigate(paths.CHAT_HOME)}>채팅홈 바로가기</Button>
-        {/* <UsersList /> */}
+        <UsersList users={users} myInfo={myInfo} error={error} />
       </Section>
-      <Section>{/* <ChatList chatsList={chatsList} /> */}</Section>
-      <Section></Section>
+      <Section>
+        <Button onClick={() => navigate(paths.CHAT_HOME)}>
+          <Text>채팅홈 바로가기</Text>
+        </Button>
+        <InfoBoard />
+      </Section>
+      <Section>
+        <ChatList chatsList={chatsList} error={error} />
+      </Section>
     </Container>
   );
 }
@@ -24,18 +73,34 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
+  gap: 4px;
 `;
 
 const Section = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 100%;
 `;
 
 const Button = styled.div`
-  text-align: center;
-  width: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 34px;
   background-color: ${({ theme }) => theme.colors.purple1};
   padding: 3px 5px;
+  margin: 6px 0;
   border-radius: 8px;
+  cursor: pointer;
+  &:hover {
+    color: #fff;
+    background-color: ${({ theme }) => theme.colors.purple2};
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+const Text = styled.p`
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.gray3};
 `;

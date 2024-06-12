@@ -3,7 +3,7 @@ import { paths } from "../../utils/path";
 import { Link, useNavigate } from "react-router-dom";
 import SelectBox from "./manageUsers/components/SelectBox";
 import { useEffect, useState } from "react";
-import { AxiosAdmin, ProjectInfo } from "../../servies/admin";
+import { AxiosProject, ProjectInfo } from "../../servies/projects";
 
 const OptTrack = [
   { value: "", name: "트랙" },
@@ -28,7 +28,7 @@ function AdminProject() {
 
   const fetchGetAllProjects = async () => {
     try {
-      const res = await AxiosAdmin.getAllProjectsList();
+      const res = await AxiosProject.getAllProjectsList();
       if (res.statusCode === 200) setProjects(res.data);
     } catch (e) {
       console.error(e);
