@@ -90,7 +90,7 @@ export namespace AxiosAdmin {
 
   /** 트랙 + 기수로 조회 */
   export const getTrackTeamList = async (TeamsInfo: GetTrackTeamsQuery): Promise<ResData<TeamsInfo[]>> => {
-    const url = `teams/cardinals/all?pageSize=10&trackName=${TeamsInfo.trackName}&cardinalNo=${TeamsInfo.cardinalNo}&lastRound=${TeamsInfo.lastRound}&lastTeamNumber=1`;
+    const url = `teams/cardinals/all?pageSize=10&trackName=${TeamsInfo.trackName}&cardinalNo=${TeamsInfo.cardinalNo}&lastRound=${TeamsInfo.lastRound}`;
     const res = await api.get(url).then(res => res.data);
     return res;
   };
