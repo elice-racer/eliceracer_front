@@ -25,7 +25,6 @@ function MyPage() {
   const fetchMyInfo = async () => {
     try {
       const res = await AxiosUser.getMyPage();
-      console.log(res.data);
       if (res.statusCode === 200) setUsersInfo(res.data);
     } catch (e) {
       console.error(e);
@@ -143,7 +142,6 @@ const Container = styled.div`
   align-items: center;
   gap: 8px;
   width: 100%;
-  margin-top: 68px;
 `;
 
 const Header = styled.div`

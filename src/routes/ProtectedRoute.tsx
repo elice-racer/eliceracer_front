@@ -53,6 +53,8 @@ const Container = styled.div`
   position: relative;
   width: 100dvw;
   height: 100%;
+
+  margin-top: 68px;
 `;
 
 const Wrapper = styled.div``;

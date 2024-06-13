@@ -52,7 +52,7 @@ function AdminNoticeList() {
 export default AdminNoticeList;
 
 const Container = styled.div`
-  width: 100vw;
+  width: 100%;
   display: flex;
   justify-content: center;
 `;

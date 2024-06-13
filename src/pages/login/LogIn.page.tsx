@@ -65,8 +65,6 @@ export default function Login() {
       setLoading(false);
     } catch (e: any) {
       const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
-      console.log(e.response);
-      // snackbarOpen({ message: e.response?.data?.message || "에러가 발생했습니다.", open: true });
       setError(errorMessage);
       setLoading(false);
     }
@@ -130,7 +128,6 @@ const Wrapper = styled.div`
   max-width: 540px;
   margin: 0 auto;
   height: 100%;
-  margin-top: 68px;
   /* @media ${({ theme }) => theme.device.tablet} {
     background-color: blue;
   }

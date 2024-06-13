@@ -59,13 +59,13 @@ function AdminAddNotice() {
 export default AdminAddNotice;
 
 const Container = styled.div`
-  width: 100vw;
+  width: 100%;
   display: flex;
   justify-content: center;
 `;
 
 const Flex = styled.div`
-  width: 60vw;
+  width: 60%;
 `;
 
 const TitleBar = styled.div`

@@ -296,7 +296,6 @@ const Container = styled.div`
   align-items: center;
   gap: 8px;
   width: 100%;
-  margin-top: 68px;
 `;
 
 const Header = styled.div`

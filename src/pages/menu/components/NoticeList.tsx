@@ -118,7 +118,7 @@ const Wrapper = styled.div``;
 const NoticesWrapper = styled.div`
   padding: 10px 8px;
 
-  height: 100px;
+  height: 240px;
 
   overflow-y: scroll;
 

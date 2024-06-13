@@ -58,7 +58,6 @@ function AdminAddFile() {
       if (track.cardinalNo) {
         const { trackName, cardinalNo } = track;
         const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });
-        console.log(res);
         if (res.statusCode === 200) setProjects(res.data);
       }
     } catch (e) {
@@ -101,7 +100,6 @@ function AdminAddFile() {
     try {
       const { trackName, cardinalNo, lastRound } = track;
       const res = await AxiosAdmin.getTrackTeamList({ trackName, cardinalNo, lastRound });
-      console.log(res);
       setLoading(true);
       if (res.statusCode === 200) {
         if (res.data?.length === 0) setError("생성된 팀을 확인할 수 없습니다.");

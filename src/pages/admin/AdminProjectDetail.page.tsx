@@ -21,21 +21,27 @@ function AdminProjectDetail() {
       console.error(e);
     }
   };
+  /** 해당 프로젝트 팀 조회 */
   const fetchGetProjectsTeams = async () => {
     try {
       const res = await AxiosAdmin.getProjectDetail(id);
+      console.log(res);
       if (res.statusCode === 200) {
         setTeams(res.data);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
+
+      if (e.response.statue === 409) {
+        console.log("이미 존재하는 팀 채팅방입니다.");
+        return;
+      }
     }
   };
 
   /** 채팅방 생성 */
   const fetchCreateChatRoom = async (e: any) => {
     const teamId = e.target.id;
-    console.log(teamId);
     try {
       const res = await AxiosAdmin.createTeamChat({ teamId });
       if (res.statusCode === 200) return alert(`${res.data.chatName} 채팅이 생성되었습니다!`);
@@ -92,6 +98,9 @@ const Flex = styled.div`
 const TitleWrapper = styled.div`
   display: flex;
   gap: 4px;
+
+  font-weight: bold;
+  font-size: 1.4rem;
 `;
 
 const TeamsListWrapper = styled.div`

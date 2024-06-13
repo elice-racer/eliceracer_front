@@ -1,14 +1,21 @@
-import styled from "styled-components";
-import UsersMiniProfile from "../../components/user/UsersMiniProfile";
-import { useRecoilValue } from "recoil";
-import { currentUserAtom } from "../../recoil/UserAtom";
-import { AxiosUser, UsersInfo } from "../../servies/user";
 import { useEffect, useState } from "react";
+
+import styled from "styled-components";
+
+// components
+import UsersMiniProfile from "../../components/user/UsersMiniProfile";
+import NoticeList from "./components/NoticeList";
+import MyTrackInfo from "./components/MyTrackInfo";
 import OfficeHourWeekly from "../../components/officehour/OfficehourWeekly";
 import CheckedVersion from "../settings/components/CheckedVersion";
-import NoticeList from "./components/NoticeList";
+
+// recoil
+import { useRecoilValue } from "recoil";
+import { currentUserAtom } from "../../recoil/UserAtom";
+
+// api
 import { AxiosNotice, Notice } from "../../servies/notice";
-import MyTrackInfo from "./components/MyTrackInfo";
+import { AxiosUser, UsersInfo } from "../../servies/user";
 
 // todo 오늘날짜 기준으로 올라온 공지면 new 배찌 달아주기
 function MenuHome() {
@@ -79,7 +86,7 @@ function MenuHome() {
           </QuotesWrapper>
         </TitleWrapper>
         <MyTrackInfo myTrackInfo={myTrackInfo} myProjectInfo={myProjectInfo} />
-        <OfficeHourWeekly />
+        <OfficeHourWeekly officehours={[]} />
 
         {/* <UsersMenu /> */}
       </MainSection>
@@ -100,7 +107,6 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   gap: 6px;
-  margin-top: 68px;
 
   @media ${({ theme }) => theme.device.tablet} {
     flex-direction: column;
@@ -129,7 +135,8 @@ const TitleWrapper = styled.div`
   width: 100%;
   height: 140px;
   max-height: 200px;
-  background-color: ${({ theme }) => theme.colors.purple1};
+
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const QuotesWrapper = styled.div`
