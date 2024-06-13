@@ -1,5 +1,7 @@
+import ComingSoonPage from "../../components/commons/CommingSoon";
+
 function MyAlert() {
-  return <div>MyAlert</div>;
+  return <ComingSoonPage />;
 }
 
 export default MyAlert;

@@ -15,12 +15,17 @@ const device = {
 } as const;
 
 const colors = {
-  purple0: "#C4D0F3",
-  purple1: "#EEEAFE",
-  purple2: "#B67BFF",
-  purple3: "#954AF5",
+  purple0: "#f2effb",
+  purple1: "#dfd6ff",
+  purple2: "#c6b3ff",
+  purple3: "#aa8dff",
   purple4: "#7353EA",
-  purple5: "#6700E6",
+  purple5: "#8f6cff",
+  purple6: "#804cff",
+  purple7: "#7126f4",
+  purple8: "#6700e6",
+  purple9: "#4700a8",
+  purple10: "#230054",
   blue1: "#E7F8F9",
   blue2: "#32C7DB",
   blue3: "#60B5C5",

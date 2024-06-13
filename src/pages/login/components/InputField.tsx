@@ -5,7 +5,6 @@ interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
 }
-// forWordRef 추가
 const InputFiled = forwardRef<HTMLInputElement, InputFieldProps>(({ label, error, ...props }, ref) => {
   return (
     <Wrapper>

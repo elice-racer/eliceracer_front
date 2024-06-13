@@ -24,7 +24,7 @@ import CreateAccount from "./pages/login/CreateAccount.page";
 import FindId from "./pages/login/FindId.page";
 import FindPW from "./pages/login/FindPW.page";
 
-import Home from "./pages/home/Home.page";
+import Lounge from "./pages/home/Lounge.page";
 import ChatHome from "./pages/chat/ChatHome.page";
 import MenuHome from "./pages/menu/MenuHome.page";
 import MyPage from "./pages/Profile/MyPage.page";
@@ -77,7 +77,7 @@ const router = createBrowserRouter([
     path: "",
     element: <ProtectedRoute />,
     children: [
-      { path: paths.HOME, element: <Home /> },
+      { path: paths.HOME, element: <Lounge /> },
       { path: paths.CHAT_HOME, element: <ChatHome /> },
       { path: paths.CHAT_ROOM, element: <ChatRoom /> },
       { path: paths.USERS_PAGE, element: <UsersPage /> },
@@ -148,6 +148,7 @@ function App() {
 
   const snackbar = useRecoilValue(snackbarAtom);
 
+  /** 현재 유저정보 가져오기 */
   const fetchCurrentUser = async (access_token: string | null) => {
     try {
       if (access_token) {

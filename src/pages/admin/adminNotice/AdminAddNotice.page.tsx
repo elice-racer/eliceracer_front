@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { paths } from "../../../utils/path";
-import { AxiosNotice, Notice } from "../../../servies/notice";
+import { AxiosNotice, CreateNotice } from "../../../servies/notice";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -11,7 +11,7 @@ function AdminAddNotice() {
   const [error, setError] = useState("");
   const setLoading = useSetRecoilState(loadingAtom);
   const navigate = useNavigate();
-  const [noticeData, setNoticeData] = useState<Notice>({ title: "", content: "" });
+  const [noticeData, setNoticeData] = useState<CreateNotice>({ title: "", content: "" });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

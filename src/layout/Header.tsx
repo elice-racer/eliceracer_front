@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { paths } from "../utils/path";
@@ -7,8 +8,15 @@ import { tokenAtom } from "../recoil/TokenAtom";
 import { useSetRecoilState } from "recoil";
 import { AxiosAuth } from "../servies/auth";
 import { currentUserAtom } from "../recoil/UserAtom";
+import MobileHeader from "./MobileHeader";
 
 const Header = ({ adminMenu }: any) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(prev => !prev);
+  };
+
   const navigate = useNavigate();
 
   const setToken = useSetRecoilState(tokenAtom);
@@ -45,10 +53,10 @@ const Header = ({ adminMenu }: any) => {
             <Link to={paths.MENU}>메뉴</Link>
           </LinkItem>
           <LinkItem>
-            <Link to={"https://elice-lab.imweb.me/"}>엘리스랩</Link>
+            <a href={"https://elice-lab.imweb.me/"}>엘리스랩</a>
           </LinkItem>
           <LinkItem>
-            <Link to={"https://elice.io/ko"}>엘리스홈</Link>
+            <a href={"https://elice.io/ko"}>엘리스홈</a>
           </LinkItem>
           <LinkItem>
             <Link to={paths.MYPAGE}>마이페이지</Link>
@@ -59,6 +67,39 @@ const Header = ({ adminMenu }: any) => {
           </LinkItem>
         </Wrapper>
       </Flex>
+
+      <MobileHeader isOpen={isOpen} toggleMenu={toggleMenu}>
+        <ul>
+          {adminMenu && (
+            <li>
+              <LinkItem>
+                <Link to={paths.ADMIN}>관리</Link>
+              </LinkItem>
+            </li>
+          )}
+          <li>
+            <LinkItem>
+              <Link to={paths.MENU}>메뉴</Link>
+            </LinkItem>
+          </li>
+          <li>
+            <a href={"https://elice-lab.imweb.me/"}>엘리스랩</a>
+          </li>
+          <li>
+            <a href={"https://elice.io/ko"}>엘리스홈</a>
+          </li>
+          <li>
+            <LinkItem>
+              <Link to={paths.MYPAGE}>마이페이지</Link>
+            </LinkItem>
+          </li>
+          <li>
+            <LinkItem onClick={handleClickLogout}>
+              <>로그아웃</>
+            </LinkItem>
+          </li>
+        </ul>
+      </MobileHeader>
     </Container>
   );
 };
@@ -73,12 +114,18 @@ const Img = styled.img`
   left: 0px;
   top: 50%;
   transform: translateY(-50%);
+
+  @media ${({ theme }) => theme.device.mobileL} {
+    width: 60px;
+  }
 `;
 
 const Container = styled.header`
   width: 100%;
   background-color: #fff;
-  position: relative;
+  position: fixed;
+  z-index: 1000;
+  top: 0;
 `;
 
 const Flex = styled.div`
@@ -88,6 +135,10 @@ const Flex = styled.div`
   height: 56px;
   width: 100%;
   justify-content: flex-end;
+
+  @media ${({ theme }) => theme.device.mobileL} {
+    display: none;
+  }
 `;
 
 const Relative = styled(Link)`
@@ -108,13 +159,7 @@ const LinkItem = styled.p`
   color: #000;
 
   cursor: pointer;
-  /* background-color: blue; */
-
-  /* &::after {
-    content: "";
-    width: 1px;
-    height: 4px;
-    background-color: red;
-    padding: 1px;
-  } */
+  @media ${({ theme }) => theme.device.mobileL} {
+    width: 40px;
+  }
 `;

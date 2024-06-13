@@ -1,5 +1,6 @@
 import styled from "styled-components";
-
+import { useNavigate } from "react-router-dom";
+import { paths, imgPaths } from "../utils/path";
 interface MobileHeaderProps {
   toggleMenu: () => void;
   isOpen: boolean;
@@ -7,6 +8,15 @@ interface MobileHeaderProps {
 }
 
 export default function MobileHeader({ toggleMenu, isOpen, children }: MobileHeaderProps) {
+  const navigate = useNavigate();
+
+  const handleLogoClick = () => {
+    toggleMenu();
+
+    setTimeout(() => {
+      navigate(paths.HOME);
+    }, 300);
+  };
   return (
     <>
       <HamburgerButton onClick={toggleMenu}>
@@ -15,6 +25,11 @@ export default function MobileHeader({ toggleMenu, isOpen, children }: MobileHea
         <span />
       </HamburgerButton>
       <MenuPanel isOpen={isOpen}>
+        <ImgWrapper>
+          <Absolute>
+            <LogoImage src={imgPaths.ELICE_LOGO} alt="logo" onClick={handleLogoClick} />
+          </Absolute>
+        </ImgWrapper>
         <CloseButton onClick={toggleMenu}>X</CloseButton>
         <MenuContent>{children}</MenuContent>
       </MenuPanel>
@@ -45,18 +60,36 @@ const HamburgerButton = styled.div`
   }
 `;
 
+const LogoImage = styled.img`
+  width: 120px;
+`;
 const MenuPanel = styled.div<{ isOpen: boolean }>`
   position: fixed;
   top: 0;
   right: 0;
+
   width: 300px;
   height: 100%;
+
   background: #fff;
   color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
   transform: ${props => (props.isOpen ? "translateX(0)" : "translateX(100%)")};
   transition: transform 0.3s ease-in-out;
+
   z-index: 999;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+`;
+
+const ImgWrapper = styled.div`
+  position: relative;
+  width: 100%;
+`;
+
+const Absolute = styled.div`
+  position: absolute;
+  top: 12px;
+  right: 12px;
 `;
 
 const CloseButton = styled.button`

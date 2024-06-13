@@ -71,6 +71,7 @@ const imgPaths = {
   FILE_UPLOAD: "/imgs/file-upload.png",
   SUCCESS_CREATE_USERS: "/imgs/success.png",
   EMPTY: "/imgs/empty.png",
+  NO_AVAILABLE: "/imgs/no-available.png",
 };
 
 /**

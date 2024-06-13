@@ -14,7 +14,7 @@ import { loadingAtom } from "../../recoil/LoadingAtom";
 import MiniProfileModal from "../chat/components/MiniProfileModal";
 import { AxiosOffieHour } from "../../servies/officehour";
 
-function Home() {
+function Lounge() {
   const navigate = useNavigate();
   const myInfo = useRecoilValue(currentUserAtom);
 
@@ -144,6 +144,12 @@ function Home() {
 
       <Container>
         <Section>
+          <Button onClick={() => navigate(paths.CHAT_HOME)}>
+            <Text>채팅홈 바로가기</Text>
+          </Button>
+          <InfoBoard projectsInfo={projectsInfo} />
+        </Section>
+        <Section>
           <TitleWrapper>
             <Title>Team Elice</Title>
             <SubItemWrapper>
@@ -158,16 +164,10 @@ function Home() {
                   }
                 }}
               />
-              <ItemText onClick={fetchSearchUserList}>🔎</ItemText>
+              <SearchIcon onClick={fetchSearchUserList}>🔎</SearchIcon>
             </SubItemWrapper>
           </TitleWrapper>
           <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />
-        </Section>
-        <Section>
-          <Button onClick={() => navigate(paths.CHAT_HOME)}>
-            <Text>채팅홈 바로가기</Text>
-          </Button>
-          <InfoBoard projectsInfo={projectsInfo} />
         </Section>
         <Section>
           <ChatList chatsList={chatsList} error={error} />
@@ -177,13 +177,20 @@ function Home() {
   );
 }
 
-export default Home;
+export default Lounge;
 
 const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
   gap: 4px;
+
+  @media ${({ theme }) => theme.device.tablet} {
+    flex-direction: column;
+    margin-top: 68px;
+  }
+
+  margin-top: 68px;
 `;
 
 const Section = styled.div`
@@ -195,7 +202,7 @@ const Button = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 34px;
+  height: 48px;
   background-color: ${({ theme }) => theme.colors.purple1};
   padding: 3px 5px;
   margin: 6px 0;
@@ -245,7 +252,7 @@ const Title = styled.h1`
   color: ${({ theme }) => theme.colors.gray2};
 `;
 
-const ItemText = styled.p`
+const SearchIcon = styled.p`
   position: absolute;
   top: 50%;
   right: 12px;

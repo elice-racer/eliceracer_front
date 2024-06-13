@@ -1,5 +1,7 @@
+import ComingSoonPage from "../../components/commons/CommingSoon";
+
 function UsersPage() {
-  return <div>UsersPage</div>;
+  return <ComingSoonPage />;
 }
 
 export default UsersPage;

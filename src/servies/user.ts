@@ -56,7 +56,7 @@ export namespace AxiosUser {
   };
 
   /** 마이페이지 조회 */
-  export const getMyInfo = async (): Promise<ResData<UsersInfo>> => {
+  export const getMyPage = async (): Promise<ResData<UsersInfo>> => {
     const url = `users/mypage`;
     const res = await api.get(url).then(res => res.data);
     return res;

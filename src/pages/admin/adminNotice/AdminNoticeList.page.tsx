@@ -1,12 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { paths } from "../../../utils/path";
-import { AxiosNotice, Notices } from "../../../servies/notice";
+import { AxiosNotice, Notice } from "../../../servies/notice";
 import { useEffect, useState } from "react";
 
 function AdminNoticeList() {
   const navigate = useNavigate();
-  const [notices, setNotices] = useState<Notices[]>();
+  const [notices, setNotices] = useState<Notice[]>();
   const fetchGetNoticeList = async () => {
     const res = await AxiosNotice.getNoticeList(1, 10);
     if (res.statusCode === 200) {

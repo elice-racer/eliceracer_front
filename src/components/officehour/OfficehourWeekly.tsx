@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import EmptyImage from "../commons/EmptyImage";
 
 interface OfficeHourWeeklyProps {
   officehours?: any;
@@ -10,7 +11,16 @@ function OfficeHourWeekly({ officehours }: OfficeHourWeeklyProps) {
         <TitleWrapper>
           <Title>오피스아워 일정</Title>
         </TitleWrapper>
-        <DataWrapper>{officehours ? "" : <Text className="info">현재 등록된 오피스아워 일정이 없습니다.</Text>}</DataWrapper>
+        <DataWrapper>
+          {officehours ? (
+            ""
+          ) : (
+            <EmptyWrapper>
+              <EmptyImage />
+              <Text className="info">현재 등록된 오피스아워 일정이 없습니다.</Text>
+            </EmptyWrapper>
+          )}
+        </DataWrapper>
       </Wapper>
     </Container>
   );
@@ -22,6 +32,15 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+`;
+
+const EmptyWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-direction: column;
 `;
 
 const Wapper = styled.div`

@@ -120,7 +120,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 12px;
   height: 100%;
-  margin-top: 50px;
+  margin-top: 68px;
   /* @media ${({ theme }) => theme.device.tablet} {
     background-color: blue;
   }

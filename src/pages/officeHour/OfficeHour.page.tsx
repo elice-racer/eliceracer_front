@@ -1,5 +1,7 @@
+import ComingSoonPage from "../../components/commons/CommingSoon";
+
 function OfficeHour() {
-  return <div>OfficeHour</div>;
+  return <ComingSoonPage />;
 }
 
 export default OfficeHour;

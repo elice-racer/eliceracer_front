@@ -1,5 +1,7 @@
+import ComingSoonPage from "../../components/commons/CommingSoon";
+
 function AboutProjects() {
-  return <div>AboutProjects.page</div>;
+  return <ComingSoonPage />;
 }
 
 export default AboutProjects;

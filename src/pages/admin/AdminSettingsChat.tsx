@@ -1,5 +1,7 @@
+import ComingSoonPage from "../../components/commons/CommingSoon";
+
 function AdminSettingsChat() {
-  return <div>AdminSettingsChat</div>;
+  return <ComingSoonPage />;
 }
 
 export default AdminSettingsChat;

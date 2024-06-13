@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import UsersMenu from "./components/UsersMenu";
 import UsersMiniProfile from "../../components/user/UsersMiniProfile";
 import { useRecoilValue } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
@@ -7,8 +6,8 @@ import { AxiosUser, UsersInfo } from "../../servies/user";
 import { useEffect, useState } from "react";
 import OfficeHourWeekly from "../../components/officehour/OfficehourWeekly";
 import CheckedVersion from "../settings/components/CheckedVersion";
-import NoticeList from "./components/Notice";
-import { AxiosNotice, Notices } from "../../servies/notice";
+import NoticeList from "./components/NoticeList";
+import { AxiosNotice, Notice } from "../../servies/notice";
 import MyTrackInfo from "./components/MyTrackInfo";
 
 // todo 오늘날짜 기준으로 올라온 공지면 new 배찌 달아주기
@@ -24,19 +23,22 @@ function MenuHome() {
   };
   const [quote, setQuote] = useState({ quote: "", author: "" });
 
-  const [notices, setNotices] = useState<Notices[]>();
-  const fetchGetUsers = async () => {
+  const [notices, setNotices] = useState<Notice[]>([]);
+
+  /** 마이페이지 정보 가져오기 */
+  const fetchMyPage = async () => {
     if (userInfo) {
       setUserId(userInfo.id);
     }
     try {
-      const res = await AxiosUser.getMyInfo();
+      const res = await AxiosUser.getMyPage();
       if (res.statusCode === 200) setUserdata(res.data);
     } catch (e) {
       console.error(e);
     }
   };
 
+  /** 개발자 격언 들고오기 */
   const fetchQuote = async () => {
     try {
       const res = await fetch("/quotes.json");
@@ -48,10 +50,12 @@ function MenuHome() {
     }
   };
 
+  /** 공지사항 들고오기 */
   const fetchNotices = async () => {
     try {
       const res = await AxiosNotice.getNoticeList();
       console.log(res);
+      if (!res.data) return;
       if (res.statusCode === 200) setNotices(res.data);
     } catch (e) {
       console.error(e);
@@ -60,14 +64,11 @@ function MenuHome() {
 
   useEffect(() => {
     fetchNotices();
-    fetchGetUsers();
+    fetchMyPage();
     fetchQuote();
   }, []);
   return (
     <Container>
-      <SideSection>
-        <NoticeList notices={notices} />
-      </SideSection>
       <MainSection>
         <TitleWrapper>
           <Title>{userdata?.realName}님, 환영합니다!</Title>
@@ -79,9 +80,13 @@ function MenuHome() {
         </TitleWrapper>
         <MyTrackInfo myTrackInfo={myTrackInfo} myProjectInfo={myProjectInfo} />
         <OfficeHourWeekly />
-        <CheckedVersion />
-        <UsersMenu />
+
+        {/* <UsersMenu /> */}
       </MainSection>
+      <SideSection>
+        <NoticeList notices={notices} fetchPagination={() => {}} />
+        <CheckedVersion />
+      </SideSection>
       <SideSection>
         <UsersMiniProfile userdata={userdata} />
       </SideSection>
@@ -95,12 +100,15 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   gap: 6px;
+  margin-top: 68px;
+
+  @media ${({ theme }) => theme.device.tablet} {
+    flex-direction: column;
+  }
 `;
 
 const SideSection = styled.div`
   width: 100%;
-  display: flex;
-  justify-content: center;
 `;
 
 const MainSection = styled.div`
@@ -119,12 +127,15 @@ const TitleWrapper = styled.div`
   justify-content: center;
   gap: 10px;
   width: 100%;
+  height: 140px;
+  max-height: 200px;
   background-color: ${({ theme }) => theme.colors.purple1};
 `;
 
 const QuotesWrapper = styled.div`
   width: 86%;
   height: 88px;
+  max-height: 94px;
 `;
 
 const Title = styled.h1`

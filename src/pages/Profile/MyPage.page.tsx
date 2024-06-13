@@ -22,7 +22,7 @@ function MyPage() {
 
   const fetchMyInfo = async () => {
     try {
-      const res = await AxiosUser.getMyInfo();
+      const res = await AxiosUser.getMyPage();
       if (res.statusCode === 200) setUsersInfo(res.data);
     } catch (e) {
       console.error(e);

@@ -1,5 +1,7 @@
+import ComingSoonPage from "../../components/commons/CommingSoon";
+
 function NoticeId() {
-  return <div>NoticeId.page</div>;
+  return <ComingSoonPage />;
 }
 
 export default NoticeId;

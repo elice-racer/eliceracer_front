@@ -1,5 +1,7 @@
+import ComingSoonPage from "../../components/commons/CommingSoon";
+
 function AdminAlert() {
-  return <div>AdminAlert.page</div>;
+  return <ComingSoonPage />;
 }
 
 export default AdminAlert;

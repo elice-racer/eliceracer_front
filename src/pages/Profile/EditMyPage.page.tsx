@@ -116,7 +116,7 @@ function EditMyPage() {
 
   useEffect(() => {
     const fetchMyInfo = async () => {
-      const res = await AxiosUser.getMyInfo();
+      const res = await AxiosUser.getMyPage();
       setUsersInfo(res.data);
       setSkills(res.data?.skills.map(skill => skill.skillName) || []);
       setTempSkills(res.data?.skills.map(skill => skill.skillName) || []);

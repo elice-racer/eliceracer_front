@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import ChatList from "./components/ChatList";
 import UsersList from "./components/UsersList";
-import { AxiosUser } from "../../servies/user";
+import { AxiosUser, UsersInfo } from "../../servies/user";
 import { useEffect, useState } from "react";
 import { AxiosChat, Chats } from "../../servies/chat";
 import { useRecoilValue } from "recoil";
@@ -13,7 +13,7 @@ function ChatHome() {
   const [userInfo, setUsetInfo] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
-  const [users, setUsers] = useState();
+  const [users, setUsers] = useState<UsersInfo[]>([]);
   const [chatsList, setChatList] = useState<Chats[]>();
 
   const fetchGetChatList = async () => {
@@ -69,8 +69,8 @@ function ChatHome() {
         userData={userInfo}
       />
       <Container>
-        <Error>{error}</Error>
         <Section>
+          <Error>{error}</Error>
           <UsersList users={users} myInfo={myInfo} onOpenMiniProfile={handleClick} />
         </Section>
         <Section>
@@ -87,6 +87,12 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
+
+  @media ${({ theme }) => theme.device.mobileL} {
+    flex-direction: column;
+  }
+
+  margin-top: 60px;
 `;
 
 const Section = styled.div`

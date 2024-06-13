@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { imgPaths, paths } from "../../utils/path";
-import Btn from "../../components/commons/Btn";
+import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 function SuccessCreateUsers() {
@@ -10,7 +10,7 @@ function SuccessCreateUsers() {
       <Flex>
         <Img src={imgPaths.SUCCESS_CREATE_USERS} alt="Not Found" />
         <Text>회원가입을 완료하였습니다!</Text>
-        <Btn children="로그인하러가기" onClick={() => navigate(paths.LOGIN)} />
+        <StyledButton onClick={() => navigate(paths.LOGIN)}>로그인하러가기</StyledButton>
       </Flex>
     </Container>
   );
@@ -24,6 +24,17 @@ const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100vh;
+`;
+
+const StyledButton = styled(Button)`
+  background-color: #6643db !important;
+  width: 100%;
+  height: 36px;
+
+  color: #fff !important;
+
+  font-weight: bold !important;
 `;
 
 const Flex = styled.div`
@@ -34,11 +45,13 @@ const Flex = styled.div`
 `;
 
 const Img = styled.img`
-  width: 500px;
-  height: 500px;
+  width: 240px;
+  height: 240px;
 `;
 
 const Text = styled.h1`
+  margin-top: 24px;
+  margin-bottom: 24px;
   font-size: 1.4rem;
-  color: ${({ theme }) => theme.colors.purple3};
+  color: ${({ theme }) => theme.colors.gray3};
 `;

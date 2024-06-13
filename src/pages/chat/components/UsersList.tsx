@@ -2,10 +2,11 @@ import styled from "styled-components";
 import { UsersInfo } from "../../../servies/user";
 import ProfileImg from "../../Profile/components/ProfileImg";
 import { useNavigate } from "react-router-dom";
-import { imgPaths, paths } from "../../../utils/path";
+import { paths } from "../../../utils/path";
+import EmptyImage from "../../../components/commons/EmptyImage";
 
 interface UsersListProps {
-  users: UsersInfo[] | undefined;
+  users: UsersInfo[];
   myInfo: UsersInfo | null | undefined;
   error?: string;
   onOpenMiniProfile: (userId: string | null) => void;
@@ -34,7 +35,7 @@ function UsersList({ users, myInfo, error, onOpenMiniProfile }: UsersListProps) 
 
         {users.length === 0 ? (
           <Wrapper>
-            <Img src={imgPaths.EMPTY} />
+            <EmptyImage />
             <Text className="info">친구가 존재하지 않습니다.</Text>
           </Wrapper>
         ) : (
@@ -122,9 +123,4 @@ const Text = styled.p`
   &.info {
     color: ${({ theme }) => theme.colors.gray2};
   }
-`;
-
-const Img = styled.img`
-  width: 120px;
-  height: 120px;
 `;

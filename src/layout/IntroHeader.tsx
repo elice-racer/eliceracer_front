@@ -3,12 +3,22 @@ import { styled } from "styled-components";
 import { paths } from "../utils/path";
 import { useState } from "react";
 import MobileHeader from "./MobileHeader";
+import { useNavigate } from "react-router-dom";
 
 function IntroHeader() {
   const [isOpen, setIsOpen] = useState(false);
 
+  const navigate = useNavigate();
+
   const toggleMenu = () => {
     setIsOpen(prev => !prev);
+  };
+
+  const gotoUrl = (path: string) => {
+    setIsOpen(false);
+    setTimeout(() => {
+      navigate(path);
+    }, 300);
   };
 
   return (
@@ -31,21 +41,21 @@ function IntroHeader() {
       </Flex>
       <MobileHeader isOpen={isOpen} toggleMenu={toggleMenu}>
         <ul>
-          <li>
+          <li onClick={() => setIsOpen(false)}>
             <a href={"https://elice-lab.imweb.me/"}>엘리스랩</a>
           </li>
-          <li>
+          <li onClick={() => setIsOpen(false)}>
             <a href={"https://elice.io/ko"}>엘리스홈</a>
           </li>
           <li>
-            <Relative to={paths.INTRO}>
+            <p onClick={() => gotoUrl(paths.INTRO)}>
               <>회원가입</>
-            </Relative>
+            </p>
           </li>
           <li>
-            <Relative to={paths.LOGIN}>
+            <p onClick={() => gotoUrl(paths.LOGIN)}>
               <>로그인</>
-            </Relative>
+            </p>
           </li>
         </ul>
       </MobileHeader>
