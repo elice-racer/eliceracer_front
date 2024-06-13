@@ -7,11 +7,14 @@ import { tokenAtom } from "../../recoil/TokenAtom";
 import InputFiled from "./components/InputField";
 import { imgPaths, paths } from "../../utils/path";
 import { loadingAtom } from "../../recoil/LoadingAtom";
+import { useSnackbar } from "../../hooks/useSnackbar";
 // import Cookies from "js-cookie";
 
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { snackbarOpen } = useSnackbar();
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -39,10 +42,12 @@ export default function Login() {
 
   const handleLogin = async () => {
     if (userLoginForm.identifier === "") {
-      return alert("아이디를 입력해주세요.");
+      snackbarOpen({ message: "아이디를 입력해주세요", open: true });
+      return;
     }
     if (userLoginForm.password === "") {
-      return alert("비밀번호를 입력해주세요!");
+      snackbarOpen({ message: "비밀번호를 입력해주세요", open: true });
+      return;
     }
     setLoading(true);
 
@@ -57,7 +62,9 @@ export default function Login() {
       }
       setLoading(false);
     } catch (e: any) {
-      const errorMessage = e.res?.data?.message || "에러가 발생했습니다.";
+      const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
+      console.log(e.response);
+      // snackbarOpen({ message: e.response?.data?.message || "에러가 발생했습니다.", open: true });
       setError(errorMessage);
       setLoading(false);
     }

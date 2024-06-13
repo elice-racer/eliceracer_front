@@ -64,7 +64,6 @@ export namespace AxiosAuth {
   /** 로그인 */
   export const fetchLogin = async (data: UserLogin) => {
     const res = await api.post(`auth/login`, data);
-    console.log();
     return res;
   };
 

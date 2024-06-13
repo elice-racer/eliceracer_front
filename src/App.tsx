@@ -6,7 +6,10 @@ import { AdminRoute } from "./routes/AdminRoute";
 
 // hooks
 import { useEffect } from "react";
+
+// common components
 import LoadingScreen from "./components/commons/Loading";
+import Snackbar from "./components/commons/Snackbar";
 
 //router
 import { ProtectedRoute } from "./routes/ProtectedRoute";
@@ -49,9 +52,12 @@ import AdminProject from "./pages/admin/AdminProject.page";
 import GlobalThemeProvider from "./styles/GlobalThemeProvider";
 
 // recoil
-import { useRecoilState, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState, useRecoilValue } from "recoil";
 import { loadingAtom } from "./recoil/LoadingAtom";
 import { tokenAtom } from "./recoil/TokenAtom";
+import { snackbarAtom } from "./recoil/SnackbarAtom";
+
+// page
 import MyAlert from "./pages/alert/MyAlert.Page";
 import AboutProjects from "./pages/projects/AboutProjects.page";
 import UsersPage from "./pages/Profile/UsersPage.page";
@@ -140,6 +146,8 @@ function App() {
   const [isLoading, setLoading] = useRecoilState(loadingAtom);
   const setCurrentUser = useSetRecoilState(currentUserAtom);
 
+  const snackbar = useRecoilValue(snackbarAtom);
+
   const fetchCurrentUser = async (access_token: string | null) => {
     try {
       if (access_token) {
@@ -164,6 +172,7 @@ function App() {
     <GlobalThemeProvider>
       {isLoading && <LoadingScreen isLoading={isLoading} onClose={() => setLoading(false)} />}
       <RouterProvider router={router} />
+      <Snackbar open={snackbar.open} message={snackbar.message} />
     </GlobalThemeProvider>
   );
 }

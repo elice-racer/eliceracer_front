@@ -19,6 +19,10 @@ export const api = axios.create({
 const requestPrev = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
   const access_token = localStorage.getItem("userToken");
 
+  if (config?.url === "/auth/login" || config?.url === "/auth/logout" || config?.url === "/auth/create-account") {
+    return config;
+  }
+
   if (access_token) {
     config.headers.Authorization = "Bearer " + access_token;
   }
@@ -39,7 +43,7 @@ const onRejected = async (e: AxiosError<ErrorType>) => {
   const { config, response } = e;
   const originalRequest = config;
 
-  if (response?.config?.url === "auth/login") {
+  if (response?.config?.url === "auth/login" || response?.config?.url === "auth/create-account") {
     return Promise.reject(e);
   }
 

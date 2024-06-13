@@ -1,13 +1,12 @@
-import { InputHTMLAttributes, Ref } from "react";
+import { InputHTMLAttributes, forwardRef } from "react";
 import { styled } from "styled-components";
 
-interface InputFielProps extends InputHTMLAttributes<HTMLInputElement> {
-  ref?: Ref<HTMLInputElement>;
+interface InputFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
 }
-
-export default function InputFiled({ ref, label, error, ...props }: InputFielProps) {
+// forWordRef 추가
+const InputFiled = forwardRef<HTMLInputElement, InputFieldProps>(({ label, error, ...props }, ref) => {
   return (
     <Wrapper>
       {label && <Label>{label}</Label>}
@@ -15,7 +14,10 @@ export default function InputFiled({ ref, label, error, ...props }: InputFielPro
       {error && <Error>{error}</Error>}
     </Wrapper>
   );
-}
+});
+
+export default InputFiled;
+
 const Wrapper = styled.div`
   width: 280px;
   display: flex;
@@ -32,11 +34,13 @@ const Wrapper = styled.div`
     width: 180px;
   }
 `;
+
 const Label = styled.label`
   font-size: 1.2rem;
   padding-left: 12px;
   width: 100%;
 `;
+
 const Error = styled.div`
   color: tomato;
 `;

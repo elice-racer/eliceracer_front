@@ -1,17 +1,25 @@
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
 import { paths } from "../utils/path";
+import { useState } from "react";
+import MobileHeader from "./MobileHeader";
 
 function IntroHeader() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsOpen(prev => !prev);
+  };
+
   return (
     <Container>
       <Flex>
         <Wrapper>
           <LinkItem>
-            <Link to={"https://elice-lab.imweb.me/"}>엘리스랩</Link>
+            <a href={"https://elice-lab.imweb.me/"}>엘리스랩</a>
           </LinkItem>
           <LinkItem>
-            <Link to={"https://elice.io/ko"}>엘리스홈</Link>
+            <a href={"https://elice.io/ko"}>엘리스홈</a>
           </LinkItem>
           <Relative to={paths.INTRO}>
             <>회원가입</>
@@ -21,6 +29,26 @@ function IntroHeader() {
           </Relative>
         </Wrapper>
       </Flex>
+      <MobileHeader isOpen={isOpen} toggleMenu={toggleMenu}>
+        <ul>
+          <li>
+            <a href={"https://elice-lab.imweb.me/"}>엘리스랩</a>
+          </li>
+          <li>
+            <a href={"https://elice.io/ko"}>엘리스홈</a>
+          </li>
+          <li>
+            <Relative to={paths.INTRO}>
+              <>회원가입</>
+            </Relative>
+          </li>
+          <li>
+            <Relative to={paths.LOGIN}>
+              <>로그인</>
+            </Relative>
+          </li>
+        </ul>
+      </MobileHeader>
     </Container>
   );
 }
@@ -30,16 +58,24 @@ export default IntroHeader;
 const Container = styled.header`
   width: 100%;
   background-color: #fff;
-  position: relative;
+  position: fixed;
+  top: 0;
+`;
+
+const Anchor = styled.a`
+  padding: 0;
 `;
 
 const Flex = styled.div`
   display: flex;
   gap: 4px;
-  top: 0;
   height: 56px;
   width: 100%;
   justify-content: flex-end;
+
+  @media ${({ theme }) => theme.device.mobileL} {
+    display: none;
+  }
 `;
 
 const Relative = styled(Link)`

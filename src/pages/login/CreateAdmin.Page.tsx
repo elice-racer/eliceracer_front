@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { imgPaths, paths } from "../../utils/path";
@@ -7,6 +7,7 @@ import { AxiosAuth } from "../../servies/auth";
 import AfterSendEmailInfo from "./components/AfterSendEmailInfo";
 
 export default function CreateAdmin() {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
 
   const [createAdminForm, setCreateAdminForm] = useState({
@@ -48,6 +49,12 @@ export default function CreateAdmin() {
     }
   };
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   return (
     <Wrapper>
       <Img src={imgPaths.ELICE_LOGO} />
@@ -56,7 +63,15 @@ export default function CreateAdmin() {
         <AfterSendEmailInfo />
       ) : (
         <>
-          <InputFiled onChange={onChangeForm} name="realName" value={createAdminForm.realName} placeholder="name" type="text" required />
+          <InputFiled
+            onChange={onChangeForm}
+            name="realName"
+            value={createAdminForm.realName}
+            placeholder="name"
+            type="text"
+            required
+            ref={inputRef}
+          />
           <InputFiled onChange={onChangeForm} name="email" value={createAdminForm.email} placeholder="email" type="email" required />
           <InputFiled onChange={onChangeForm} name="password" value={createAdminForm.password} placeholder="password" type="password" required />
           <InputFiled
