@@ -1,195 +1,390 @@
 import styled from "styled-components";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 import io from "socket.io-client";
 import ChatList from "./components/ChatList";
 import ChatRoomUsersList from "./components/ChatRoomUsersList";
 import TeamChatInfo from "./components/TeamChatInfo";
+import { AxiosChat, ChatMessage, Chats } from "../../servies/chat";
+import { AxiosUser } from "../../servies/user";
+import { AxiosOffieHour } from "../../servies/officehour";
+import { useRecoilValue } from "recoil";
+import { currentUserAtom } from "../../recoil/UserAtom";
+import Loading from "../../components/commons/Loading";
 
 const socket = io(import.meta.env.VITE_SOKET_IO, { autoConnect: false });
 
-const CHAT_ROOM_DATA = {
-  roomId: 1,
-  roomname: "2팀",
-  Member: 6,
-};
+const ChatRoom = () => {
+  const { id: chatId } = useParams();
 
-const MESSAGE = [
-  {
-    id: 1,
-    userTrack: "AI8",
-    realName: "진채영",
-    message: "엘리스 공지!! 만족도 조사~~",
-  },
-  {
-    id: 1,
-    userTrack: "AI8",
-    realName: "진채영",
-    message: "엘리스 공지!! 만족도 조사~~",
-  },
-  {
-    id: 1,
-    userTrack: "AI8",
-    realName: "진채영",
-    message: "엘리스 공지!! 만족도 조사~~",
-  },
-];
+  if (!chatId) return;
 
-function ChatRoom() {
-  const { id: roomId } = useParams();
+  const [userId, setUserId] = useState<any>(null);
 
-  if (!roomId) return;
+  const currentUser = useRecoilValue(currentUserAtom);
 
-  const [_messages, setMessages] = useState<any[]>([]);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const [chatsList, setChatList] = useState<Chats[]>();
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [chatInput, setChatInput] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [chatInput, setChatInput] = useState("");
+  const [users, setUsers] = useState();
+  const [chatRoomInfo, setChatRoomInfo] = useState({
+    id: chatId,
+    chatName: "",
+    createAt: "",
+    updatedAt: "",
+    team: null,
+  });
+
+  /** 팀 오피스아워 조회 */
+  const fetchOfficehourTeams = async () => {
+    try {
+      const res = await AxiosOffieHour.getTeamOfficehour("be171eb7-5ab0-440a-a5bf-f13854b88dd7");
+      console.log("팀 오피스아워 조회", res);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  /**현재 채팅방 정보 조회 */
+  const fetchChatIdInfo = async () => {
+    try {
+      const res = await AxiosChat.getChatIdInfo(chatId);
+      if (res.statusCode === 200) setChatRoomInfo(res.data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  // todo 채팅방 유저 정보 조회 api 연결시 붙이기
+  /** 채팅 친구 목록 조회 */
+  const fetchGetUsers = async () => {
+    try {
+      const res = await AxiosUser.getChatUsersList();
+      if (res.status === 200) setUsers(res.data.data);
+    } catch (e: any) {
+      console.error(e);
+    }
+  };
+
+  /** 채팅방 메시지 조회 */
+  const fetchChatMessages = async () => {
+    setIsLoading(true);
+    try {
+      const res = await AxiosChat.getChatMessages(chatId);
+      setIsLoading(false);
+
+      if (res.statusCode === 200) {
+        if (res.data) setMessages(res.data);
+      }
+    } catch (e) {
+      setIsLoading(false);
+      console.error(e);
+    }
+  };
 
   /** 채팅 보내기 */
   const handleSendMessage = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key !== "Enter" || chatInput.trim().length === 0) return;
-
-    socket.emit("sendMessage", { chatId: "", userId: "", content: "" });
+    if (e.key !== "Enter") return;
+    if (e.key === "Enter" && e.nativeEvent.composed && e.nativeEvent.isComposing) {
+      if (chatInput.trim() === "") return;
+      socket.emit("sendMessage", {
+        chatId: chatId,
+        userId: userId,
+        content: chatInput,
+      });
+    }
 
     setChatInput("");
   };
 
   /** 방 입장 */
   const handleJoinChat = (roomId: string) => {
-    socket.emit("joinChat", roomId);
+    const chatId = roomId;
+    socket.emit("joinChat", { chatId });
+  };
+
+  // 로그인할 때 currentUser 값도 recoil에 저장 , useRecoilState로 가져와서 전역으로 관리하기
+  const fetchCurrentUser = async () => {
+    try {
+      const res = await AxiosUser.getCurrentUser();
+      if (res.statusCode === 200) {
+        setUserId(res.data?.id);
+      }
+    } catch (e) {
+      console.dir(e);
+    }
+  };
+
+  const fetchGetChatList = async () => {
+    try {
+      const res = await AxiosChat.getChats();
+      console.log(res);
+      if (res.statusCode === 200) setChatList(res.data);
+    } catch (e: any) {
+      console.error(e);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setChatInput(e.target.value);
   };
 
   useEffect(() => {
+    fetchOfficehourTeams();
+    fetchGetUsers();
+    fetchChatIdInfo();
+    fetchChatMessages();
+    fetchCurrentUser();
+    fetchGetChatList();
+
+    setIsLoading(true);
     socket.connect();
 
     socket.on("connect", () => {
       console.log("Socket connected");
-      handleJoinChat(roomId);
+      handleJoinChat(chatId);
     });
 
     socket.on("disconnect", () => {
       console.log("Socket disconnected");
     });
 
-    socket.on("roomCreate", (roodId: string) => {
-      console.log("room Created succeeded roomId : ", roodId);
+    socket.on("roomCreate", (chatId: string) => {
+      console.log("room Created succeeded chatId : ", chatId);
     });
 
-    socket.on("joinChat", (roomId: string) => {
-      console.log("joinChat roomId: ", roomId);
+    socket.on("joinChat", (chatId: string) => {
+      console.log("joinChat chatId: ", chatId);
     });
 
     socket.on("sendMessage", (newMessage: any) => {
+      console.log("sendMessage", newMessage);
+    });
+
+    socket.on("receiveMessage", (newMessage: ChatMessage) => {
       setMessages(prevMessages => [...prevMessages, newMessage]);
     });
 
     return () => {
       socket.off("connect");
       socket.off("disconnect");
+      socket.off("joinChat");
+      socket.off("roomCreate");
       socket.off("sendMessage");
+      socket.off("receiveMessage");
+      setIsLoading(false);
     };
-  }, []);
+  }, [chatId]);
+
+  useEffect(() => {
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  useEffect(() => {}, [currentUser]);
+
+  useEffect(() => {
+    setMessages([]);
+  }, [chatId]);
 
   return (
     <Container>
       <Section>
-        <ChatList />
+        <ChatList chatsList={chatsList} />
       </Section>
       <Section>
-        <ChatContainer id={String(CHAT_ROOM_DATA.roomId)}>
+        <ChatContainer id={String(chatRoomInfo?.id)}>
           <Header>
-            <SubTitle>⬅️</SubTitle>
-            <Title>{CHAT_ROOM_DATA.roomname}</Title>
-            <SubTitle>🧑‍💻</SubTitle>
+            {/* <SubTitle>⬅️</SubTitle> */}
+            <Title>{chatRoomInfo?.chatName}</Title>
+            {/* <SubTitle>🧑‍💻</SubTitle> */}
           </Header>
-          <Body>
-            {MESSAGE.map(message => {
-              return (
-                <ChatItem>
-                  <NameWrapper>
-                    <Text className="track">{message.userTrack}</Text>
-                    <Text className="user">{message.realName}</Text>
-                  </NameWrapper>
-                  <Text>{message.message}</Text>
-                </ChatItem>
-              );
-            })}
+          <Body ref={chatContainerRef}>
+            <MessagesWrapper>
+              {isLoading ? (
+                <Loading isLoading={isLoading} onClose={() => setIsLoading(false)} />
+              ) : (
+                <>
+                  {messages.map(message => {
+                    const isCurrentUser = currentUser?.id === message.user.id;
+                    return (
+                      <Flex key={message.id} className={isCurrentUser ? "me" : ""}>
+                        <Wrapper>
+                          <NameWrapper className={isCurrentUser ? "me" : ""}>
+                            {message.user.track?.cardinalNo && (
+                              <Text className="track">
+                                [{message.user.track.trackName}
+                                {message.user.track.cardinalNo}]
+                              </Text>
+                            )}
+                            <UserName className={message.user.role}>{message.user.realName}</UserName>
+                          </NameWrapper>
+                          <>
+                            <ChatItem className={isCurrentUser ? "me" : ""}>
+                              <Text>{message.content}</Text>
+                            </ChatItem>
+                          </>
+                          <DateWapper className={isCurrentUser ? "me" : ""}>
+                            <Text className="date">{message.createdAt.split("T")[1].split(".")[0]}</Text>
+                          </DateWapper>
+                        </Wrapper>
+                      </Flex>
+                    );
+                  })}
+                </>
+              )}
+            </MessagesWrapper>
           </Body>
           <FooterTypingBar>
             <OptionBar></OptionBar>
             <TypingBar>
-              {/* commit 용 */}
-              <Input onChange={() => handleSendMessage} />
+              <Input
+                disabled={isLoading}
+                onKeyDown={handleSendMessage}
+                onChange={handleInputChange}
+                name="chatInput"
+                value={chatInput}
+                placeholder="send Message"
+              />
+              <SendBtn></SendBtn>
             </TypingBar>
           </FooterTypingBar>
         </ChatContainer>
       </Section>
-
       <Section>
-        <TeamChatInfo />
-        <ChatRoomUsersList />
+        <ChatInfoWrapper>
+          <TeamChatInfo />
+          <UsersWrapper>
+            <ChatRoomUsersList users={users} />
+          </UsersWrapper>
+        </ChatInfoWrapper>
       </Section>
     </Container>
   );
-}
+};
 
 export default ChatRoom;
 
+const UsersWrapper = styled.div`
+  border: solid ${({ theme }) => theme.colors.gray1} 3px;
+  height: 450px;
+  flex-wrap: wrap;
+  overflow-y: auto;
+`;
+
+const SendBtn = styled.div``;
+
 const Container = styled.div`
-  width: 100vw;
+  width: 100%;
   display: flex;
   gap: 12px;
   justify-content: space-around;
 `;
 
 const Section = styled.div`
-  width: 33%;
-  padding: 0 12px;
+  width: 100%;
+  height: 100%;
+`;
+
+const ChatInfoWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 `;
 const ChatContainer = styled.div`
   width: 100%;
-  height: 100vh;
+  height: 588px;
 `;
 const Header = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  padding: 0 12px;
   height: 46px;
   background-color: ${({ theme }) => theme.colors.purple1};
 `;
 
 const Title = styled.h1``;
 
-const SubTitle = styled.h2``;
-
 const Body = styled.div`
   padding: 10px 20px;
-  gap: 4px;
   background-color: ${({ theme }) => theme.colors.gray1};
-  height: 530px;
+  height: 100%;
+  flex-wrap: wrap;
+  overflow-y: auto;
 `;
-// 남은 영역 차지하게 하는 css가 뭐지?
-
+const MessagesWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+`;
 const ChatItem = styled.div`
-  margin-top: 10px;
+  display: flex;
+
+  width: auto;
+  margin-top: 2px;
   padding: 6px;
-  border-radius: 16px;
+  border-radius: 0 8px 8px 8px;
   background-color: white;
-  width: 260px;
+  &.me {
+    border-radius: 8px 8px 0px 8px;
+    justify-content: end;
+  }
 `;
 
+const DateWapper = styled.div`
+  display: flex;
+  justify-content: start;
+  &.me {
+    justify-content: end;
+    margin-left: 4px;
+  }
+`;
+
+const Flex = styled.div`
+  width: 100%;
+  display: flex;
+  &.me {
+    justify-content: end;
+  }
+`;
+const Wrapper = styled.div`
+  width: 86%;
+  margin: 2px;
+`;
 const NameWrapper = styled.div`
   display: flex;
   gap: 2px;
+  &.me {
+    justify-content: end;
+  }
 `;
+
 const Text = styled.p`
-  &.user {
-    color: blue;
+  &.track {
+    color: ${({ theme }) => theme.colors.purple2};
     font-weight: 600;
   }
-  &.track {
-    color: green;
-    font-weight: 600;
+  &.date {
+    font-size: 0.8em;
+    color: ${({ theme }) => theme.colors.gray2};
+  }
+`;
+
+const UserName = styled.p`
+  font-weight: 600;
+  &.RACER {
+  }
+  &.ADMIN {
+    color: ${({ theme }) => theme.colors.green2};
+  }
+  &.COACH {
+    color: ${({ theme }) => theme.colors.blue2};
   }
 `;
 
@@ -199,22 +394,29 @@ const FooterTypingBar = styled.div`
   justify-content: center;
   align-items: center;
   gap: 6px;
-  height: 180px;
+  height: 120px;
   padding: 10px;
   background-color: ${({ theme }) => theme.colors.purple1};
 `;
 
 const OptionBar = styled.div`
-  height: 54px;
-  width: 400px;
+  height: 36px;
+  width: 100%;
   border-radius: 6px;
   background-color: ${({ theme }) => theme.colors.purple2};
 `;
+
 const TypingBar = styled.div`
-  height: 88px;
-  width: 400px;
+  height: 100%;
+  width: 100%;
   border-radius: 6px;
   background-color: #fff;
 `;
 
-const Input = styled.input``;
+const Input = styled.input`
+  width: 100%;
+  height: 100%;
+  background-color: none;
+  border: none;
+  padding: 12px;
+`;

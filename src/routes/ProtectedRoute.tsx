@@ -15,9 +15,9 @@ export const ProtectedRoute = () => {
     try {
       const res = await AxiosUser.getCurrentUser();
 
-      if (res.status === 200) {
-        const { data } = res.data;
-        if (data.role === "ADMIN") {
+      if (res.statusCode === 200) {
+        const data = res.data;
+        if (data?.role === "ADMIN") {
           setAdminMenu(true);
         }
       }

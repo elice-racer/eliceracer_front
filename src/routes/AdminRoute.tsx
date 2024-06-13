@@ -13,10 +13,10 @@ export const AdminRoute = () => {
     try {
       const res = await AxiosUser.getCurrentUser();
 
-      if (res.status === 200) {
-        const { data } = res.data;
+      if (res.statusCode === 200) {
+        const data = res.data;
 
-        if (data.role !== "ADMIN") {
+        if (data?.role !== "ADMIN") {
           alert("관리자 권한만 접근가능합니다.");
           navigate(paths.HOME);
         }

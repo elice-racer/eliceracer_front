@@ -16,7 +16,7 @@ function EditMyPage() {
   const setLoading = useSetRecoilState(loadingAtom);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [usersInfo, setUsersInfo] = useState<UsersInfo | null>(null);
+  const [usersInfo, setUsersInfo] = useState<UsersInfo | undefined | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -118,8 +118,8 @@ function EditMyPage() {
     const fetchMyInfo = async () => {
       const res = await AxiosUser.getMyInfo();
       setUsersInfo(res.data);
-      setSkills(res?.data.skills.map(skill => skill.skillName) || []);
-      setTempSkills(res?.data.skills.map(skill => skill.skillName) || []);
+      setSkills(res.data?.skills.map(skill => skill.skillName) || []);
+      setTempSkills(res.data?.skills.map(skill => skill.skillName) || []);
     };
     fetchMyInfo();
   }, []);

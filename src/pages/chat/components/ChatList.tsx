@@ -1,10 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { paths } from "../../../utils/path";
+import { Chats } from "../../../servies/chat";
 
-function ChatList() {
+interface ChatsListProps {
+  chatsList: Chats[] | undefined;
+  error?: string;
+}
+
+function ChatList({ chatsList, error }: ChatsListProps) {
   const navigate = useNavigate();
   // 유저를 눌렀을 때 채팅방 생성되게
+
   return (
     <Container>
       <Flex>
@@ -12,10 +19,17 @@ function ChatList() {
           <Title>채팅 목록</Title>
         </TitleWrapper>
         <ChatListWrapper>
-          <ChatItem onClick={() => navigate(paths.CHAT_ROOM)}>
-            <Text>1팀 꽃보다 백</Text>
-            <Text>👥 6</Text>
-          </ChatItem>
+          {error && <Text>{error}</Text>}
+          {chatsList ? (
+            chatsList?.map(chat => (
+              <ChatItem key={chat.id} onClick={() => navigate(`${paths.CHAT_HOME}/${chat.id}`)}>
+                <Text>{chat.chatName}</Text>
+                <Text>👥 {chat.users}</Text>
+              </ChatItem>
+            ))
+          ) : (
+            <Text>생성된 채팅방이 없습니다.</Text>
+          )}
         </ChatListWrapper>
       </Flex>
     </Container>
@@ -39,6 +53,7 @@ const TitleWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   height: 50px;
+  padding: 2px 6px;
 `;
 
 const ChatListWrapper = styled.div``;
@@ -49,9 +64,12 @@ const ChatItem = styled.div`
   align-items: center;
   padding: 2px 12px;
   height: 46px;
-  border: 1px solid gray;
-  border-radius: 4px;
+  border-top: 1px solid ${({ theme }) => theme.colors.gray1};
+  &:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
 `;
+
 const Title = styled.h1`
   font-size: 1.4rem;
 `;

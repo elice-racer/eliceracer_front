@@ -49,11 +49,11 @@ import AdminProject from "./pages/admin/AdminProject.page";
 import GlobalThemeProvider from "./styles/GlobalThemeProvider";
 
 // recoil
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { loadingAtom } from "./recoil/LoadingAtom";
 import { tokenAtom } from "./recoil/TokenAtom";
 import MyAlert from "./pages/alert/MyAlert.Page";
-import AboutProjects from "./pages/myProjects/AboutProjects.page";
+import AboutProjects from "./pages/projects/AboutProjects.page";
 import UsersPage from "./pages/Profile/UsersPage.page";
 import ChatRoom from "./pages/chat/ChatRoom.page";
 import NoticeList from "./pages/notice/NoticeList.page";
@@ -62,6 +62,9 @@ import BasicRoute from "./routes/BasicRoute";
 import Notfound from "./pages/404/Notfound.page";
 import SuccessCreateUsers from "./pages/login/SuccessCreateUsers.page";
 import AdminProjectDetail from "./pages/admin/AdminProjectDetail.page";
+import SuccessAuthEmail from "./pages/redirects/SuccessAuthEmail.page";
+import { currentUserAtom } from "./recoil/UserAtom";
+import { AxiosUser } from "./servies/user";
 
 const router = createBrowserRouter([
   {
@@ -85,6 +88,7 @@ const router = createBrowserRouter([
       { path: paths.FIND_ID, element: <FindId /> },
       { path: paths.FIND_PW, element: <FindPW /> },
       { path: paths.SUCCESS_USER, element: <SuccessCreateUsers /> },
+      { path: paths.SUCCESS_AUTH_EMAIL, element: <SuccessAuthEmail /> },
     ],
   },
   {
@@ -133,16 +137,32 @@ const router = createBrowserRouter([
 
 function App() {
   const setToken = useSetRecoilState(tokenAtom);
-  const isLoading = useRecoilValue(loadingAtom);
+  const [isLoading, setLoading] = useRecoilState(loadingAtom);
+  const setCurrentUser = useSetRecoilState(currentUserAtom);
+
+  const fetchCurrentUser = async (access_token: string | null) => {
+    try {
+      if (access_token) {
+        const res = await AxiosUser.getCurrentUser();
+        if (res.statusCode === 200) {
+          const currentUser = res.data;
+          if (currentUser) setCurrentUser(currentUser);
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   useEffect(() => {
     const access_token = localStorage.getItem("userToken");
     setToken(access_token);
+    fetchCurrentUser(access_token);
   }, []);
 
   return (
     <GlobalThemeProvider>
-      {isLoading && <LoadingScreen />}
+      {isLoading && <LoadingScreen isLoading={isLoading} onClose={() => setLoading(false)} />}
       <RouterProvider router={router} />
     </GlobalThemeProvider>
   );

@@ -1,9 +1,11 @@
 import { useParams } from "react-router-dom";
-import { AxiosAdmin, CreateChat, ProjectInfo, TeamsInfo } from "../../servies/admin";
+import { AxiosAdmin, TeamsInfo } from "../../servies/admin";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { ProjectInfo } from "../../servies/projects";
 
 // 프로젝트 조회해서 내용 넣기
+// todo 프로젝트 조회시 track 카테고리 업데이트되면 track 정보 추가하기
 function AdminProjectDetail() {
   const { id } = useParams();
 
@@ -11,11 +13,9 @@ function AdminProjectDetail() {
 
   const [teams, setTeams] = useState<TeamsInfo[]>();
 
-  const [createTeamChat, setCreateTeamChat] = useState<CreateChat>({ teamId: "" });
   const fetchGetProject = async () => {
     try {
       const res = await AxiosAdmin.getProject(id);
-      console.log(res);
       if (res.statusCode === 200) setProject(res.data);
     } catch (e) {
       console.error(e);
@@ -24,7 +24,6 @@ function AdminProjectDetail() {
   const fetchGetProjectsTeams = async () => {
     try {
       const res = await AxiosAdmin.getProjectDetail(id);
-      console.log(res);
       if (res.statusCode === 200) {
         setTeams(res.data);
       }
@@ -33,14 +32,13 @@ function AdminProjectDetail() {
     }
   };
 
+  /** 채팅방 생성 */
   const fetchCreateChatRoom = async (e: any) => {
-    setCreateTeamChat(e.target.id);
-
+    const teamId = e.target.id;
+    console.log(teamId);
     try {
-      const res = await AxiosAdmin.createTeamChat(createTeamChat);
-      console.log("==========채팅방생성-------");
-      console.log(res);
-      console.log("==========채팅방생성-------");
+      const res = await AxiosAdmin.createTeamChat({ teamId });
+      if (res.statusCode === 200) return alert(`${res.data.chatName} 채팅이 생성되었습니다!`);
     } catch (e) {
       console.error(e);
     }
@@ -65,9 +63,7 @@ function AdminProjectDetail() {
                   {team.teamNumber}팀 {team.teamName}
                 </Text>
               ) : (
-                <Text>
-                  {team.teamNumber}팀{team.id}
-                </Text>
+                <Text>{team.teamNumber}팀 </Text>
               )}
               <CreateChatBtn onClick={fetchCreateChatRoom} id={team.id}>
                 채팅방 생성

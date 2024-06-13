@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
 import { AxiosAuth } from "../../servies/auth";
 import { useSetRecoilState } from "recoil";
@@ -12,6 +12,8 @@ import { loadingAtom } from "../../recoil/LoadingAtom";
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const setLoading = useSetRecoilState(loadingAtom);
   const from = location?.state?.redirectedFrom?.pathname || paths.HOME;
@@ -61,20 +63,38 @@ export default function Login() {
     }
   };
 
+  useEffect(() => {
+    if (inputRef.current !== null) {
+      inputRef.current.focus();
+    }
+  }, []);
+
   return (
     <Wrapper>
       <Img src={imgPaths.ELICE_LOGO} />
-      <InputFiled onChange={onChange} name="identifier" value={userLoginForm.identifier} placeholder="id" type="id" required onKeyDown={onKeyDown} />
-      <InputFiled
-        error={error}
-        onChange={onChange}
-        name="password"
-        value={userLoginForm.password}
-        placeholder="password"
-        type="password"
-        required
-        onKeyDown={onKeyDown}
-      />
+      <Form>
+        <InputFiled
+          ref={inputRef}
+          onChange={onChange}
+          name="identifier"
+          value={userLoginForm.identifier}
+          placeholder="id"
+          type="id"
+          required
+          onKeyDown={onKeyDown}
+        />
+        <InputFiled
+          error={error}
+          onChange={onChange}
+          name="password"
+          value={userLoginForm.password}
+          placeholder="password"
+          type="password"
+          required
+          onKeyDown={onKeyDown}
+        />
+      </Form>
+
       <Btn onClick={handleLogin}>로그인</Btn>
       <TextWrapper>
         <StyledLink to={paths.FIND_ID}>아이디</StyledLink> | <StyledLink to={paths.FIND_PW}>비밀번호 찾기</StyledLink>
@@ -105,6 +125,11 @@ const Wrapper = styled.div`
   } */
 `;
 
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
 const Img = styled.img`
   width: 230px;
   margin: 50px 0 40px 0;

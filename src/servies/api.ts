@@ -50,11 +50,11 @@ const onRejected = async (e: AxiosError<ErrorType>) => {
     const url = `${baseURL}auth/refresh`;
     const res = await axios.post(url, { refreshToken }, { withCredentials: true });
     const new_access_token = res.headers?.authorization.replace("Bearer ", "");
-
+    console.log(new_access_token);
     localStorage.setItem("userToken", new_access_token);
 
     api.defaults.headers.common["Authorization"] = `Bearer ${new_access_token}`;
-
+    console.log(api.defaults.headers.common["Authorization"]);
     if (originalRequest) {
       originalRequest.headers["Authorization"] = `Bearer ${new_access_token}`;
 
