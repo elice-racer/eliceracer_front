@@ -49,7 +49,7 @@ import AdminProject from "./pages/admin/AdminProject.page";
 import GlobalThemeProvider from "./styles/GlobalThemeProvider";
 
 // recoil
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { loadingAtom } from "./recoil/LoadingAtom";
 import { tokenAtom } from "./recoil/TokenAtom";
 import MyAlert from "./pages/alert/MyAlert.Page";
@@ -137,7 +137,7 @@ const router = createBrowserRouter([
 
 function App() {
   const setToken = useSetRecoilState(tokenAtom);
-  const isLoading = useRecoilValue(loadingAtom);
+  const [isLoading, setLoading] = useRecoilState(loadingAtom);
   const setCurrentUser = useSetRecoilState(currentUserAtom);
 
   const fetchCurrentUser = async (access_token: string | null) => {
@@ -162,7 +162,7 @@ function App() {
 
   return (
     <GlobalThemeProvider>
-      {isLoading && <LoadingScreen />}
+      {isLoading && <LoadingScreen isLoading={isLoading} onClose={() => setLoading(false)} />}
       <RouterProvider router={router} />
     </GlobalThemeProvider>
   );

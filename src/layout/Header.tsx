@@ -6,11 +6,13 @@ import { useNavigate } from "react-router-dom";
 import { tokenAtom } from "../recoil/TokenAtom";
 import { useSetRecoilState } from "recoil";
 import { AxiosAuth } from "../servies/auth";
+import { currentUserAtom } from "../recoil/UserAtom";
 
 const Header = ({ adminMenu }: any) => {
   const navigate = useNavigate();
 
   const setToken = useSetRecoilState(tokenAtom);
+  const setCurrentUser = useSetRecoilState(currentUserAtom);
 
   const handleClickLogout = async () => {
     try {
@@ -22,10 +24,9 @@ const Header = ({ adminMenu }: any) => {
       console.error(e);
     }
 
-    // 리코일 초기화
     setToken(null);
+    setCurrentUser(null);
 
-    // 홈으로 넘기기
     navigate(paths.LOGIN);
   };
   return (

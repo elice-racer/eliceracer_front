@@ -9,24 +9,30 @@ import TeamChatInfo from "./components/TeamChatInfo";
 import { AxiosChat, ChatMessage, Chats } from "../../servies/chat";
 import { AxiosUser } from "../../servies/user";
 import { AxiosOffieHour } from "../../servies/officehour";
+import { useRecoilValue } from "recoil";
+import { currentUserAtom } from "../../recoil/UserAtom";
+import Loading from "../../components/commons/Loading";
 
 const socket = io(import.meta.env.VITE_SOKET_IO, { autoConnect: false });
 
 const ChatRoom = () => {
-  const { id: roomId } = useParams();
+  const { id: chatId } = useParams();
 
-  if (!roomId) return;
+  if (!chatId) return;
 
   const [userId, setUserId] = useState<any>(null);
+
+  const currentUser = useRecoilValue(currentUserAtom);
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [chatsList, setChatList] = useState<Chats[]>();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const [users, setUsers] = useState();
   const [chatRoomInfo, setChatRoomInfo] = useState({
-    id: roomId,
+    id: chatId,
     chatName: "",
     createAt: "",
     updatedAt: "",
@@ -37,9 +43,7 @@ const ChatRoom = () => {
   const fetchOfficehourTeams = async () => {
     try {
       const res = await AxiosOffieHour.getTeamOfficehour("be171eb7-5ab0-440a-a5bf-f13854b88dd7");
-      console.log("------------팀 오피스아워 조회~~~");
-      console.log(res);
-      console.log("------------팀 오피스아워 조회~~~");
+      console.log("팀 오피스아워 조회", res);
     } catch (e) {
       console.error(e);
     }
@@ -48,7 +52,7 @@ const ChatRoom = () => {
   /**현재 채팅방 정보 조회 */
   const fetchChatIdInfo = async () => {
     try {
-      const res = await AxiosChat.getChatIdInfo(roomId);
+      const res = await AxiosChat.getChatIdInfo(chatId);
       if (res.statusCode === 200) setChatRoomInfo(res.data);
     } catch (e) {
       console.error(e);
@@ -68,12 +72,16 @@ const ChatRoom = () => {
 
   /** 채팅방 메시지 조회 */
   const fetchChatMessages = async () => {
+    setIsLoading(true);
     try {
-      const res = await AxiosChat.getChatMessages(roomId);
+      const res = await AxiosChat.getChatMessages(chatId);
+      setIsLoading(false);
+
       if (res.statusCode === 200) {
         if (res.data) setMessages(res.data);
       }
     } catch (e) {
+      setIsLoading(false);
       console.error(e);
     }
   };
@@ -84,7 +92,7 @@ const ChatRoom = () => {
     if (e.key === "Enter" && e.nativeEvent.composed && e.nativeEvent.isComposing) {
       if (chatInput.trim() === "") return;
       socket.emit("sendMessage", {
-        chatId: roomId,
+        chatId: chatId,
         userId: userId,
         content: chatInput,
       });
@@ -133,11 +141,12 @@ const ChatRoom = () => {
     fetchCurrentUser();
     fetchGetChatList();
 
+    setIsLoading(true);
     socket.connect();
 
     socket.on("connect", () => {
       console.log("Socket connected");
-      handleJoinChat(roomId);
+      handleJoinChat(chatId);
     });
 
     socket.on("disconnect", () => {
@@ -163,16 +172,25 @@ const ChatRoom = () => {
     return () => {
       socket.off("connect");
       socket.off("disconnect");
+      socket.off("joinChat");
+      socket.off("roomCreate");
       socket.off("sendMessage");
       socket.off("receiveMessage");
+      setIsLoading(false);
     };
-  }, []);
+  }, [chatId]);
 
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [messages]);
+
+  useEffect(() => {}, [currentUser]);
+
+  useEffect(() => {
+    setMessages([]);
+  }, [chatId]);
 
   return (
     <Container>
@@ -188,38 +206,51 @@ const ChatRoom = () => {
           </Header>
           <Body ref={chatContainerRef}>
             <MessagesWrapper>
-              {messages.map(message => {
-                const isCurrentUser = message.user.id === userId;
-                return (
-                  <Flex key={message.id} className={isCurrentUser ? "me" : ""}>
-                    <Wrapper>
-                      <NameWrapper className={isCurrentUser ? "me" : ""}>
-                        {message.user.track?.cardinalNo && (
-                          <Text className="track">
-                            [{message.user.track.trackName}
-                            {message.user.track.cardinalNo}]
-                          </Text>
-                        )}
-                        <UserName className={message.user.role}>{message.user.realName}</UserName>
-                      </NameWrapper>
-                      <>
-                        <ChatItem className={isCurrentUser ? "me" : ""}>
-                          <Text>{message.content}</Text>
-                        </ChatItem>
-                      </>
-                      <DateWapper className={isCurrentUser ? "me" : ""}>
-                        <Text className="date">{message.createdAt.split("T")[1].split(".")[0]}</Text>
-                      </DateWapper>
-                    </Wrapper>
-                  </Flex>
-                );
-              })}
+              {isLoading ? (
+                <Loading isLoading={isLoading} onClose={() => setIsLoading(false)} />
+              ) : (
+                <>
+                  {messages.map(message => {
+                    const isCurrentUser = currentUser?.id === message.user.id;
+                    return (
+                      <Flex key={message.id} className={isCurrentUser ? "me" : ""}>
+                        <Wrapper>
+                          <NameWrapper className={isCurrentUser ? "me" : ""}>
+                            {message.user.track?.cardinalNo && (
+                              <Text className="track">
+                                [{message.user.track.trackName}
+                                {message.user.track.cardinalNo}]
+                              </Text>
+                            )}
+                            <UserName className={message.user.role}>{message.user.realName}</UserName>
+                          </NameWrapper>
+                          <>
+                            <ChatItem className={isCurrentUser ? "me" : ""}>
+                              <Text>{message.content}</Text>
+                            </ChatItem>
+                          </>
+                          <DateWapper className={isCurrentUser ? "me" : ""}>
+                            <Text className="date">{message.createdAt.split("T")[1].split(".")[0]}</Text>
+                          </DateWapper>
+                        </Wrapper>
+                      </Flex>
+                    );
+                  })}
+                </>
+              )}
             </MessagesWrapper>
           </Body>
           <FooterTypingBar>
             <OptionBar></OptionBar>
             <TypingBar>
-              <Input onKeyDown={handleSendMessage} onChange={handleInputChange} name="chatInput" value={chatInput} placeholder="send Message" />
+              <Input
+                disabled={isLoading}
+                onKeyDown={handleSendMessage}
+                onChange={handleInputChange}
+                name="chatInput"
+                value={chatInput}
+                placeholder="send Message"
+              />
               <SendBtn></SendBtn>
             </TypingBar>
           </FooterTypingBar>
@@ -289,10 +320,12 @@ const Body = styled.div`
 `;
 const MessagesWrapper = styled.div`
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   flex: 1;
 `;
 const ChatItem = styled.div`
+  display: flex;
+
   width: auto;
   margin-top: 2px;
   padding: 6px;
@@ -300,14 +333,15 @@ const ChatItem = styled.div`
   background-color: white;
   &.me {
     border-radius: 8px 8px 0px 8px;
+    justify-content: end;
   }
 `;
 
 const DateWapper = styled.div`
   display: flex;
-  justify-content: end;
+  justify-content: start;
   &.me {
-    justify-content: start;
+    justify-content: end;
     margin-left: 4px;
   }
 `;

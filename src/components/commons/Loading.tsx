@@ -1,13 +1,14 @@
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import { loadingAtom } from "../../recoil/LoadingAtom";
-import { useRecoilState } from "recoil";
 
-export default function Loading() {
-  const [isLoading, setLoading] = useRecoilState(loadingAtom);
+interface LoadingProps {
+  isLoading: boolean;
+  onClose: () => void;
+}
 
+export default function Loading({ isLoading, onClose }: LoadingProps) {
   const handleClose = () => {
-    setLoading(false);
+    onClose();
   };
 
   return (
