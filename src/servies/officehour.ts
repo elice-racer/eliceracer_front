@@ -1,9 +1,16 @@
 import { api } from "./api";
-
+export interface OfficehourProps {
+  id: string;
+  coach: string;
+  createdAt: string;
+  date: string;
+  type: string;
+  updatedAt: string;
+}
 export namespace AxiosOffieHour {
-  export const getProjectAllOfficehour = async (projectId: string) => {
+  export const getProjectAllOfficehour = async (projectId: string): Promise<any> => {
     const url = `officehours/projects/${projectId}`;
-    const res = await api.get(url).then(res => res.data);
+    const res = await api.get(url).then(res => res);
     return res;
   };
   export const getTeamOfficehour = async (teamId: string) => {

@@ -1,5 +1,4 @@
 import styled from "styled-components";
-// import ChatList from "../chat/components/ChatList";
 import UsersList from "../chat/components/UsersList";
 import { paths } from "../../utils/path";
 import { useNavigate } from "react-router-dom";
@@ -8,13 +7,14 @@ import { currentUserAtom } from "../../recoil/UserAtom";
 import { useEffect, useState } from "react";
 import { AxiosChat, Chats } from "../../servies/chat";
 import { AxiosUser, UsersInfo } from "../../servies/user";
-import InfoBoard from "./components/InfoBoard";
+import UrlDashboard from "./components/UrlDashboard";
 import { AxiosProject, ProjectInfo } from "../../servies/projects";
 import { loadingAtom } from "../../recoil/LoadingAtom";
 import MiniProfileModal from "../chat/components/MiniProfileModal";
-import { AxiosOffieHour } from "../../servies/officehour";
+import { AxiosOffieHour, OfficehourProps } from "../../servies/officehour";
 
 import Button from "../../components/commons/Button";
+import OfficeHourWeekly from "../../components/officehour/OfficehourWeekly";
 
 function Lounge() {
   const navigate = useNavigate();
@@ -31,6 +31,8 @@ function Lounge() {
 
   const [searchUser, setSearchUser] = useState("");
 
+  const [officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
+
   /** 미니프로필창 열기 */
   const handleOpenMiniProfile = (userId: string | null) => {
     if (!userId) return alert("유저 프로필을 확인할 수 없습니다.");
@@ -42,8 +44,9 @@ function Lounge() {
   const fetchOfficehourProject = async () => {
     try {
       const res = await AxiosOffieHour.getProjectAllOfficehour("ab98d368-a71a-48da-9ce9-6382042a4686");
-      console.log("----------전체 오피스아워 조회----------");
-      console.log(res);
+      if (res.status === 200) {
+        setOfficeHours(res.data);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -150,7 +153,8 @@ function Lounge() {
           <Button onClick={() => navigate(paths.CHAT_HOME)} className="chat-home">
             <Text>채팅홈 바로가기</Text>
           </Button>
-          <InfoBoard projectsInfo={projectsInfo} />
+          <UrlDashboard projectUrls={projectsInfo} />
+          <OfficeHourWeekly officehours={officeHours} />
         </Section>
         <Section>
           <TitleWrapper>
@@ -187,11 +191,9 @@ const Container = styled.div`
 
   @media ${({ theme }) => theme.device.tablet} {
     flex-direction: column;
-    margin-top: 68px;
   }
 
   padding: 0 24px;
-  margin-top: 68px;
 `;
 
 const Section = styled.div`
