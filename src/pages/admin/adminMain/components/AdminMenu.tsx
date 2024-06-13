@@ -41,6 +41,8 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   gap: 6px;
+
+  margin-top: 68px;
 `;
 
 const Wrapper = styled.div`

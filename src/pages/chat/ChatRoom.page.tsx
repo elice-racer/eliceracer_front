@@ -313,7 +313,7 @@ const Title = styled.h1``;
 
 const Body = styled.div`
   padding: 10px 20px;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
   height: 100%;
   flex-wrap: wrap;
   overflow-y: auto;

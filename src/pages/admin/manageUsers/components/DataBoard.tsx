@@ -46,11 +46,12 @@ const Container = styled.div`
   justify-content: center;
   width: 100%;
   height: 300px;
-  background-color: ${({ theme }) => theme.colors.purple0};
+
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const ListContainer = styled(Container)`
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const Table = styled.table`
@@ -81,20 +82,3 @@ const Wrapper = styled.div`
 const Img = styled.img`
   width: 230px;
 `;
-
-/*
-      <table>
-        <thead>
-          <tr>{data.length > 0 && Object.keys(data[0]).map(key => <th key={key}>{key}</th>)}</tr>
-        </thead>
-        <tbody>
-          {data.map((row, index) => (
-            <tr key={index}>
-              {Object.values(row).map((item, i) => (
-                <td key={i}>{String(item)}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-*/

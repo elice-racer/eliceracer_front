@@ -11,7 +11,7 @@ function InfoBoard({ projectsInfo }: InfoBoardProps) {
       <ProjectInfoWrapper>
         <Wapper>
           <TitleWrapper>
-            <Title>프로젝트</Title>
+            <Title>외부 링크</Title>
           </TitleWrapper>
           <DataWrapper>
             <ProjectListWrapper>
@@ -90,7 +90,7 @@ const DataWrapper = styled.div`
   height: 158px;
   display: flex;
   justify-content: center;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const ProjectWrapper = styled.div`

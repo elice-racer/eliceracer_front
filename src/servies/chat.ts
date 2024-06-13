@@ -59,7 +59,10 @@ export namespace AxiosChat {
   /** 채팅방 생성 */
   export const createChat = async (data: CreateChatData) => {
     const url = `chats`;
+
     const res = await api.post(url, data);
+    console.log("-------채팅방 생성--------");
+    console.log(res);
     return res;
   };
 }

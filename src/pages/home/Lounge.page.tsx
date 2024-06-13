@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import ChatList from "../chat/components/ChatList";
+// import ChatList from "../chat/components/ChatList";
 import UsersList from "../chat/components/UsersList";
 import { paths } from "../../utils/path";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +14,8 @@ import { loadingAtom } from "../../recoil/LoadingAtom";
 import MiniProfileModal from "../chat/components/MiniProfileModal";
 import { AxiosOffieHour } from "../../servies/officehour";
 
+import Button from "../../components/commons/Button";
+
 function Lounge() {
   const navigate = useNavigate();
   const myInfo = useRecoilValue(currentUserAtom);
@@ -24,7 +26,7 @@ function Lounge() {
   const setLoading = useSetRecoilState(loadingAtom);
   const [error, setError] = useState("");
   const [users, setUsers] = useState<UsersInfo[]>([]);
-  const [chatsList, setChatList] = useState<Chats[]>();
+  const [_chatsList, setChatList] = useState<Chats[]>();
   const [projectsInfo, setProjectsInfo] = useState<ProjectInfo[]>([]);
 
   const [searchUser, setSearchUser] = useState("");
@@ -36,10 +38,11 @@ function Lounge() {
     setIsModalOpen(true);
   };
 
-  /** 프로젝트 오피스아워 조회 */
+  /** 전체 오피스아워 조회 */
   const fetchOfficehourProject = async () => {
     try {
-      const res = await AxiosOffieHour.getProjectOfficehour("8ab92d20-9835-4bc8-9f17-1da291343b82");
+      const res = await AxiosOffieHour.getProjectAllOfficehour("ab98d368-a71a-48da-9ce9-6382042a4686");
+      console.log("----------전체 오피스아워 조회----------");
       console.log(res);
     } catch (e) {
       console.error(e);
@@ -49,7 +52,7 @@ function Lounge() {
   /** 팀 오피스아워 조회 */
   const fetchOfficehourTeams = async () => {
     try {
-      const res = await AxiosOffieHour.getTeamOfficehour("f41806f5-aec4-4758-b6ce-3dcbb6e7f59e");
+      const res = await AxiosOffieHour.getTeamOfficehour("a13124e8-0563-4f93-80f9-3e13af0f7c72");
       console.log(res);
     } catch (e) {
       console.error(e);
@@ -144,7 +147,7 @@ function Lounge() {
 
       <Container>
         <Section>
-          <Button onClick={() => navigate(paths.CHAT_HOME)}>
+          <Button onClick={() => navigate(paths.CHAT_HOME)} className="chat-home">
             <Text>채팅홈 바로가기</Text>
           </Button>
           <InfoBoard projectsInfo={projectsInfo} />
@@ -169,9 +172,6 @@ function Lounge() {
           </TitleWrapper>
           <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />
         </Section>
-        <Section>
-          <ChatList chatsList={chatsList} error={error} />
-        </Section>
       </Container>
     </>
   );
@@ -183,37 +183,45 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  gap: 4px;
+  gap: 12px;
 
   @media ${({ theme }) => theme.device.tablet} {
     flex-direction: column;
     margin-top: 68px;
   }
 
+  padding: 0 24px;
   margin-top: 68px;
 `;
 
 const Section = styled.div`
   width: 100%;
-`;
 
-const Button = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 48px;
-  background-color: ${({ theme }) => theme.colors.purple1};
-  padding: 3px 5px;
-  margin: 6px 0;
-  border-radius: 8px;
-  cursor: pointer;
-  &:hover {
-    color: #fff;
-    background-color: ${({ theme }) => theme.colors.purple2};
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  .chat-home {
+    width: 100%;
+    height: 48px !important;
+
+    margin-bottom: 12px;
   }
 `;
+
+// const Button2 = styled.div`
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   width: 100%;
+//   height: 48px;
+//   background-color: ${({ theme }) => theme.colors.purple1};
+//   padding: 3px 5px;
+//   margin: 6px 0;
+//   border-radius: 8px;
+//   cursor: pointer;
+//   &:hover {
+//     color: #fff;
+//     background-color: ${({ theme }) => theme.colors.purple2};
+//     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+//   }
+// `;
 
 const Text = styled.p`
   text-align: center;

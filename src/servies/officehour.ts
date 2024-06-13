@@ -1,7 +1,7 @@
 import { api } from "./api";
 
 export namespace AxiosOffieHour {
-  export const getProjectOfficehour = async (projectId: string) => {
+  export const getProjectAllOfficehour = async (projectId: string) => {
     const url = `officehours/projects/${projectId}`;
     const res = await api.get(url).then(res => res.data);
     return res;
@@ -9,15 +9,16 @@ export namespace AxiosOffieHour {
   export const getTeamOfficehour = async (teamId: string) => {
     const url = `officehours/teams/${teamId}`;
     const res = await api.get(url);
+
     return res;
   };
 }
 
 // 프로젝트Id
-//8ab92d20-9835-4bc8-9f17-1da291343b82
+//ab98d368-a71a-48da-9ce9-6382042a4686
 
 // 8기 3팀 Id
-// d3795796-677a-4c6f-a48d-96cba7375a26
+// a13124e8-0563-4f93-80f9-3e13af0f7c72
 
 // 8기 2팀 Id
-// be171eb7-5ab0-440a-a5bf-f13854b88dd7
+// 0b8982ab-1744-4b2f-8cce-90e1fe40117e

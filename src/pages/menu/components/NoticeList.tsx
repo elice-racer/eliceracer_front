@@ -59,10 +59,7 @@ function NoticeList({ notices, fetchPagination }: NoticesProps) {
         <Wrapper>
           <NoticesWrapper ref={noticesWrapperRef}>
             {notices.length === 0 ? (
-              <EmptyWrapper>
-                <EmptyImage />
-                <Text>등록된 공지가 없습니다.</Text>
-              </EmptyWrapper>
+              <EmptyImage message="등록된 공지가 없습니다." />
             ) : (
               <>
                 {notices.map((notice: Notice, index) => (
@@ -89,13 +86,6 @@ function NoticeList({ notices, fetchPagination }: NoticesProps) {
 
 export default NoticeList;
 
-const EmptyWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
 const Container = styled.div`
   width: 100%;
 `;

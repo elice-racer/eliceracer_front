@@ -52,6 +52,8 @@ export namespace AxiosUser {
   export const getCurrentUser = async (): Promise<ResData<UsersInfo>> => {
     const url = `users/current`;
     const res = await api.get(url).then(res => res.data);
+    console.log("--------currentUser----------");
+    console.log(res);
     return res;
   };
 

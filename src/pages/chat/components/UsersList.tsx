@@ -34,10 +34,7 @@ function UsersList({ users, myInfo, error, onOpenMiniProfile }: UsersListProps) 
         {error && <Text className="error">Error...</Text>}
 
         {users.length === 0 ? (
-          <Wrapper>
-            <EmptyImage />
-            <Text className="info">친구가 존재하지 않습니다.</Text>
-          </Wrapper>
+          <EmptyImage message="친구가 존재하지 않습니다." />
         ) : (
           <>
             {users.map(user => (
@@ -86,15 +83,15 @@ const UserWrapper = styled.div`
   }
 `;
 
-const Wrapper = styled.div`
-  height: 80px;
-  margin-top: 34px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-`;
+// const Wrapper = styled.div`
+//   height: 80px;
+//   margin-top: 34px;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
+//   width: 100%;
+// `;
 const NameWrapper = styled.div`
   width: 100%;
   display: flex;
