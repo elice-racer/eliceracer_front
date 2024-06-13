@@ -56,10 +56,17 @@ export namespace AxiosChat {
     return res;
   };
 
+  /** 채팅 메시지 페이지네이션 */
+  export const getPrevChatMessage = async (next: string): Promise<ResData<ChatMessage[]>> => {
+    const res = await api.get(next).then(res => res.data);
+    console.log("다음께 가지고 와지냐?");
+    console.log(res);
+    return res;
+  };
+
   /** 채팅방 생성 */
   export const createChat = async (data: CreateChatData) => {
     const url = `chats`;
-
     const res = await api.post(url, data);
     console.log("-------채팅방 생성--------");
     console.log(res);

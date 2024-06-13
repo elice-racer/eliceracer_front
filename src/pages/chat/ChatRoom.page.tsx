@@ -12,6 +12,7 @@ import { AxiosOffieHour } from "../../servies/officehour";
 import { useRecoilValue } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 import Loading from "../../components/commons/Loading";
+import { baseURL } from "../../servies/api";
 
 const socket = io(import.meta.env.VITE_SOKET_IO, { autoConnect: false });
 
@@ -24,11 +25,15 @@ const ChatRoom = () => {
 
   const currentUser = useRecoilValue(currentUserAtom);
 
-  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const chatBodyRef = useRef<HTMLDivElement>(null);
+  const observeRef = useRef<HTMLDivElement>(null);
+
   const [chatsList, setChatList] = useState<Chats[]>();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const [nextUrl, setNextUrl] = useState<string | null>(null);
 
   const [users, setUsers] = useState();
   const [chatRoomInfo, setChatRoomInfo] = useState({
@@ -43,7 +48,8 @@ const ChatRoom = () => {
   const fetchOfficehourTeams = async () => {
     try {
       const res = await AxiosOffieHour.getTeamOfficehour("be171eb7-5ab0-440a-a5bf-f13854b88dd7");
-      console.log("팀 오피스아워 조회", res);
+      console.log("-----팀별 오피스아워 목업 데이터 조회------");
+      console.log(res);
     } catch (e) {
       console.error(e);
     }
@@ -76,9 +82,12 @@ const ChatRoom = () => {
     try {
       const res = await AxiosChat.getChatMessages(chatId);
       setIsLoading(false);
+      console.log("---chat message---");
+      console.log(res.pagination.next);
+      setNextUrl(typeof res.pagination.next === "string" ? res.pagination.next.replace(baseURL, "") : null);
 
       if (res.statusCode === 200) {
-        if (res.data) setMessages(res.data);
+        if (res.data) setMessages(res.data.reverse());
       }
     } catch (e) {
       setIsLoading(false);
@@ -86,25 +95,36 @@ const ChatRoom = () => {
     }
   };
 
+  const fetchPrevMessage = async () => {
+    try {
+      if (nextUrl) {
+        const res = await AxiosChat.getPrevChatMessage(nextUrl);
+        setNextUrl(typeof res.pagination.next === "string" ? res.pagination.next.replace(baseURL, "") : null);
+        const prevChat = res.data;
+        if (Array.isArray(prevChat)) {
+          const newState = [...prevChat, ...messages];
+          setMessages(newState);
+        }
+      }
+    } catch (e) {}
+  };
+
   /** 채팅 보내기 */
   const handleSendMessage = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter") return;
-    if (e.key === "Enter" && e.nativeEvent.composed && e.nativeEvent.isComposing) {
-      if (chatInput.trim() === "") return;
-      socket.emit("sendMessage", {
-        chatId: chatId,
-        userId: userId,
-        content: chatInput,
-      });
-    }
+
+    // 조합형 입력이 끝났을 때는 isComposing이 false가 됨
+    if (e.nativeEvent.isComposing) return;
+
+    if (chatInput.trim() === "") return;
+
+    socket.emit("sendMessage", {
+      chatId: chatId,
+      userId: userId,
+      content: chatInput,
+    });
 
     setChatInput("");
-  };
-
-  /** 방 입장 */
-  const handleJoinChat = (roomId: string) => {
-    const chatId = roomId;
-    socket.emit("joinChat", { chatId });
   };
 
   // 로그인할 때 currentUser 값도 recoil에 저장 , useRecoilState로 가져와서 전역으로 관리하기
@@ -122,15 +142,10 @@ const ChatRoom = () => {
   const fetchGetChatList = async () => {
     try {
       const res = await AxiosChat.getChats();
-      console.log(res);
       if (res.statusCode === 200) setChatList(res.data);
     } catch (e: any) {
       console.error(e);
     }
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setChatInput(e.target.value);
   };
 
   useEffect(() => {
@@ -146,7 +161,7 @@ const ChatRoom = () => {
 
     socket.on("connect", () => {
       console.log("Socket connected");
-      handleJoinChat(chatId);
+      socket.emit("joinChat", { chatId });
     });
 
     socket.on("disconnect", () => {
@@ -181,17 +196,39 @@ const ChatRoom = () => {
   }, [chatId]);
 
   useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+    if (chatBodyRef.current) {
+      chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
     }
   }, [messages]);
-
-  useEffect(() => {}, [currentUser]);
 
   useEffect(() => {
     setMessages([]);
   }, [chatId]);
 
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting) {
+          console.log("끝에 닿임 이전꺼 호출");
+          fetchPrevMessage();
+        }
+      },
+      {
+        root: chatBodyRef.current,
+        threshold: 0.5,
+      }
+    );
+
+    if (observeRef.current) {
+      observer.observe(observeRef.current);
+    }
+
+    return () => {
+      if (observeRef.current) {
+        observer.unobserve(observeRef.current);
+      }
+    };
+  }, [nextUrl]);
   return (
     <Container>
       <Section>
@@ -200,12 +237,11 @@ const ChatRoom = () => {
       <Section>
         <ChatContainer id={String(chatRoomInfo?.id)}>
           <Header>
-            {/* <SubTitle>⬅️</SubTitle> */}
             <Title>{chatRoomInfo?.chatName}</Title>
-            {/* <SubTitle>🧑‍💻</SubTitle> */}
           </Header>
-          <Body ref={chatContainerRef}>
+          <ChatBody ref={chatBodyRef}>
             <MessagesWrapper>
+              <TopBar ref={observeRef} />
               {isLoading ? (
                 <Loading isLoading={isLoading} onClose={() => setIsLoading(false)} />
               ) : (
@@ -239,14 +275,14 @@ const ChatRoom = () => {
                 </>
               )}
             </MessagesWrapper>
-          </Body>
+          </ChatBody>
           <FooterTypingBar>
             <OptionBar></OptionBar>
             <TypingBar>
               <Input
                 disabled={isLoading}
                 onKeyDown={handleSendMessage}
-                onChange={handleInputChange}
+                onChange={e => setChatInput(e.target.value)}
                 name="chatInput"
                 value={chatInput}
                 placeholder="send Message"
@@ -270,6 +306,15 @@ const ChatRoom = () => {
 
 export default ChatRoom;
 
+const Container = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  justify-content: space-around;
+
+  padding: 0 12px;
+`;
+
 const UsersWrapper = styled.div`
   border: solid ${({ theme }) => theme.colors.gray1} 3px;
   height: 450px;
@@ -279,11 +324,13 @@ const UsersWrapper = styled.div`
 
 const SendBtn = styled.div``;
 
-const Container = styled.div`
+const TopBar = styled.div`
   width: 100%;
-  display: flex;
-  gap: 12px;
-  justify-content: space-around;
+  height: 1px;
+  text-align: center;
+  border: 1px solid #dbdbdb;
+  border-style: dotted;
+  margin-bottom: 4px;
 `;
 
 const Section = styled.div`
@@ -311,12 +358,12 @@ const Header = styled.div`
 
 const Title = styled.h1``;
 
-const Body = styled.div`
+const ChatBody = styled.div`
   padding: 10px 20px;
   border: 1px solid ${({ theme }) => theme.colors.gray1};
   height: 100%;
   flex-wrap: wrap;
-  overflow-y: auto;
+  overflow-y: scroll;
 `;
 const MessagesWrapper = styled.div`
   display: flex;

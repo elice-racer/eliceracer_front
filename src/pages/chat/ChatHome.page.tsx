@@ -39,7 +39,6 @@ function ChatHome() {
   const fetchUserInfo = async (id: string) => {
     try {
       const res = await AxiosUser.getUsersPage(id);
-      console.log(res.data);
       if (res.statusCode === 200) setUsetInfo(res.data);
     } catch (e) {
       console.error(e);
