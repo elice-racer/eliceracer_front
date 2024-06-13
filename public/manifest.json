@@ -1,7 +1,7 @@
 {
-  "name": "elice-app",
-  "short_name": "elice-racer",
-  "description": "elice project chatting app",
+  "name": "Elice",
+  "short_name": "Elice",
+  "description": "Elice project chat app",
   "icons": [
     {
       "src": "pwa/android-chrome-192x192.png",
@@ -34,19 +34,5 @@
   "scope": "/",
   "id": "/?source=pwa",
   "start_url": "/?source=pwa",
-  "orientation": "portrait",
-  "screenshots": [
-    {
-      "src": "/images/screenshot1.png",
-      "type": "image/png",
-      "sizes": "540x720",
-      "form_factor": "narrow"
-    },
-    {
-      "src": "/images/screenshot2.jpg",
-      "type": "image/jpg",
-      "sizes": "720x540",
-      "form_factor": "wide"
-    }
-  ]
+  "orientation": "portrait"
 }

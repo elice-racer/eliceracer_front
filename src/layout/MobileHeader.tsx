@@ -24,7 +24,7 @@ export default function MobileHeader({ toggleMenu, isOpen, children }: MobileHea
         <span />
         <span />
       </HamburgerButton>
-      <MenuPanel isOpen={isOpen}>
+      <MenuPanel $isopen={isOpen}>
         <ImgWrapper>
           <Absolute>
             <LogoImage src={imgPaths.ELICE_LOGO} alt="logo" onClick={handleLogoClick} />
@@ -63,7 +63,7 @@ const HamburgerButton = styled.div`
 const LogoImage = styled.img`
   width: 120px;
 `;
-const MenuPanel = styled.div<{ isOpen: boolean }>`
+const MenuPanel = styled.div<{ $isopen: boolean }>`
   position: fixed;
   top: 0;
   right: 0;
@@ -75,7 +75,7 @@ const MenuPanel = styled.div<{ isOpen: boolean }>`
   color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
-  transform: ${props => (props.isOpen ? "translateX(0)" : "translateX(100%)")};
+  transform: ${props => (props.$isopen ? "translateX(0)" : "translateX(100%)")};
   transition: transform 0.3s ease-in-out;
 
   z-index: 999;

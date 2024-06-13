@@ -127,7 +127,7 @@ function Lounge() {
 
   useEffect(() => {
     if (searchUser.length === 0) {
-      fetchGetUsersList();
+      if (myInfo?.role === "RACER") fetchGetUsersList();
     }
   }, [searchUser]);
 
