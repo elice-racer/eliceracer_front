@@ -128,11 +128,11 @@ const QuotesWrapper = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 1.3em;
+  font-size: 1.3rem;
 `;
 
 const SubTitle = styled.h2`
-  font-size: 1.2em;
+  font-size: 1.2rem;
 `;
 const Text = styled.p`
   &.info {

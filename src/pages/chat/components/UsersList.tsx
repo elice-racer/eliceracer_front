@@ -1,34 +1,20 @@
-import { useState } from "react";
 import styled from "styled-components";
 import { UsersInfo } from "../../../servies/user";
 import ProfileImg from "../../Profile/components/ProfileImg";
 import { useNavigate } from "react-router-dom";
-import { paths } from "../../../utils/path";
+import { imgPaths, paths } from "../../../utils/path";
 
 interface UsersListProps {
   users: UsersInfo[] | undefined;
   myInfo: UsersInfo | null | undefined;
   error?: string;
-  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  onOpenMiniProfile: (userId: string | null) => void;
 }
-function UsersList({ users, myInfo, error, onClick }: UsersListProps) {
+function UsersList({ users, myInfo, error, onOpenMiniProfile }: UsersListProps) {
   const navigator = useNavigate();
-  const [isClick, setIsClick] = useState(false);
 
   return (
     <Container>
-      <TitleWrapper>
-        <Title>Team Elice</Title>
-        <SubItemWrapper>
-          <SearchItem
-            onClick={prev => {
-              setIsClick(!prev);
-            }}
-          >
-            {isClick ? <Input /> : <ItemText>검색 🔎</ItemText>}
-          </SearchItem>
-        </SubItemWrapper>
-      </TitleWrapper>
       <UsersListWrapper>
         <UserWrapper key={myInfo?.id} onClick={() => navigator(paths.MENU)}>
           <ProfileImg />
@@ -44,26 +30,30 @@ function UsersList({ users, myInfo, error, onClick }: UsersListProps) {
             <Text>{myInfo?.comment}</Text>
           </CommentWrapper>
         </UserWrapper>
-        {error && <Text className="error">error</Text>}
-        {users ? (
-          users.map(user => (
-            <UserWrapper key={user.id} id={user.id ? user.id : ""} onClick={onClick}>
-              <ProfileImg />
-              <NameWrapper>
-                {user.track && <Text>{`[${user.track.trackName}${user.track.cardinalNo}]`}</Text>}
-                {user.role === "ADMIN" && <Text className={user.role}>[매니저]</Text>}
-                {user.role === "COACH" && <Text className={user.role}>[코치]</Text>}
-                <Text>{user.realName || "이름없음"}</Text>
-              </NameWrapper>
-              <CommentWrapper>
-                <Text>{user.comment}</Text>
-              </CommentWrapper>
-            </UserWrapper>
-          ))
-        ) : (
+        {error && <Text className="error">Error...</Text>}
+
+        {users.length === 0 ? (
           <Wrapper>
+            <Img src={imgPaths.EMPTY} />
             <Text className="info">친구가 존재하지 않습니다.</Text>
           </Wrapper>
+        ) : (
+          <>
+            {users.map(user => (
+              <UserWrapper key={user.id} id={user.id ? user.id : ""} onClick={() => onOpenMiniProfile(user.id || null)}>
+                <ProfileImg />
+                <NameWrapper>
+                  {user.track && <Text>{`[${user.track.trackName}${user.track.cardinalNo}]`}</Text>}
+                  {user.role === "ADMIN" && <Text className={user.role}>[매니저]</Text>}
+                  {user.role === "COACH" && <Text className={user.role}>[코치]</Text>}
+                  <Text>{user.realName || "이름없음"}</Text>
+                </NameWrapper>
+                <CommentWrapper>
+                  <Text>{user.comment}</Text>
+                </CommentWrapper>
+              </UserWrapper>
+            ))}
+          </>
         )}
       </UsersListWrapper>
     </Container>
@@ -76,17 +66,6 @@ const Container = styled.div`
   width: 100%;
   height: 100%;
 `;
-
-const TitleWrapper = styled.div`
-  padding: 2px 12px;
-  align-items: center;
-  width: 100%;
-  height: 50px;
-  display: flex;
-  justify-content: space-between;
-`;
-
-const SubItemWrapper = styled.div``;
 
 const UsersListWrapper = styled.div`
   display: flex;
@@ -108,7 +87,9 @@ const UserWrapper = styled.div`
 
 const Wrapper = styled.div`
   height: 80px;
+  margin-top: 34px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -122,12 +103,6 @@ const CommentWrapper = styled.div`
   width: 50%;
   white-space: break-spaces;
   overflow: hidden;
-`;
-const Input = styled.input`
-  width: 30%;
-`;
-const Title = styled.h1`
-  color: ${({ theme }) => theme.colors.gray2};
 `;
 
 const Text = styled.p`
@@ -149,8 +124,7 @@ const Text = styled.p`
   }
 `;
 
-const SearchItem = styled.div`
-  cursor: pointer;
+const Img = styled.img`
+  width: 120px;
+  height: 120px;
 `;
-
-const ItemText = styled.p``;

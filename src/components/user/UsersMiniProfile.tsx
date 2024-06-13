@@ -87,8 +87,8 @@ const Header = styled.div`
 
 const ImgWrapper = styled.div`
   border-radius: 100px;
-  width: 12em;
-  height: 12em;
+  width: 12rem;
+  height: 12rem;
   padding: 50px 20px 0 30px;
 `;
 

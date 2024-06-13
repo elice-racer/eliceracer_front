@@ -62,9 +62,9 @@ const Container = styled.header`
   top: 0;
 `;
 
-const Anchor = styled.a`
-  padding: 0;
-`;
+// const Anchor = styled.a`
+//   padding: 0;
+// `;
 
 const Flex = styled.div`
   display: flex;

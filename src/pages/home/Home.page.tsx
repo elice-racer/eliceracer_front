@@ -7,7 +7,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 import { useEffect, useState } from "react";
 import { AxiosChat, Chats } from "../../servies/chat";
-import { AxiosUser } from "../../servies/user";
+import { AxiosUser, UsersInfo } from "../../servies/user";
 import InfoBoard from "./components/InfoBoard";
 import { AxiosProject, ProjectInfo } from "../../servies/projects";
 import { loadingAtom } from "../../recoil/LoadingAtom";
@@ -23,15 +23,16 @@ function Home() {
 
   const setLoading = useSetRecoilState(loadingAtom);
   const [error, setError] = useState("");
-  const [users, setUsers] = useState();
+  const [users, setUsers] = useState<UsersInfo[]>([]);
   const [chatsList, setChatList] = useState<Chats[]>();
   const [projectsInfo, setProjectsInfo] = useState<ProjectInfo[]>([]);
 
-  const handleClick = (e: any) => {
-    console.dir(e.target.id);
+  const [searchUser, setSearchUser] = useState("");
 
-    if (!e.target.id) return alert("유저 프로필을 확인할 수 없습니다.");
-    fetchUserInfo(e.target.id);
+  /** 미니프로필창 열기 */
+  const handleOpenMiniProfile = (userId: string | null) => {
+    if (!userId) return alert("유저 프로필을 확인할 수 없습니다.");
+    fetchUserInfo(userId);
     setIsModalOpen(true);
   };
 
@@ -93,6 +94,18 @@ function Home() {
     }
   };
 
+  const fetchSearchUserList = async () => {
+    try {
+      const res = await AxiosUser.getSearchUser(searchUser);
+
+      if (res.status === 200) {
+        setUsers(res.data.data);
+      }
+    } catch (e: any) {
+      console.log(e.response);
+    }
+  };
+
   /** 채팅 목록 조회 */
   const fetchGetChatList = async () => {
     setLoading(true);
@@ -105,6 +118,12 @@ function Home() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (searchUser.length === 0) {
+      fetchGetUsersList();
+    }
+  }, [searchUser]);
 
   useEffect(() => {
     fetchGetChatList();
@@ -121,16 +140,28 @@ function Home() {
 
   return (
     <>
-      <MiniProfileModal
-        isModalOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-        }}
-        userData={userInfo}
-      />
+      <MiniProfileModal isModalOpen={isModalOpen} userData={userInfo} onClose={() => setIsModalOpen(false)} />
+
       <Container>
         <Section>
-          <UsersList users={users} myInfo={myInfo} error={error} onClick={handleClick} />
+          <TitleWrapper>
+            <Title>Team Elice</Title>
+            <SubItemWrapper>
+              <Input
+                type="text"
+                placeholder="유저를 검색해주세요"
+                value={searchUser}
+                onChange={e => setSearchUser(e.target.value)}
+                onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                  if (e.key === "Enter") {
+                    fetchSearchUserList();
+                  }
+                }}
+              />
+              <ItemText onClick={fetchSearchUserList}>🔎</ItemText>
+            </SubItemWrapper>
+          </TitleWrapper>
+          <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />
         </Section>
         <Section>
           <Button onClick={() => navigate(paths.CHAT_HOME)}>
@@ -182,4 +213,45 @@ const Text = styled.p`
   font-size: 1.2em;
   font-weight: 600;
   color: ${({ theme }) => theme.colors.gray3};
+`;
+
+const TitleWrapper = styled.div`
+  padding: 2px 12px;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+
+  margin-bottom: 24px;
+`;
+
+const SubItemWrapper = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
+const Input = styled.input`
+  width: 100%;
+
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
+
+  height: 36px;
+`;
+const Title = styled.h1`
+  color: ${({ theme }) => theme.colors.gray2};
+`;
+
+const ItemText = styled.p`
+  position: absolute;
+  top: 50%;
+  right: 12px;
+
+  transform: translateY(-50%);
+  font-size: 14px;
+
+  cursor: pointer;
 `;

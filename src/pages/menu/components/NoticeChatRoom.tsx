@@ -121,7 +121,7 @@ const Text = styled.p`
     font-weight: 600;
   }
   &.date {
-    font-size: 0.8em;
+    font-size: 0.8rem;
     color: ${({ theme }) => theme.colors.gray2};
   }
 `;

@@ -31,6 +31,10 @@ export interface ChatMessage {
   createdAt: string;
 }
 
+interface CreateChatData {
+  userIds: string[];
+  chatName: string;
+}
 export namespace AxiosChat {
   /** 현재 유저가 가지고 있는 채팅방 조회 */
   export const getChats = async (): Promise<ResData<Chats[]>> => {
@@ -49,6 +53,13 @@ export namespace AxiosChat {
   export const getChatIdInfo = async (chatId: string) => {
     const url = `chats/${chatId}`;
     const res = await api.get(url).then(res => res.data);
+    return res;
+  };
+
+  /** 채팅방 생성 */
+  export const createChat = async (data: CreateChatData) => {
+    const url = `chats`;
+    const res = await api.post(url, data);
     return res;
   };
 }

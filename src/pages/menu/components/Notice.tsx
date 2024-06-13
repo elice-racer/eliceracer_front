@@ -56,7 +56,7 @@ const TitleWrapper = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 1.4em;
+  font-size: 1.4rem;
 `;
 
 const Wrapper = styled.div``;

@@ -103,4 +103,10 @@ export namespace AxiosUser {
     const res = await api.get(url);
     return res;
   };
+
+  export const getSearchUser = async (search: string) => {
+    const url = `users?search=${search}`;
+    const res = await api.get(url);
+    return res;
+  };
 }

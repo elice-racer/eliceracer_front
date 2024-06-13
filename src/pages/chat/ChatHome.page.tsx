@@ -71,7 +71,7 @@ function ChatHome() {
       <Container>
         <Error>{error}</Error>
         <Section>
-          <UsersList users={users} myInfo={myInfo} onClick={handleClick} />
+          <UsersList users={users} myInfo={myInfo} onOpenMiniProfile={handleClick} />
         </Section>
         <Section>
           <ChatList chatsList={chatsList} />
