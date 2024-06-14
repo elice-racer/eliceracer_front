@@ -4,9 +4,12 @@ import Header from "../layout/Header";
 import { paths } from "../utils/path";
 import styled from "styled-components";
 import { AxiosUser } from "../services/user";
+import { useSetRecoilState } from "recoil";
+import { currentUserAtom } from "../recoil/UserAtom";
 
 export const AdminRoute = () => {
   const navigate = useNavigate();
+  const setCurrentUser = useSetRecoilState(currentUserAtom);
 
   /** 유저정보를 확인하고 관리자인지 식별하는 함수 */
   const fetchGetUser = async () => {
@@ -14,9 +17,13 @@ export const AdminRoute = () => {
       const res = await AxiosUser.getCurrentUser();
 
       if (res.statusCode === 200) {
-        const data = res.data;
+        const currentUser = res.data;
 
-        if (data?.role !== "ADMIN") {
+        if (currentUser) {
+          setCurrentUser(currentUser);
+        }
+
+        if (currentUser?.role !== "ADMIN") {
           alert("관리자 권한만 접근가능합니다.");
           navigate(paths.HOME);
         }

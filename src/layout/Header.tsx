@@ -66,7 +66,7 @@ const Header = ({ adminMenu }: any) => {
         </Wrapper>
       </Flex>
 
-      <MobileHeader isOpen={isOpen} toggleMenu={toggleMenu}>
+      <MobileHeader $isOpen={isOpen} toggleMenu={toggleMenu}>
         <ul>
           {adminMenu && (
             <li>

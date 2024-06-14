@@ -1,7 +1,7 @@
 import "./App.css";
 import { paths } from "./utils/path";
 
-import { SocketContext, socket } from "./services/socket.ts";
+import { SocketContext, socket, socketConfig } from "./context/SocketContext";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { AdminRoute } from "./routes/AdminRoute";
 
@@ -70,8 +70,6 @@ import Notfound from "./pages/404/Notfound.page";
 import SuccessCreateUsers from "./pages/login/SuccessCreateUsers.page";
 import AdminProjectDetail from "./pages/admin/AdminProjectDetail.page";
 import SuccessAuthEmail from "./pages/redirects/SuccessAuthEmail.page";
-import { currentUserAtom } from "./recoil/UserAtom";
-import { AxiosUser } from "./services/user.ts";
 
 const router = createBrowserRouter([
   {
@@ -145,29 +143,14 @@ const router = createBrowserRouter([
 function App() {
   const setToken = useSetRecoilState(tokenAtom);
   const [isLoading, setLoading] = useRecoilState(loadingAtom);
-  const setCurrentUser = useSetRecoilState(currentUserAtom);
 
   const snackbar = useRecoilValue(snackbarAtom);
 
-  /** 현재 유저정보 가져오기 */
-  const fetchCurrentUser = async (access_token: string | null) => {
-    try {
-      if (access_token) {
-        const res = await AxiosUser.getCurrentUser();
-        if (res.statusCode === 200) {
-          const currentUser = res.data;
-          if (currentUser) setCurrentUser(currentUser);
-        }
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   useEffect(() => {
+    socketConfig();
+
     return () => {
       socket.disconnect();
-
       setLoading(false);
     };
   }, []);
@@ -175,7 +158,6 @@ function App() {
   useEffect(() => {
     const access_token = localStorage.getItem("userToken");
     setToken(access_token);
-    fetchCurrentUser(access_token);
   }, []);
 
   return (

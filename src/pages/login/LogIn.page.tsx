@@ -10,8 +10,6 @@ import { loadingAtom } from "../../recoil/LoadingAtom";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import Button from "../../components/commons/Button";
 
-// import Cookies from "js-cookie";
-
 export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -55,7 +53,6 @@ export default function Login() {
 
     try {
       const res = await AxiosAuth.fetchLogin(userLoginForm);
-      // const test = Cookies.get("refreshToken");
       if (res.data?.statusCode === 200) {
         const loginToken = res.headers?.authorization.replace("Bearer ", "");
         setToken(loginToken);

@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { AxiosUser } from "../services/user";
 import Header from "../layout/Header";
 import styled from "styled-components";
+import { useSetRecoilState } from "recoil";
+import { currentUserAtom } from "../recoil/UserAtom";
 
 export const ProtectedRoute = () => {
   const [adminMenu, setAdminMenu] = useState(false);
+  const setCurrentUser = useSetRecoilState(currentUserAtom);
 
   const navigate = useNavigate();
 
@@ -16,8 +19,11 @@ export const ProtectedRoute = () => {
       const res = await AxiosUser.getCurrentUser();
 
       if (res.statusCode === 200) {
-        const data = res.data;
-        if (data?.role === "ADMIN") {
+        const currentUser = res.data;
+        if (currentUser) {
+          setCurrentUser(currentUser);
+        }
+        if (currentUser?.role === "ADMIN") {
           setAdminMenu(true);
         }
       }

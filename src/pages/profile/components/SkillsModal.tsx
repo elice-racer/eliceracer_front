@@ -250,7 +250,7 @@ export const Dimed = styled.div`
   width: 100%;
   height: 100%;
   position: fixed;
-  z-index: 10;
+  z-index: 1000;
   top: 0;
   left: 0;
   background-color: #000;

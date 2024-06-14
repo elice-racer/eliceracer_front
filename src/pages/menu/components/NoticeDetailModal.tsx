@@ -5,14 +5,15 @@ import styled from "styled-components";
 import { Backdrop } from "@mui/material";
 
 import { AxiosNotice, Notice } from "../../../services/notice";
+import IconButton from "../../../components/commons/IconButton";
 
 interface NoticeModalProps {
-  isOpen: boolean;
+  $isOpen: boolean;
   onClose: () => void;
   noticeId: string | null;
 }
 
-export default function NoticeDetailModal({ isOpen, onClose, noticeId }: NoticeModalProps) {
+export default function NoticeDetailModal({ $isOpen, onClose, noticeId }: NoticeModalProps) {
   const el = document.getElementById("modal") as HTMLElement;
 
   const [notice, setNotice] = useState<Notice | null>(null);
@@ -38,20 +39,23 @@ export default function NoticeDetailModal({ isOpen, onClose, noticeId }: NoticeM
   if (!el) return null;
 
   return ReactDom.createPortal(
-    <Backdrop sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer + 1 }} open={isOpen} onClick={onClose}>
-      <ModalContainer>
+    <>
+      <Backdrop sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer }} open={$isOpen} onClick={onClose} />
+      <ModalContainer $open={$isOpen}>
         <ModalHeader>
           <ModalTitle>{notice?.title}</ModalTitle>
-          <CloseButton onClick={onClose}>&times;</CloseButton>
+          <IconButton onClick={onClose}>
+            <CloseButton>&times;</CloseButton>
+          </IconButton>
         </ModalHeader>
         <ModalBody>{notice?.content}</ModalBody>
       </ModalContainer>
-    </Backdrop>,
+    </>,
     el
   );
 }
 
-const ModalContainer = styled.div`
+const ModalContainer = styled.div<{ $open: boolean }>`
   position: fixed;
   top: 50%;
   left: 50%;
@@ -63,7 +67,9 @@ const ModalContainer = styled.div`
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1001;
+  z-index: 9999;
+
+  display: ${({ $open }) => ($open ? "block" : "none")};
 
   @media ${({ theme }) => theme.device.mobileL} {
     width: 100%;
@@ -89,14 +95,11 @@ const ModalTitle = styled.h2`
   width: 100%;
 `;
 
-const CloseButton = styled.button`
+const CloseButton = styled.div`
   border: none;
   font-size: 2rem;
 
   position: absolute;
-
-  top: 12px;
-  right: 12px;
 
   cursor: pointer;
 `;

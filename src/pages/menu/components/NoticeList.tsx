@@ -79,7 +79,7 @@ function NoticeList({ notices, fetchPagination }: NoticesProps) {
           </NoticesWrapper>
         </Wrapper>
       </Flex>
-      <NoticeDetailModal isOpen={isNoticeModalOpen} onClose={handleCloseModal} noticeId={noticeId} />
+      <NoticeDetailModal $isOpen={isNoticeModalOpen} onClose={handleCloseModal} noticeId={noticeId} />
     </Container>
   );
 }

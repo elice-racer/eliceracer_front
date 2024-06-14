@@ -39,7 +39,7 @@ function IntroHeader() {
           </Relative>
         </Wrapper>
       </Flex>
-      <MobileHeader isOpen={isOpen} toggleMenu={toggleMenu}>
+      <MobileHeader $isOpen={isOpen} toggleMenu={toggleMenu}>
         <ul>
           <li onClick={() => setIsOpen(false)}>
             <a href={"https://elice-lab.imweb.me/"}>엘리스랩</a>

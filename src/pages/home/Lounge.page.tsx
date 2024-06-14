@@ -2,11 +2,11 @@ import styled from "styled-components";
 import UsersList from "../chat/components/UsersList";
 import { paths } from "../../utils/path";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { useEffect, useState } from "react";
 import { AxiosChat, Chats } from "../../services/chat";
-import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../services/user";
+import { AxiosUser, ChatRoomUsers } from "../../services/user";
 import UrlDashboard from "./components/UrlDashboard";
 import { AxiosProject, ProjectInfo } from "../../services/projects";
 import { loadingAtom } from "../../recoil/LoadingAtom";
@@ -15,18 +15,19 @@ import { AxiosOffieHour, OfficehourProps } from "../../services/officehour";
 
 import Button from "../../components/commons/Button";
 import OfficeHourWeekly from "../../components/officehour/OfficehourWeekly";
+import { currentUserAtom } from "../../recoil/UserAtom";
 
 function Lounge() {
   const navigate = useNavigate();
   const setLoading = useSetRecoilState(loadingAtom);
-  // const myInfo = useRecoilValue(currentUserAtom);
-  const [myInfo, setMyInfo] = useState<UsersPageInfo>();
+  const myInfo = useRecoilValue(currentUserAtom);
+  // const [myInfo, setMyInfo] = useState<UsersPageInfo>();
 
   const [userInfo, setUsetInfo] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [error, setError] = useState("");
-  const [users, setUsers] = useState<ChatRoomUsers[]>();
+  const [users, setUsers] = useState<ChatRoomUsers[]>([]);
   const [_chatsList, setChatList] = useState<Chats[]>();
   const [projectsInfo, setProjectsInfo] = useState<ProjectInfo[]>([]);
   const [projectId, setProjectId] = useState<string>("decdcebb-2039-417c-9aca-3a5a381b1013");
@@ -51,24 +52,15 @@ function Lounge() {
     }
   };
 
-  /** 현재 유저 조회 */
-  const fetchCurrentUser = async () => {
-    try {
-      const res = await AxiosUser.getCurrentUser();
-      if (res.statusCode === 200) setMyInfo(res.data);
-    } catch (e) {
-      console.error(e);
-    }
-  };
   /** 프로젝트 조회 */
   const fetchGetProjectIdInfo = async () => {
     setLoading(true);
     try {
-      if (!myInfo?.track?.cardinalNo) return setLoading(false);
+      if (!myInfo?.track?.cardinalNo) return;
       const { trackName, cardinalNo } = myInfo?.track;
 
       const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });
-
+      console.log(res);
       if (res.statusCode === 200) {
         if (res.data) {
           setProjectsInfo(res.data);
@@ -87,7 +79,6 @@ function Lounge() {
     if (!projectId) return;
     try {
       const res = await AxiosOffieHour.getProjectAllOfficehour(projectId);
-      console.log(res.data);
       if (res.status === 200) setOfficeHours(res.data);
     } catch (e) {
       console.error(e);
@@ -98,7 +89,7 @@ function Lounge() {
   const fetchGetUsersList = async () => {
     try {
       const res = await AxiosUser.getChatUsersList();
-      if (res.statusCode === 200) setUsers(res.data);
+      if (res.statusCode === 200) setUsers(res.data || []);
     } catch (e: any) {
       console.error(e);
       setError(e.response.data.message);
@@ -131,19 +122,17 @@ function Lounge() {
   };
 
   /** 유저간 채팅 시작 */
-  const handleStartUsersChat = async (e: any) => {
+  const handleStartUsersChat = async (userId: string, chatName: string) => {
     try {
-      const userId = e.target.id;
-      const chatName = e.target.innerText;
-
       const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
 
       if (res.status === 201) {
         alert(`채팅방이 생성되었습니다! 채팅 목록에서 생성된 채팅방을 확인하세요!`);
+        setIsModalOpen(false);
         fetchGetChatList();
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 
@@ -154,7 +143,6 @@ function Lounge() {
   }, [searchUser]);
 
   useEffect(() => {
-    fetchCurrentUser();
     fetchGetChatList();
     fetchOfficehourProject();
     if (myInfo?.role === "RACER") fetchGetUsersList();
@@ -162,7 +150,7 @@ function Lounge() {
 
   useEffect(() => {
     fetchGetProjectIdInfo();
-  }, [myInfo]);
+  }, []);
 
   useEffect(() => {
     if (myInfo?.role === "RACER") fetchGetUsersList();
@@ -170,7 +158,7 @@ function Lounge() {
 
   return (
     <>
-      <MiniProfileModal isModalOpen={isModalOpen} userdata={userInfo} onClose={() => setIsModalOpen(false)} onClick={handleStartUsersChat} />
+      <MiniProfileModal isModalOpen={isModalOpen} userdata={userInfo} onClose={() => setIsModalOpen(false)} onCreateChat={handleStartUsersChat} />
 
       <Container>
         <Section>
@@ -199,7 +187,7 @@ function Lounge() {
             </SubItemWrapper>
           </TitleWrapper>
 
-          {users && <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />}
+          <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />
         </Section>
       </Container>
     </>
