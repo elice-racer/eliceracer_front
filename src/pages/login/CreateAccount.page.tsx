@@ -21,7 +21,7 @@ export default function CreateAccount() {
   const [timerStart, setTimerStart] = useState(false);
 
   // 본인인증 완료 여부
-  const [confirmUser, setConfirmUser] = useState(true);
+  const [confirmUser, setConfirmUser] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
