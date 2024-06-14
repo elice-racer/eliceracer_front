@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import ProfileImg from "../../usersProfile/components/ProfileImg";
+import ProfileImg from "../../profile/components/ProfileImg";
 import { ChatRoomUsers } from "../../../servies/user";
 
 interface ChatRoomUsersProps {
