@@ -41,17 +41,6 @@ function Lounge() {
     setIsModalOpen(true);
   };
 
-  /** 전체 오피스아워 조회 */
-  const fetchOfficehourProject = async () => {
-    if (!projectId) return;
-    try {
-      const res = await AxiosOffieHour.getProjectAllOfficehour(projectId);
-      if (res.status === 200) setOfficeHours(res.data);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   /** 유저 미니프로필 조회 */
   const fetchUserInfo = async (id: string) => {
     try {
@@ -89,6 +78,19 @@ function Lounge() {
       setLoading(false);
     } catch (e) {
       setLoading(false);
+      console.error(e);
+    }
+  };
+
+  /** 전체 오피스아워 조회 */
+  const fetchOfficehourProject = async () => {
+    console.log("--------projectId---------");
+    console.log(projectId);
+    if (!projectId) return;
+    try {
+      const res = await AxiosOffieHour.getProjectAllOfficehour(projectId);
+      if (res.status === 200) setOfficeHours(res.data);
+    } catch (e) {
       console.error(e);
     }
   };
@@ -155,19 +157,16 @@ function Lounge() {
   useEffect(() => {
     fetchCurrentUser();
     fetchGetChatList();
-
     fetchOfficehourProject();
     if (myInfo?.role === "RACER") fetchGetUsersList();
   }, []);
 
   useEffect(() => {
     fetchGetProjectIdInfo();
-    fetchOfficehourProject();
   }, [myInfo]);
 
   useEffect(() => {
     if (myInfo?.role === "RACER") fetchGetUsersList();
-    // todo 관리자, 코치 채팅룸 조회 api 연결
   }, [myInfo?.role]);
 
   return (
@@ -234,24 +233,6 @@ const Section = styled.div`
   }
 `;
 
-// const Button2 = styled.div`
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   width: 100%;
-//   height: 48px;
-//   background-color: ${({ theme }) => theme.colors.purple1};
-//   padding: 3px 5px;
-//   margin: 6px 0;
-//   border-radius: 8px;
-//   cursor: pointer;
-//   &:hover {
-//     color: #fff;
-//     background-color: ${({ theme }) => theme.colors.purple2};
-//     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-//   }
-// `;
-
 const Text = styled.p`
   text-align: center;
   font-size: 1.2em;
@@ -299,51 +280,3 @@ const SearchIcon = styled.p`
 
   cursor: pointer;
 `;
-
-/**
- * blog
-: 
-null
-comment
-: 
-null
-description
-: 
-null
-email
-: 
-"testtest@test.com"
-github
-: 
-null
-id
-: 
-"d1f28fff-0ec1-44b1-98e8-52c0b9a28bb5"
-position
-: 
-null
-profileImage
-: 
-null
-realName
-: 
-"노지예은"
-role
-: 
-"COACH"
-sns
-: 
-null
-status
-: 
-0
-tmi
-: 
-null
-track
-: 
-null
-username
-: 
-null
- */

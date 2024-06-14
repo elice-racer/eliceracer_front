@@ -23,6 +23,7 @@ import { AxiosOffieHour, OfficehourProps } from "../../servies/officehour";
 // todo 오늘날짜 기준으로 올라온 공지면 new 배찌 달아주기
 function MenuHome() {
   const setLoading = useSetRecoilState(loadingAtom);
+
   const userInfo = useRecoilValue(currentUserAtom);
   const [_userId, setUserId] = useState<string | null>(null);
   const [userdata, setUserdata] = useState<UsersPageInfo>();
@@ -56,19 +57,20 @@ function MenuHome() {
   };
 
   const fetchGetProjectIdInfo = async () => {
-    setLoading(true);
     try {
       if (!userInfo?.track?.cardinalNo) return;
+      setLoading(true);
       const { trackName, cardinalNo } = userInfo?.track;
 
       const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });
-
       if (res.statusCode === 200) {
         if (res.data) {
           setProjectId(res.data[0].id);
           setLoading(false);
         }
+        setLoading(false);
       }
+      setLoading(false);
     } catch (e) {
       setLoading(false);
       console.error(e);
@@ -113,11 +115,12 @@ function MenuHome() {
     fetchNotices();
     fetchMyPage();
     fetchQuote();
+    setLoading(false);
   }, []);
 
   useEffect(() => {
-    fetchOfficehourProject();
     fetchGetProjectIdInfo();
+    fetchOfficehourProject();
   }, [userInfo]);
 
   return (
