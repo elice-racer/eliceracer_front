@@ -11,4 +11,6 @@ const StyledButton = styled(MUIButton)`
   height: 36px !important;
 
   color: #fff !important;
+
+  z-index: 1 !important;
 `;

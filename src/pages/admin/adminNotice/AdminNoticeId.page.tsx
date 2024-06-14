@@ -3,10 +3,15 @@ import styled from "styled-components";
 import { AxiosNotice, Notice } from "../../../services/notice";
 import { useEffect, useState } from "react";
 import { paths } from "../../../utils/path";
+import { currentUserAtom } from "../../../recoil/UserAtom";
+import { useRecoilValue } from "recoil";
 
 function AdminNoticeId() {
   const navigate = useNavigate();
+
   const { id } = useParams();
+
+  const myInfo = useRecoilValue(currentUserAtom);
   const [notice, setNotice] = useState<Notice | null>();
   const fetchGetNoticeId = async () => {
     try {
@@ -43,10 +48,14 @@ function AdminNoticeId() {
           <Link to={`${paths.ADMIN_NOTICE_LIST}`}>
             <Title>공지</Title>
           </Link>
-          <Link to={`${paths.ADMIN_NOTICE_LIST}/update/${id}`}>
-            <AddBtn>공지 수정</AddBtn>
-          </Link>
-          <DelBtn onClick={() => fetchDeleteNotice()}>삭제</DelBtn>
+          {notice?.user.id === myInfo?.id && (
+            <>
+              <Link to={`${paths.ADMIN_NOTICE_LIST}/update/${id}`}>
+                <AddBtn>공지 수정</AddBtn>
+              </Link>
+              <DelBtn onClick={() => fetchDeleteNotice()}>삭제</DelBtn>
+            </>
+          )}
         </Header>
         <TitleWrapper>
           <Wrapper>
@@ -107,6 +116,7 @@ const TitleWrapper = styled.div`
 `;
 
 const Wrapper = styled.div``;
+
 const Flex = styled.div`
   display: flex;
   gap: 6px;

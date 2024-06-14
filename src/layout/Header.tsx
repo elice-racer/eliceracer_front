@@ -128,7 +128,7 @@ const Container = styled.header`
   width: 100%;
   background-color: #fff;
   position: fixed;
-  z-index: 1000;
+  z-index: 999;
   top: 0;
 `;
 

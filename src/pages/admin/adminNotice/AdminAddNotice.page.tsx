@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { paths } from "../../../utils/path";
-import { AxiosNotice, CreateNotice } from "../../../services/notice";
+import { AxiosNotice, OmitNotice } from "../../../services/notice";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -11,7 +11,7 @@ function AdminAddNotice() {
   const [error, setError] = useState("");
   const setLoading = useSetRecoilState(loadingAtom);
   const navigate = useNavigate();
-  const [noticeData, setNoticeData] = useState<CreateNotice>({ title: "", content: "" });
+  const [noticeData, setNoticeData] = useState<OmitNotice>({ title: "", content: "" });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -22,9 +22,12 @@ function AdminAddNotice() {
     const { name, value } = e.target;
     setNoticeData({ ...noticeData, [name]: value });
   };
+
   // todo 모달
   const fetchCreateNotice = async () => {
     setLoading(true);
+    if (noticeData.title.trim() === "") return alert("제목을 입력해주세요.");
+    if (noticeData.content.trim() === "") return alert("내용을 입력해주세요.");
     try {
       const res = await AxiosNotice.postNotice(noticeData);
 
@@ -101,8 +104,7 @@ const Text = styled.p`
 
 const Input = styled.input`
   margin-top: 6px;
-  background-color: ${({ theme }) => theme.colors.gray1};
-  border: none;
+  border: ${({ theme }) => theme.colors.gray1} 1px solid;
   padding: 12px;
   width: 100%;
 `;
@@ -110,8 +112,6 @@ const Input = styled.input`
 const TextArea = styled.textarea`
   width: 100%;
   height: 100%;
-  background-color: ${({ theme }) => theme.colors.gray1};
-
-  border: none;
+  border: ${({ theme }) => theme.colors.gray1} 1px solid;
   padding: 12px;
 `;

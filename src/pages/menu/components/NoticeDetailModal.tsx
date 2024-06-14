@@ -48,6 +48,19 @@ export default function NoticeDetailModal({ $isOpen, onClose, noticeId }: Notice
             <CloseButton>&times;</CloseButton>
           </IconButton>
         </ModalHeader>
+        <ModalSubTitle>
+          <Text>{notice?.user.realName} 매니저</Text>
+          <Wrapper>
+            <Flex>
+              <Text>작성일 {notice?.createdAt.toString().split("T")[0]}</Text>
+              <Text className="date">{notice?.createdAt.toString().split("T")[1].split(".")[0]}</Text>
+            </Flex>
+            <Flex>
+              <Text className="date">수정일 {notice?.updatedAt.toString().split("T")[0]}</Text>
+              <Text className="date">{notice?.updatedAt.toString().split("T")[1].split(".")[0]}</Text>
+            </Flex>
+          </Wrapper>
+        </ModalSubTitle>
         <ModalBody>{notice?.content}</ModalBody>
       </ModalContainer>
     </>,
@@ -104,8 +117,22 @@ const CloseButton = styled.div`
   cursor: pointer;
 `;
 
+const ModalSubTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 const ModalBody = styled.div`
   font-size: 1.2em;
   color: #000;
   margin-top: 24px;
+`;
+
+const Text = styled.p``;
+
+const Wrapper = styled.div``;
+
+const Flex = styled.div`
+  display: flex;
+  gap: 6px;
 `;
