@@ -10,6 +10,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+dev-dist
 *.local
 *.env
 
@@ -26,4 +27,3 @@ dist-ssr
 *yarn.lock
 *package-lock.json
 
-.dev-dist/*

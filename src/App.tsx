@@ -1,6 +1,7 @@
 import "./App.css";
 import { paths } from "./utils/path";
 
+import { SocketContext, socket } from "./services/socket.ts";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { AdminRoute } from "./routes/AdminRoute";
 
@@ -70,7 +71,7 @@ import SuccessCreateUsers from "./pages/login/SuccessCreateUsers.page";
 import AdminProjectDetail from "./pages/admin/AdminProjectDetail.page";
 import SuccessAuthEmail from "./pages/redirects/SuccessAuthEmail.page";
 import { currentUserAtom } from "./recoil/UserAtom";
-import { AxiosUser } from "./servies/user";
+import { AxiosUser } from "./services/user.ts";
 
 const router = createBrowserRouter([
   {
@@ -164,6 +165,14 @@ function App() {
   };
 
   useEffect(() => {
+    return () => {
+      socket.disconnect();
+
+      setLoading(false);
+    };
+  }, []);
+
+  useEffect(() => {
     const access_token = localStorage.getItem("userToken");
     setToken(access_token);
     fetchCurrentUser(access_token);
@@ -171,9 +180,11 @@ function App() {
 
   return (
     <GlobalThemeProvider>
-      {isLoading && <LoadingScreen isLoading={isLoading} onClose={() => setLoading(false)} />}
-      <RouterProvider router={router} />
-      <Snackbar open={snackbar.open} message={snackbar.message} />
+      <SocketContext.Provider value={socket}>
+        {isLoading && <LoadingScreen isLoading={isLoading} onClose={() => setLoading(false)} />}
+        <RouterProvider router={router} />
+        <Snackbar open={snackbar.open} message={snackbar.message} />
+      </SocketContext.Provider>
     </GlobalThemeProvider>
   );
 }

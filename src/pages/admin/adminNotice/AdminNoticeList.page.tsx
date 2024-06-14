@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { paths } from "../../../utils/path";
-import { AxiosNotice, Notice } from "../../../servies/notice";
+import { AxiosNotice, Notice } from "../../../services/notice";
 import { useEffect, useState } from "react";
 
 function AdminNoticeList() {

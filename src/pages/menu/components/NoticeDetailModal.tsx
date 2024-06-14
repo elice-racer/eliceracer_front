@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { Backdrop } from "@mui/material";
 
-import { AxiosNotice, Notice } from "../../../servies/notice";
+import { AxiosNotice, Notice } from "../../../services/notice";
 
 interface NoticeModalProps {
   isOpen: boolean;

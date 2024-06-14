@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { imgPaths, paths } from "../../utils/path";
 import InputFiled from "./components/InputField";
-import { AxiosAuth } from "../../servies/auth";
+import { AxiosAuth } from "../../services/auth";
 import AfterSendEmailInfo from "./components/AfterSendEmailInfo";
 
 export default function CreateAdmin() {

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Notice } from "../../../servies/notice";
+import { Notice } from "../../../services/notice";
 import NoticeDetailModal from "./NoticeDetailModal";
 import { useState, useRef, useEffect } from "react";
 import EmptyImage from "../../../components/commons/EmptyImage";

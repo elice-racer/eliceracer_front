@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
 import { useEffect, useRef, useState } from "react";
 
-import { AxiosAdmin, TeamsInfo } from "../../../servies/admin";
+import { AxiosAdmin, TeamsInfo } from "../../../services/admin";
 
 import * as XLSX from "xlsx";
 
@@ -14,7 +14,7 @@ import UploadTeamBuilding from "./components/UploadTeamBuilding";
 import { loadingAtom } from "../../../recoil/LoadingAtom";
 import { useSetRecoilState } from "recoil";
 import UploadOfficehour from "./components/UploadOfficehour";
-import { AxiosProject, ProjectInfo } from "../../../servies/projects";
+import { AxiosProject, ProjectInfo } from "../../../services/projects";
 
 // tabs
 

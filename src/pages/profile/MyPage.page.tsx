@@ -10,7 +10,7 @@ import SkillBadge from "./components/SkillBadge";
 import { imgPaths, paths } from "../../utils/path";
 
 // api
-import { AxiosUser, UsersPageInfo } from "../../servies/user";
+import { AxiosUser, UsersPageInfo } from "../../services/user";
 
 // hooks
 import { useEffect, useState } from "react";

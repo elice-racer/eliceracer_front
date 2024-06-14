@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
-import { AxiosAdmin, TeamsInfo } from "../../servies/admin";
+import { AxiosAdmin, TeamsInfo } from "../../services/admin";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { ProjectInfo } from "../../servies/projects";
+import { ProjectInfo } from "../../services/projects";
 
 // 프로젝트 조회해서 내용 넣기
 // todo 프로젝트 조회시 track 카테고리 업데이트되면 track 정보 추가하기

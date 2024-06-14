@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Skills } from "../../../servies/user";
+import { Skills } from "../../../services/user";
 import React, { forwardRef, useState, Ref, useRef, useEffect } from "react";
 import SkillBadge from "./SkillBadge";
 

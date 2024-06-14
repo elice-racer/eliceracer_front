@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import Header from "../layout/Header";
 import { paths } from "../utils/path";
 import styled from "styled-components";
-import { AxiosUser } from "../servies/user";
+import { AxiosUser } from "../services/user";
 
 export const AdminRoute = () => {
   const navigate = useNavigate();

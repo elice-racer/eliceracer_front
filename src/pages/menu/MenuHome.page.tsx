@@ -14,11 +14,11 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 
 // api
-import { AxiosNotice, Notice } from "../../servies/notice";
-import { AxiosUser, UsersPageInfo } from "../../servies/user";
+import { AxiosNotice, Notice } from "../../services/notice";
+import { AxiosUser, UsersPageInfo } from "../../services/user";
 import { loadingAtom } from "../../recoil/LoadingAtom";
-import { AxiosProject } from "../../servies/projects";
-import { AxiosOffieHour, OfficehourProps } from "../../servies/officehour";
+import { AxiosProject } from "../../services/projects";
+import { AxiosOffieHour, OfficehourProps } from "../../services/officehour";
 
 // todo 오늘날짜 기준으로 올라온 공지면 new 배찌 달아주기
 function MenuHome() {

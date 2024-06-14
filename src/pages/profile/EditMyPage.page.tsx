@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Button from "../../components/commons/Button";
 import { imgPaths, paths } from "../../utils/path";
-import { AxiosUser, Skills, UsersPageInfo } from "../../servies/user";
+import { AxiosUser, Skills, UsersPageInfo } from "../../services/user";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import EditInput from "./components/EditInput";

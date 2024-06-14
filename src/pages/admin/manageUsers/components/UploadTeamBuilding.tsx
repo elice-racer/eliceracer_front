@@ -1,7 +1,7 @@
 import { RefObject } from "react";
 import styled from "styled-components";
 import SelectBox from "./SelectBox";
-import { TeamsInfo } from "../../../../servies/admin";
+import { TeamsInfo } from "../../../../services/admin";
 import { Link } from "react-router-dom";
 import { paths } from "../../../../utils/path";
 interface UploadTeamBuildingProps {

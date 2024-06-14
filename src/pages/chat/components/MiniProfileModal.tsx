@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { imgPaths } from "../../../utils/path";
 import { Link } from "react-router-dom";
 import { Dimed } from "../../profile/components/SkillsModal";
-import { UsersPageInfo } from "../../../servies/user";
+import { UsersPageInfo } from "../../../services/user";
 
 interface MiniProfileModalProps {
   isModalOpen: boolean;

@@ -6,7 +6,7 @@ import { imgPaths } from "../utils/path";
 import { useNavigate } from "react-router-dom";
 import { tokenAtom } from "../recoil/TokenAtom";
 import { useSetRecoilState } from "recoil";
-import { AxiosAuth } from "../servies/auth";
+import { AxiosAuth } from "../services/auth";
 import { currentUserAtom } from "../recoil/UserAtom";
 import MobileHeader from "./MobileHeader";
 

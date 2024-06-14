@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
-import { AxiosAuth } from "../../servies/auth";
+import { AxiosAuth } from "../../services/auth";
 import { useSetRecoilState } from "recoil";
 import { tokenAtom } from "../../recoil/TokenAtom";
 import InputFiled from "./components/InputField";

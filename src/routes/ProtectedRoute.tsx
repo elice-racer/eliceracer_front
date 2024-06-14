@@ -1,7 +1,7 @@
 import { useNavigate, Outlet } from "react-router-dom";
 import { paths } from "../utils/path";
 import { useEffect, useState } from "react";
-import { AxiosUser } from "../servies/user";
+import { AxiosUser } from "../services/user";
 import Header from "../layout/Header";
 import styled from "styled-components";
 

@@ -5,13 +5,13 @@ import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 
 import { useEffect, useState } from "react";
-import { AxiosChat, Chats } from "../../servies/chat";
-import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../servies/user";
+import { AxiosChat, Chats } from "../../services/chat";
+import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../services/user";
 import UrlDashboard from "./components/UrlDashboard";
-import { AxiosProject, ProjectInfo } from "../../servies/projects";
+import { AxiosProject, ProjectInfo } from "../../services/projects";
 import { loadingAtom } from "../../recoil/LoadingAtom";
 import MiniProfileModal from "../chat/components/MiniProfileModal";
-import { AxiosOffieHour, OfficehourProps } from "../../servies/officehour";
+import { AxiosOffieHour, OfficehourProps } from "../../services/officehour";
 
 import Button from "../../components/commons/Button";
 import OfficeHourWeekly from "../../components/officehour/OfficehourWeekly";

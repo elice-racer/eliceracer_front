@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { paths } from "../../../utils/path";
-import { Chats } from "../../../servies/chat";
+import { Chats } from "../../../services/chat";
 import EmptyImage from "../../../components/commons/EmptyImage";
 
 interface ChatsListProps {

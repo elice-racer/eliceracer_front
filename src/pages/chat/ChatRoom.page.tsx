@@ -3,16 +3,15 @@ import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
 
 import io from "socket.io-client";
-import ChatList from "./components/ChatList";
 import ChatRoomUsersList from "./components/ChatRoomUsersList";
 import TeamChatInfo from "./components/TeamChatInfo";
-import { AxiosChat, ChatMessage, Chats } from "../../servies/chat";
-import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../servies/user";
-import { AxiosOffieHour, OfficehourProps } from "../../servies/officehour";
+import { AxiosChat, ChatMessage, Chats } from "../../services/chat";
+import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../services/user";
+import { AxiosOffieHour, OfficehourProps } from "../../services/officehour";
 import { useRecoilValue } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 import Loading from "../../components/commons/Loading";
-import { baseURL } from "../../servies/api";
+import { baseURL } from "../../services/api";
 import MiniProfileModal from "./components/MiniProfileModal";
 
 interface TeamInfo {
@@ -29,13 +28,14 @@ interface ChatRoomInfo {
   users: UsersPageInfo[];
 }
 
-const socket = io(import.meta.env.VITE_SOKET_IO, { autoConnect: false });
+const socket = io(import.meta.env.VITE_SOKET_IO, { autoConnect: true });
 
 const ChatRoom = () => {
-  const { id: chatId } = useParams();
+  const { id: roomId } = useParams();
 
-  if (!chatId) return;
+  if (!roomId) return;
 
+  const [chatId, setChatId] = useState<string>();
   const currentUser = useRecoilValue(currentUserAtom);
 
   const [userInfo, setUsetInfo] = useState();
@@ -46,7 +46,7 @@ const ChatRoom = () => {
   const chatBodyRef = useRef<HTMLDivElement>(null);
   const observeRef = useRef<HTMLDivElement>(null);
 
-  const [chatsList, setChatList] = useState<Chats[]>();
+  const [_chatsList, setChatList] = useState<Chats[]>();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -106,11 +106,11 @@ const ChatRoom = () => {
   /**현재 채팅방 정보 조회 */
   const fetchChatIdInfo = async () => {
     try {
-      const res = await AxiosChat.getChatIdInfo(chatId);
+      const res = await AxiosChat.getChatIdInfo(roomId);
       if (res.statusCode === 200) {
-        console.log(res.data);
         setChatRoomInfo(res.data);
         setUsers(res.data.users);
+        fetchChatMessages();
       }
     } catch (e) {
       console.error(e);
@@ -121,7 +121,7 @@ const ChatRoom = () => {
   const fetchChatMessages = async () => {
     setIsLoading(true);
     try {
-      const res = await AxiosChat.getChatMessages(chatId);
+      const res = await AxiosChat.getChatMessages(roomId);
       setIsLoading(false);
       setNextUrl(typeof res.pagination.next === "string" ? res.pagination.next.replace(baseURL, "") : null);
 
@@ -187,10 +187,10 @@ const ChatRoom = () => {
   };
 
   /** 방 입장 */
-  const handleJoinChat = (roomId: string) => {
-    const chatId = roomId;
-    socket.emit("joinChat", { chatId });
-  };
+  // const handleJoinChat = (roomId: string) => {
+  //   const chatId = roomId;
+  //   socket.emit("joinChat", { chatId });
+  // };
   /** 채팅룸 삭제 */
   // const fetchDeleteChatRoom = async () => {
   //   try {
@@ -212,12 +212,12 @@ const ChatRoom = () => {
   // };
 
   useEffect(() => {
-    socket.connect();
+    // socket.connect();
 
-    socket.on("connect", () => {
-      handleJoinChat(chatId);
-      socket.emit("joinChat", { chatId });
-    });
+    // socket.on("connect", () => {
+    //   console.log("socket conneted");
+    //   handleJoinChat(roomId);
+    // });
 
     socket.on("disconnect", () => {
       // console.log("Socket disconnected");
@@ -248,9 +248,10 @@ const ChatRoom = () => {
       socket.off("receiveMessage");
       setIsLoading(false);
     };
-  }, [chatId]);
+  }, [roomId]);
 
   useEffect(() => {
+    setChatId(roomId);
     fetchOfficehourTeams();
     fetchChatIdInfo();
     fetchChatMessages();
@@ -267,7 +268,7 @@ const ChatRoom = () => {
 
   useEffect(() => {
     setMessages([]);
-  }, [chatId]);
+  }, [roomId]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -362,9 +363,6 @@ const ChatRoom = () => {
               </TypingBar>
             </FooterTypingBar>
           </ChatContainer>
-        </Section>
-        <Section className="onTablet">
-          <ChatList chatsList={chatsList} />
         </Section>
         <Section className="onMobile">
           <ChatInfoWrapper>

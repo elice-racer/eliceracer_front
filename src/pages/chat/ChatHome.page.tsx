@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import ChatList from "./components/ChatList";
 import UsersList from "./components/UsersList";
-import { AxiosUser, ChatRoomUsers } from "../../servies/user";
+import { AxiosUser, ChatRoomUsers } from "../../services/user";
 import { useEffect, useState } from "react";
-import { AxiosChat, Chats } from "../../servies/chat";
+import { AxiosChat, Chats } from "../../services/chat";
 import { useRecoilValue } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 import MiniProfileModal from "./components/MiniProfileModal";

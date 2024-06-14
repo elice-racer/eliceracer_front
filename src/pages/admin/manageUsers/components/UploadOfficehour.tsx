@@ -1,7 +1,7 @@
 import { RefObject } from "react";
 import styled from "styled-components";
 import SelectBox from "./SelectBox";
-import { ProjectInfo } from "../../../../servies/projects";
+import { ProjectInfo } from "../../../../services/projects";
 
 interface UploadOfficehourFileProps {
   options: any;
