@@ -11,7 +11,7 @@ import { imgPaths, paths } from "../../utils/path";
 // api
 import { AxiosAuth } from "../../servies/auth";
 import { useSnackbar } from "../../hooks/useSnackbar";
-import { validatePassword } from "../../utils/regEx";
+import { vaildatePhoneNumber, validatePassword } from "../../utils/regEx";
 
 export default function CreateAccount() {
   const navigate = useNavigate();
@@ -30,8 +30,8 @@ export default function CreateAccount() {
   const [error, setError] = useState("");
 
   const [userData, setUserData] = useState({
-    realName: "진채영",
-    phoneNumber: "01034663728",
+    realName: "",
+    phoneNumber: "",
     username: "",
     password: "",
     confirmPassword: "",
@@ -40,6 +40,7 @@ export default function CreateAccount() {
   });
 
   const [isPasswordPattern, setIsPasswordPattern] = useState(false);
+  const [isPhoneNumberPattern, setIsPhoneNumberPattern] = useState(false);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -50,6 +51,13 @@ export default function CreateAccount() {
         setIsPasswordPattern(true);
       } else {
         setIsPasswordPattern(false);
+      }
+    }
+    if (name === "phoneNumber") {
+      if (vaildatePhoneNumber(value)) {
+        setIsPhoneNumberPattern(true);
+      } else {
+        setIsPhoneNumberPattern(false);
       }
     }
   };
@@ -108,27 +116,33 @@ export default function CreateAccount() {
       <Img src={imgPaths.ELICE_LOGO} />
       <h1>본인 인증</h1>
       {error && <Error>{error}</Error>}
-      <Input onChange={onChange} name="realName" value={userData.realName} placeholder="name" ref={inputRef} />
-      <Input onChange={onChange} name="phoneNumber" value={userData.phoneNumber} placeholder="phone number" />
+      <Input onChange={onChange} name="realName" value={userData.realName} placeholder="Name" ref={inputRef} />
+      <Input onChange={onChange} name="phoneNumber" value={userData.phoneNumber} placeholder="Phone number" />
+      {userData.phoneNumber.length !== 0 && <>{!isPhoneNumberPattern && " 010부터 '-' 를 제외한 전화번호를 입력해주세요."}</>}
       <AuthSendBtn onClick={handleAuthUserPhoneNumber}>인증문자 보내기</AuthSendBtn>
-      <AuthWrapper>
-        <Input onChange={onChange} name="authCode" value={userData.authCode} placeholder="auth code" />
-        <TimerWrapper>{timerStart && <AuthTimer expire_time={EXPIRE_TIME} start={timerStart} setStart={setTimerStart} />}</TimerWrapper>
-      </AuthWrapper>
-      <Btn onClick={handleCheckedAuthCode}>본인 인증 완료</Btn>
+
       {confirmUser ? (
         <Wrapper>
-          <Input name="username" placeholder="Id" value={userData.username} onChange={onChange} />
-          <Input name="password" placeholder="비밀번호를 입력하세요." value={userData.password} onChange={onChange} />
-          <Input name="confirmPassword" placeholder="checked password" value={userData.confirmPassword} onChange={onChange} />
+          <h1>아이디, 비밀번호를 입력해주세요.</h1>
+          <Input name="username" placeholder="ID" value={userData.username} onChange={onChange} />
+          <Input type="password" name="password" placeholder="Password" value={userData.password} onChange={onChange} />
+          <Input type="password" name="confirmPassword" placeholder="Checked password" value={userData.confirmPassword} onChange={onChange} />
           {userData.confirmPassword.length !== 0 && <>{!isPasswordPattern && "특수문자를 포함한 8자리 - 20자리"}</>}
           {userData.confirmPassword.length !== 0 && <>{userData.password !== userData.confirmPassword && "비밀번호가 같지 않습니다."}</>}
+
           <Btn onClick={handleAddUsersEmailAndPW}>회원가입!</Btn>
         </Wrapper>
       ) : (
-        <Text>
-          이미 회원이신가요? <Link to={paths.LOGIN}>로그인하기&rarr;</Link>
-        </Text>
+        <>
+          <AuthWrapper>
+            <Input onChange={onChange} name="authCode" value={userData.authCode} placeholder="auth code" />
+            <TimerWrapper>{timerStart && <AuthTimer expire_time={EXPIRE_TIME} start={timerStart} setStart={setTimerStart} />}</TimerWrapper>
+          </AuthWrapper>
+          <Btn onClick={handleCheckedAuthCode}>본인 인증 완료</Btn>
+          <Text>
+            이미 회원이신가요? <Link to={paths.LOGIN}>로그인하기&rarr;</Link>
+          </Text>
+        </>
       )}
     </Wrapper>
   );

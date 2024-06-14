@@ -10,27 +10,38 @@ import OfficeHourWeekly from "../../components/officehour/OfficehourWeekly";
 import CheckedVersion from "../settings/components/CheckedVersion";
 
 // recoil
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 
 // api
 import { AxiosNotice, Notice } from "../../servies/notice";
 import { AxiosUser, UsersPageInfo } from "../../servies/user";
+import { loadingAtom } from "../../recoil/LoadingAtom";
+import { AxiosProject } from "../../servies/projects";
+import { AxiosOffieHour, OfficehourProps } from "../../servies/officehour";
 
 // todo 오늘날짜 기준으로 올라온 공지면 new 배찌 달아주기
 function MenuHome() {
+  const setLoading = useSetRecoilState(loadingAtom);
+
   const userInfo = useRecoilValue(currentUserAtom);
   const [_userId, setUserId] = useState<string | null>(null);
   const [userdata, setUserdata] = useState<UsersPageInfo>();
-  const myTrackInfo = "";
+
+  // todo 노션 받으면 여기 넣기~~
+  const myTrackInfo = {
+    track: "AI 11",
+    notion: "https://aitrack.elice.io/tracks/4879/info",
+  };
   const myProjectInfo = {
-    gitlab: "",
-    projectNotion: "",
-    teamNotion: "",
+    gitlab: "https://kdt-gitlab.elice.io/ai_track/class_11/web_project",
+    projectNotion: "https://www.notion.so/elice-track/I-9c6f09a0ffc54218a7b0f8d6415a790f",
+    teamNotion: "https://www.notion.so/elice-track/I-600f6f4dbb9144149a58dba9e18ef6e7",
   };
   const [quote, setQuote] = useState({ quote: "", author: "" });
-
+  const [projectId, setProjectId] = useState<string>("decdcebb-2039-417c-9aca-3a5a381b1013");
   const [notices, setNotices] = useState<Notice[]>([]);
+  const [officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
 
   /** 마이페이지 정보 가져오기 */
   const fetchMyPage = async () => {
@@ -41,6 +52,26 @@ function MenuHome() {
       const res = await AxiosUser.getMyPage();
       if (res.statusCode === 200) setUserdata(res.data);
     } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const fetchGetProjectIdInfo = async () => {
+    try {
+      if (!userInfo?.track?.cardinalNo) return;
+      setLoading(true);
+      const { trackName, cardinalNo } = userInfo?.track;
+      const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });
+      if (res.statusCode === 200) {
+        if (res.data) {
+          setProjectId(res.data[0].id);
+          setLoading(false);
+        }
+        setLoading(false);
+      }
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
       console.error(e);
     }
   };
@@ -61,9 +92,19 @@ function MenuHome() {
   const fetchNotices = async () => {
     try {
       const res = await AxiosNotice.getNoticeList();
-      console.log(res);
       if (!res.data) return;
       if (res.statusCode === 200) setNotices(res.data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  /** 전체 오피스아워 조회 */
+  const fetchOfficehourProject = async () => {
+    if (!projectId) return setProjectId("decdcebb-2039-417c-9aca-3a5a381b1013");
+    try {
+      const res = await AxiosOffieHour.getProjectAllOfficehour(projectId);
+      if (res.status === 200) setOfficeHours(res.data);
     } catch (e) {
       console.error(e);
     }
@@ -73,7 +114,14 @@ function MenuHome() {
     fetchNotices();
     fetchMyPage();
     fetchQuote();
+    setLoading(false);
+    fetchOfficehourProject();
   }, []);
+
+  useEffect(() => {
+    fetchGetProjectIdInfo();
+  }, [userInfo]);
+
   return (
     <Container>
       <MainSection>
@@ -85,13 +133,13 @@ function MenuHome() {
             <Text>{quote.quote}</Text>
           </QuotesWrapper>
         </TitleWrapper>
-        <MyTrackInfo myTrackInfo={myTrackInfo} myProjectInfo={myProjectInfo} />
-        <OfficeHourWeekly officehours={[]} />
+        <NoticeList notices={notices} fetchPagination={() => {}} />
 
-        {/* <UsersMenu /> */}
+        <MyTrackInfo myTrackInfo={myTrackInfo} myProjectInfo={myProjectInfo} />
       </MainSection>
       <SideSection>
-        <NoticeList notices={notices} fetchPagination={() => {}} />
+        <OfficeHourWeekly officehours={officeHours} />
+
         <CheckedVersion />
       </SideSection>
       <SideSection>

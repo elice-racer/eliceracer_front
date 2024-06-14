@@ -28,7 +28,8 @@ function OfficeHourWeekly({ officehours }: OfficeHourWeeklyProps) {
     if (isMyTypeArray(arr)) {
       const newEvents = arr.map(item => {
         const newEvent: CustomCalendarProps = {
-          title: item.type,
+          title: ` ${item.type} `,
+          desc: `${item.coach}코치님`,
           start: new Date(item.date),
           end: new Date(item.date),
         };

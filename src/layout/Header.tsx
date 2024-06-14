@@ -56,9 +56,9 @@ const Header = ({ adminMenu }: any) => {
           <LinkItem>
             <a href={"https://elice.io/ko"}>엘리스홈</a>
           </LinkItem>
-          <LinkItem>
+          {/* <LinkItem>
             <Link to={paths.MYPAGE}>마이페이지</Link>
-          </LinkItem>
+          </LinkItem> */}
 
           <LinkItem onClick={handleClickLogout}>
             <>로그아웃</>
@@ -84,13 +84,19 @@ const Header = ({ adminMenu }: any) => {
             <a href={"https://elice-lab.imweb.me/"}>엘리스랩</a>
           </li>
           <li>
-            <a href={"https://elice.io/ko"}>엘리스홈</a>
+            <a
+              href={
+                "https://aitrack.elice.io/alltracks?_cardType=homeSearch&_from=explore&_landingSectionTrackId=8139&_orientation=vertical&_title=AI%20%ED%8A%B8%EB%9E%99%2011%EA%B8%B0"
+              }
+            >
+              엘리스홈
+            </a>
           </li>
-          <li>
+          {/* <li>
             <LinkItem>
               <Link to={paths.MYPAGE}>마이페이지</Link>
             </LinkItem>
-          </li>
+          </li> */}
           <li>
             <LinkItem onClick={handleClickLogout}>
               <>로그아웃</>

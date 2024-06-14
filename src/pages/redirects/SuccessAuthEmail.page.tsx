@@ -1,14 +1,22 @@
 import styled from "styled-components";
-import { imgPaths } from "../../utils/path";
+import { imgPaths, paths } from "../../utils/path";
+import { useNavigate } from "react-router";
 
 function SuccessAuthEmail() {
+  const navigate = useNavigate();
   return (
     <Container>
       <Flex>
         <Img src={imgPaths.SUCCESS_CREATE_USERS} alt="Success" />
         <Wrapper>
           <Text>이메일 인증이 완료되었습니다!</Text>
-          <Button>이메일 인증 바로가기</Button>
+          <Button
+            onClick={() => {
+              navigate(paths.LOGIN);
+            }}
+          >
+            로그인 바로가기
+          </Button>
         </Wrapper>
       </Flex>
     </Container>

@@ -11,6 +11,7 @@ export interface CustomCalendarProps extends Event {
   start: Date;
   end: Date;
   title: string;
+  desc: string;
 }
 
 interface CustomCalendarEventProps {
@@ -36,9 +37,11 @@ const CustomCalendar = ({ events }: CustomCalendarEventProps) => {
     <Calendar
       localizer={localizer}
       events={events}
+      views={["month", "work_week", "agenda"]}
       startAccessor="start"
       endAccessor="end"
       selectable
+      showAllEvents
       // onSelectSlot={handleSelectSlot}
       // onSelectEvent={handleSelectEvent}
       style={{ height: 500 }}

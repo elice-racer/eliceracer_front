@@ -1,14 +1,12 @@
 import styled from "styled-components";
-import { imgPaths, paths } from "../../utils/path";
-import { Link, useNavigate } from "react-router-dom";
+import { imgPaths } from "../../utils/path";
+import { Link } from "react-router-dom";
 import { UsersPageInfo } from "../../servies/user";
 
 interface UserMiniProfileProps {
   userdata?: UsersPageInfo;
 }
 function UsersMiniProfile({ userdata }: UserMiniProfileProps) {
-  const navigate = useNavigate();
-
   return (
     <>
       {userdata ? (
@@ -56,7 +54,8 @@ function UsersMiniProfile({ userdata }: UserMiniProfileProps) {
                 <Text className="skill">성실한 엘리스🏆</Text>
               </ColWrapper>
               <ButtonWrapper>
-                <Button onClick={() => navigate(paths.MYPAGE)}>더보기</Button>
+                {/* <Button onClick={() => navigate(paths.MYPAGE)}>더보기</Button> */}
+                <Button onClick={() => alert("Comming soom...")}>더보기</Button>
               </ButtonWrapper>
             </Body>
           ) : (

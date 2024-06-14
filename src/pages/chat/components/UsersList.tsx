@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { ChatRoomUsers } from "../../../servies/user";
-import ProfileImg from "../../Profile/components/ProfileImg";
+import ProfileImg from "../../profile/components/ProfileImg";
 import { useNavigate } from "react-router-dom";
 import { paths } from "../../../utils/path";
 import EmptyImage from "../../../components/commons/EmptyImage";

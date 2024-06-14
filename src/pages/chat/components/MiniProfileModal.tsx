@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { imgPaths } from "../../../utils/path";
 import { Link } from "react-router-dom";
-import { Dimed } from "../../Profile/components/SkillsModal";
+import { Dimed } from "../../profile/components/SkillsModal";
 import { UsersPageInfo } from "../../../servies/user";
 
 interface MiniProfileModalProps {

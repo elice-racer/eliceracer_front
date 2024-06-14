@@ -13,6 +13,7 @@ import { useRecoilValue } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 import Loading from "../../components/commons/Loading";
 import { baseURL } from "../../servies/api";
+import MiniProfileModal from "./components/MiniProfileModal";
 
 interface TeamInfo {
   id: string;
@@ -35,9 +36,12 @@ const ChatRoom = () => {
 
   if (!chatId) return;
 
-  const [userId, setUserId] = useState<any>(null);
-
   const currentUser = useRecoilValue(currentUserAtom);
+
+  const [userInfo, setUsetInfo] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [userId, setUserId] = useState<any>(null);
 
   const chatBodyRef = useRef<HTMLDivElement>(null);
   const observeRef = useRef<HTMLDivElement>(null);
@@ -68,26 +72,47 @@ const ChatRoom = () => {
     }
   };
 
-  /**현재 채팅방 정보 조회 */
-  const fetchChatIdInfo = async () => {
+  const handleStartUsersChat = async (e: any) => {
     try {
-      const res = await AxiosChat.getChatIdInfo(chatId);
-      if (res.statusCode === 200) {
-        setChatRoomInfo(res.data);
-        setUsers(res.data.users);
+      const userId = e.target.id;
+      const chatName = e.target.innerText;
+
+      const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
+      if (res.status === 201) {
+        alert(`채팅방이 생성되었습니다! 채팅 목록에서 생성된 채팅방을 확인하세요!`);
+        fetchGetChatList();
       }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  /** 유저 미니프로필 조회 */
+  const fetchUserInfo = async (id: string) => {
+    try {
+      const res = await AxiosUser.getUsersPage(id);
+      if (res.statusCode === 200) setUsetInfo(res.data);
     } catch (e) {
       console.error(e);
     }
   };
 
-  // todo 채팅방 유저 정보 조회 api 연결시 붙이기
-  /** 채팅 친구 목록 조회 */
-  const fetchGetUsers = async () => {
+  const handleClick = (e: any) => {
+    if (!e) return alert("유저 프로필을 확인할 수 없습니다.");
+    fetchUserInfo(e);
+    setIsModalOpen(true);
+  };
+
+  /**현재 채팅방 정보 조회 */
+  const fetchChatIdInfo = async () => {
     try {
-      const res = await AxiosUser.getChatUsersList();
-      if (res.statusCode === 200) setUsers(res.data);
-    } catch (e: any) {
+      const res = await AxiosChat.getChatIdInfo(chatId);
+      if (res.statusCode === 200) {
+        console.log(res.data);
+        setChatRoomInfo(res.data);
+        setUsers(res.data.users);
+      }
+    } catch (e) {
       console.error(e);
     }
   };
@@ -109,6 +134,7 @@ const ChatRoom = () => {
     }
   };
 
+  /** 이전 메시지 가져오기 */
   const fetchPrevMessage = async () => {
     try {
       if (nextUrl) {
@@ -128,7 +154,6 @@ const ChatRoom = () => {
     if (e.key !== "Enter") return;
     // 조합형 입력이 끝났을 때는 isComposing이 false가 됨
     if (e.nativeEvent.isComposing) return;
-
     if (chatInput.trim() === "") return;
 
     socket.emit("sendMessage", {
@@ -161,6 +186,11 @@ const ChatRoom = () => {
     }
   };
 
+  /** 방 입장 */
+  const handleJoinChat = (roomId: string) => {
+    const chatId = roomId;
+    socket.emit("joinChat", { chatId });
+  };
   /** 채팅룸 삭제 */
   // const fetchDeleteChatRoom = async () => {
   //   try {
@@ -182,18 +212,10 @@ const ChatRoom = () => {
   // };
 
   useEffect(() => {
-    fetchOfficehourTeams();
-    fetchGetUsers();
-    fetchChatIdInfo();
-    fetchChatMessages();
-    fetchCurrentUser();
-    fetchGetChatList();
-
-    setIsLoading(true);
     socket.connect();
 
     socket.on("connect", () => {
-      // console.log("Socket connected");
+      handleJoinChat(chatId);
       socket.emit("joinChat", { chatId });
     });
 
@@ -229,6 +251,15 @@ const ChatRoom = () => {
   }, [chatId]);
 
   useEffect(() => {
+    fetchOfficehourTeams();
+    fetchChatIdInfo();
+    fetchChatMessages();
+    fetchCurrentUser();
+    fetchGetChatList();
+
+    setIsLoading(true);
+  }, []);
+  useEffect(() => {
     if (chatBodyRef.current) {
       chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
     }
@@ -262,79 +293,89 @@ const ChatRoom = () => {
     };
   }, [nextUrl]);
   return (
-    <Container>
-      <Section>
-        <ChatContainer id={String(chatRoomInfo?.id)}>
-          <Header>
-            <Title>{chatRoomInfo?.chatName}</Title>
-          </Header>
-          <ChatBody ref={chatBodyRef}>
-            <MessagesWrapper>
-              <TopBar ref={observeRef} />
-              {isLoading ? (
-                <Loading isLoading={isLoading} onClose={() => setIsLoading(false)} />
-              ) : (
-                <>
-                  {messages.map(message => {
-                    const isCurrentUser = currentUser?.id === message.user.id;
-                    return (
-                      <Flex key={message.id} className={isCurrentUser ? "me" : ""}>
-                        <Wrapper>
-                          <NameWrapper className={isCurrentUser ? "me" : ""}>
-                            {message.user.track?.cardinalNo && (
-                              <Text className="track">
-                                [{message.user.track.trackName}
-                                {message.user.track.cardinalNo}]
-                              </Text>
-                            )}
-                            <UserName className={message.user.role}>{message.user.realName}</UserName>
-                          </NameWrapper>
-                          <>
-                            <ChatItem className={isCurrentUser ? "me" : ""}>
-                              <Text>{message.content}</Text>
-                            </ChatItem>
-                          </>
-                          <DateWapper className={isCurrentUser ? "me" : ""}>
-                            <Text className="date">{message.createdAt.split("T")[1].split(".")[0]}</Text>
-                          </DateWapper>
-                        </Wrapper>
-                      </Flex>
-                    );
-                  })}
-                </>
-              )}
-            </MessagesWrapper>
-          </ChatBody>
-          <FooterTypingBar>
-            <TypingBar>
-              <Input
-                disabled={isLoading}
-                onKeyDown={handleSendMessage}
-                onChange={e => setChatInput(e.target.value)}
-                name="chatInput"
-                value={chatInput}
-                placeholder="send Message"
-              />
-              <OptionBar>
-                <Button onClick={() => alert("준비중인 기능입니다.")}>채팅방 나가기</Button>
-                <Button>전송</Button>
-              </OptionBar>
-            </TypingBar>
-          </FooterTypingBar>
-        </ChatContainer>
-      </Section>
-      <Section className="onTablet">
-        <ChatList chatsList={chatsList} />
-      </Section>
-      <Section className="onMobile">
-        <ChatInfoWrapper>
-          <TeamChatInfo />
-          <UsersWrapper>
-            <ChatRoomUsersList users={users} />
-          </UsersWrapper>
-        </ChatInfoWrapper>
-      </Section>
-    </Container>
+    <>
+      <MiniProfileModal
+        isModalOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
+        userdata={userInfo}
+        onClick={handleStartUsersChat}
+      />
+      <Container>
+        <Section>
+          <ChatContainer id={String(chatRoomInfo?.id)}>
+            <Header>
+              <Title>{chatRoomInfo?.chatName}</Title>
+            </Header>
+            <ChatBody ref={chatBodyRef}>
+              <MessagesWrapper>
+                <TopBar ref={observeRef} />
+                {isLoading ? (
+                  <Loading isLoading={isLoading} onClose={() => setIsLoading(false)} />
+                ) : (
+                  <>
+                    {messages.map(message => {
+                      const isCurrentUser = currentUser?.id === message.user.id;
+                      return (
+                        <Flex key={message.id} className={isCurrentUser ? "me" : ""}>
+                          <Wrapper>
+                            <NameWrapper className={isCurrentUser ? "me" : ""}>
+                              {message.user.track?.cardinalNo && (
+                                <Text className="track">
+                                  [{message.user.track.trackName}
+                                  {message.user.track.cardinalNo}]
+                                </Text>
+                              )}
+                              <UserName className={message.user.role}>{message.user.realName}</UserName>
+                            </NameWrapper>
+                            <>
+                              <ChatItem className={isCurrentUser ? "me" : ""}>
+                                <Text>{message.content}</Text>
+                              </ChatItem>
+                            </>
+                            <DateWapper className={isCurrentUser ? "me" : ""}>
+                              <Text className="date">{message.createdAt.split("T")[1].split(".")[0]}</Text>
+                            </DateWapper>
+                          </Wrapper>
+                        </Flex>
+                      );
+                    })}
+                  </>
+                )}
+              </MessagesWrapper>
+            </ChatBody>
+            <FooterTypingBar>
+              <TypingBar>
+                <Input
+                  disabled={isLoading}
+                  onKeyDown={handleSendMessage}
+                  onChange={e => setChatInput(e.target.value)}
+                  name="chatInput"
+                  value={chatInput}
+                  placeholder="send Message"
+                />
+                <OptionBar>
+                  <Button onClick={() => alert("준비중인 기능입니다.")}>채팅방 나가기</Button>
+                  <Button>전송</Button>
+                </OptionBar>
+              </TypingBar>
+            </FooterTypingBar>
+          </ChatContainer>
+        </Section>
+        <Section className="onTablet">
+          <ChatList chatsList={chatsList} />
+        </Section>
+        <Section className="onMobile">
+          <ChatInfoWrapper>
+            <TeamChatInfo />
+            <UsersWrapper>
+              <ChatRoomUsersList users={users} onOpenMiniProfile={handleClick} />
+            </UsersWrapper>
+          </ChatInfoWrapper>
+        </Section>
+      </Container>
+    </>
   );
 };
 
@@ -348,6 +389,9 @@ const Container = styled.div`
 
   @media ${({ theme }) => theme.device.tablet} {
     justify-content: space-between;
+  }
+  @media ${({ theme }) => theme.device.mobileL} {
+    flex-direction: column;
   }
   padding: 0 12px;
 `;
@@ -379,6 +423,12 @@ const Section = styled.div`
   height: 100%;
   @media ${({ theme }) => theme.device.tablet} {
     &.onTablet {
+      display: none;
+    }
+  }
+  @media ${({ theme }) => theme.device.mobileL} {
+    flex-direction: column;
+    &.onMobile {
       display: none;
     }
   }

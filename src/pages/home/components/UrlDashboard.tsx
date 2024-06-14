@@ -10,7 +10,7 @@ function UrlDashboard({ projectUrls }: UrlDashboardProps) {
       <UrlDashboardWrapper>
         <Wapper>
           <TitleWrapper>
-            <Title>바로 가기 📎</Title>
+            <Title>내 프로젝트 확인하기</Title>
           </TitleWrapper>
           <DataWrapper>
             <ProjectListWrapper>
@@ -96,11 +96,11 @@ const ProjectWrapper = styled.div`
   height: 50px;
   background-color: #fff;
   padding: 0 8px;
-  cursor: pointer;
-  &:hover {
+  /* cursor: pointer; */
+  /* &:hover {
     background-color: #e9e2f32c;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
+  } */
 `;
 
 const DateWrapper = styled.div`
