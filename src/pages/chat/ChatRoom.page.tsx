@@ -78,7 +78,6 @@ const ChatRoom = () => {
       const chatName = e.target.innerText;
 
       const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
-
       if (res.status === 201) {
         alert(`채팅방이 생성되었습니다! 채팅 목록에서 생성된 채팅방을 확인하세요!`);
         fetchGetChatList();
@@ -97,6 +96,7 @@ const ChatRoom = () => {
       console.error(e);
     }
   };
+
   const handleClick = (e: any) => {
     if (!e) return alert("유저 프로필을 확인할 수 없습니다.");
     fetchUserInfo(e);
@@ -134,6 +134,7 @@ const ChatRoom = () => {
     }
   };
 
+  /** 이전 메시지 가져오기 */
   const fetchPrevMessage = async () => {
     try {
       if (nextUrl) {
@@ -153,7 +154,6 @@ const ChatRoom = () => {
     if (e.key !== "Enter") return;
     // 조합형 입력이 끝났을 때는 isComposing이 false가 됨
     if (e.nativeEvent.isComposing) return;
-
     if (chatInput.trim() === "") return;
 
     socket.emit("sendMessage", {
@@ -186,6 +186,11 @@ const ChatRoom = () => {
     }
   };
 
+  /** 방 입장 */
+  const handleJoinChat = (roomId: string) => {
+    const chatId = roomId;
+    socket.emit("joinChat", { chatId });
+  };
   /** 채팅룸 삭제 */
   // const fetchDeleteChatRoom = async () => {
   //   try {
@@ -207,17 +212,10 @@ const ChatRoom = () => {
   // };
 
   useEffect(() => {
-    fetchOfficehourTeams();
-    fetchChatIdInfo();
-    fetchChatMessages();
-    fetchCurrentUser();
-    fetchGetChatList();
-
-    setIsLoading(true);
     socket.connect();
 
     socket.on("connect", () => {
-      // console.log("Socket connected");
+      handleJoinChat(chatId);
       socket.emit("joinChat", { chatId });
     });
 
@@ -252,6 +250,15 @@ const ChatRoom = () => {
     };
   }, [chatId]);
 
+  useEffect(() => {
+    fetchOfficehourTeams();
+    fetchChatIdInfo();
+    fetchChatMessages();
+    fetchCurrentUser();
+    fetchGetChatList();
+
+    setIsLoading(true);
+  }, []);
   useEffect(() => {
     if (chatBodyRef.current) {
       chatBodyRef.current.scrollTop = chatBodyRef.current.scrollHeight;
