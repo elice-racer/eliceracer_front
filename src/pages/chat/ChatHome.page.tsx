@@ -21,6 +21,7 @@ function ChatHome() {
   const [_chatName, _setChatName] = useState();
 
   const [_chatNameInput, _setChatNameInput] = useState();
+
   /** 채팅 리스트 가져오기 */
   const fetchGetChatList = async () => {
     try {
@@ -35,7 +36,6 @@ function ChatHome() {
   const fetchGetUsers = async () => {
     try {
       const res = await AxiosUser.getChatUsersList();
-      console.log(res);
       if (res.statusCode === 200) setUsers(res.data);
     } catch (e: any) {
       setError(e.response.data.message);
@@ -70,8 +70,11 @@ function ChatHome() {
       const chatName = e.target.innerText;
 
       const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
-      if (res.status === 201) alert(`채팅방이 생성되었습니다! 채팅 목록에서 생성된 채팅방을 확인하세요!`);
-      console.log(res);
+
+      if (res.status === 201) {
+        alert(`채팅방이 생성되었습니다! 채팅 목록에서 생성된 채팅방을 확인하세요!`);
+        fetchGetChatList();
+      }
     } catch (e) {
       console.log(e);
     }

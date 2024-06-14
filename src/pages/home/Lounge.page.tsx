@@ -2,11 +2,11 @@ import styled from "styled-components";
 import UsersList from "../chat/components/UsersList";
 import { paths } from "../../utils/path";
 import { useNavigate } from "react-router-dom";
-import { useRecoilValue, useSetRecoilState } from "recoil";
-import { currentUserAtom } from "../../recoil/UserAtom";
+import { useSetRecoilState } from "recoil";
+
 import { useEffect, useState } from "react";
 import { AxiosChat, Chats } from "../../servies/chat";
-import { AxiosUser, ChatRoomUsers } from "../../servies/user";
+import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../servies/user";
 import UrlDashboard from "./components/UrlDashboard";
 import { AxiosProject, ProjectInfo } from "../../servies/projects";
 import { loadingAtom } from "../../recoil/LoadingAtom";
@@ -18,17 +18,18 @@ import OfficeHourWeekly from "../../components/officehour/OfficehourWeekly";
 
 function Lounge() {
   const navigate = useNavigate();
-  const myInfo = useRecoilValue(currentUserAtom);
+  const setLoading = useSetRecoilState(loadingAtom);
+  // const myInfo = useRecoilValue(currentUserAtom);
+  const [myInfo, setMyInfo] = useState<UsersPageInfo>();
 
   const [userInfo, setUsetInfo] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const setLoading = useSetRecoilState(loadingAtom);
   const [error, setError] = useState("");
   const [users, setUsers] = useState<ChatRoomUsers[]>();
   const [_chatsList, setChatList] = useState<Chats[]>();
   const [projectsInfo, setProjectsInfo] = useState<ProjectInfo[]>([]);
-
+  const [projectId, setProjectId] = useState<string>();
   const [searchUser, setSearchUser] = useState("");
 
   const [officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
@@ -42,8 +43,9 @@ function Lounge() {
 
   /** 전체 오피스아워 조회 */
   const fetchOfficehourProject = async () => {
+    if (!projectId) return;
     try {
-      const res = await AxiosOffieHour.getProjectAllOfficehour("ab98d368-a71a-48da-9ce9-6382042a4686");
+      const res = await AxiosOffieHour.getProjectAllOfficehour(projectId);
       if (res.status === 200) setOfficeHours(res.data);
     } catch (e) {
       console.error(e);
@@ -60,15 +62,30 @@ function Lounge() {
     }
   };
 
+  /** 현재 유저 조회 */
+  const fetchCurrentUser = async () => {
+    try {
+      const res = await AxiosUser.getCurrentUser();
+      if (res.statusCode === 200) setMyInfo(res.data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
   /** 프로젝트 조회 */
   const fetchGetProjectIdInfo = async () => {
     setLoading(true);
     try {
       if (!myInfo?.track?.cardinalNo) return;
       const { trackName, cardinalNo } = myInfo?.track;
+
       const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });
+      console.log("---------프로젝트 조회--------");
+      console.log(res);
       if (res.statusCode === 200) {
-        if (res.data) setProjectsInfo(res.data);
+        if (res.data) {
+          setProjectsInfo(res.data);
+          setProjectId(res.data[0].id);
+        }
       }
       setLoading(false);
     } catch (e) {
@@ -113,6 +130,23 @@ function Lounge() {
     }
   };
 
+  /** 유저간 채팅 시작 */
+  const handleStartUsersChat = async (e: any) => {
+    try {
+      const userId = e.target.id;
+      const chatName = e.target.innerText;
+
+      const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
+
+      if (res.status === 201) {
+        alert(`채팅방이 생성되었습니다! 채팅 목록에서 생성된 채팅방을 확인하세요!`);
+        fetchGetChatList();
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   useEffect(() => {
     if (searchUser.length === 0) {
       if (myInfo?.role === "RACER") fetchGetUsersList();
@@ -120,11 +154,17 @@ function Lounge() {
   }, [searchUser]);
 
   useEffect(() => {
+    fetchCurrentUser();
     fetchGetChatList();
-    fetchGetProjectIdInfo();
+
     fetchOfficehourProject();
     if (myInfo?.role === "RACER") fetchGetUsersList();
   }, []);
+
+  useEffect(() => {
+    fetchGetProjectIdInfo();
+    fetchOfficehourProject();
+  }, [myInfo]);
 
   useEffect(() => {
     if (myInfo?.role === "RACER") fetchGetUsersList();
@@ -133,7 +173,7 @@ function Lounge() {
 
   return (
     <>
-      <MiniProfileModal isModalOpen={isModalOpen} userdata={userInfo} onClose={() => setIsModalOpen(false)} />
+      <MiniProfileModal isModalOpen={isModalOpen} userdata={userInfo} onClose={() => setIsModalOpen(false)} onClick={handleStartUsersChat} />
 
       <Container>
         <Section>

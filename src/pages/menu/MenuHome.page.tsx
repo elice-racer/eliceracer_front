@@ -10,27 +10,37 @@ import OfficeHourWeekly from "../../components/officehour/OfficehourWeekly";
 import CheckedVersion from "../settings/components/CheckedVersion";
 
 // recoil
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 
 // api
 import { AxiosNotice, Notice } from "../../servies/notice";
 import { AxiosUser, UsersPageInfo } from "../../servies/user";
+import { loadingAtom } from "../../recoil/LoadingAtom";
+import { AxiosProject } from "../../servies/projects";
+import { AxiosOffieHour, OfficehourProps } from "../../servies/officehour";
 
 // todo 오늘날짜 기준으로 올라온 공지면 new 배찌 달아주기
 function MenuHome() {
+  const setLoading = useSetRecoilState(loadingAtom);
   const userInfo = useRecoilValue(currentUserAtom);
   const [_userId, setUserId] = useState<string | null>(null);
   const [userdata, setUserdata] = useState<UsersPageInfo>();
-  const myTrackInfo = "";
+
+  // todo 노션 받으면 여기 넣기~~
+  const myTrackInfo = {
+    track: "AI 11",
+    notion: "",
+  };
   const myProjectInfo = {
     gitlab: "",
     projectNotion: "",
     teamNotion: "",
   };
   const [quote, setQuote] = useState({ quote: "", author: "" });
-
+  const [projectId, setProjectId] = useState<string>();
   const [notices, setNotices] = useState<Notice[]>([]);
+  const [officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
 
   /** 마이페이지 정보 가져오기 */
   const fetchMyPage = async () => {
@@ -41,6 +51,26 @@ function MenuHome() {
       const res = await AxiosUser.getMyPage();
       if (res.statusCode === 200) setUserdata(res.data);
     } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const fetchGetProjectIdInfo = async () => {
+    setLoading(true);
+    try {
+      if (!userInfo?.track?.cardinalNo) return;
+      const { trackName, cardinalNo } = userInfo?.track;
+
+      const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });
+
+      if (res.statusCode === 200) {
+        if (res.data) {
+          setProjectId(res.data[0].id);
+          setLoading(false);
+        }
+      }
+    } catch (e) {
+      setLoading(false);
       console.error(e);
     }
   };
@@ -61,9 +91,19 @@ function MenuHome() {
   const fetchNotices = async () => {
     try {
       const res = await AxiosNotice.getNoticeList();
-      console.log(res);
       if (!res.data) return;
       if (res.statusCode === 200) setNotices(res.data);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  /** 전체 오피스아워 조회 */
+  const fetchOfficehourProject = async () => {
+    if (!projectId) return;
+    try {
+      const res = await AxiosOffieHour.getProjectAllOfficehour(projectId);
+      if (res.status === 200) setOfficeHours(res.data);
     } catch (e) {
       console.error(e);
     }
@@ -74,6 +114,12 @@ function MenuHome() {
     fetchMyPage();
     fetchQuote();
   }, []);
+
+  useEffect(() => {
+    fetchOfficehourProject();
+    fetchGetProjectIdInfo();
+  }, [userInfo]);
+
   return (
     <Container>
       <MainSection>
@@ -86,9 +132,7 @@ function MenuHome() {
           </QuotesWrapper>
         </TitleWrapper>
         <MyTrackInfo myTrackInfo={myTrackInfo} myProjectInfo={myProjectInfo} />
-        <OfficeHourWeekly officehours={[]} />
-
-        {/* <UsersMenu /> */}
+        <OfficeHourWeekly officehours={officeHours} />
       </MainSection>
       <SideSection>
         <NoticeList notices={notices} fetchPagination={() => {}} />

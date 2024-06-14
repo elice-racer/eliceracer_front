@@ -10,6 +10,7 @@ function Intro() {
       <BoxWrapper>
         <Box onClick={() => navigate(paths.CREATE_USER)}>
           <p>레이서</p>
+          <p>코치</p>
         </Box>
         <Box onClick={() => navigate(paths.CREATE_ADMIN)}>
           <p>관리자</p>
@@ -48,10 +49,11 @@ const BoxWrapper = styled.div`
 `;
 
 const Box = styled.div`
-  background-color: ${({ theme }) => theme.colors.purple2};
+  background-color: ${({ theme }) => theme.colors.purple3};
   width: 80px;
   height: 120px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   border-radius: 14px;

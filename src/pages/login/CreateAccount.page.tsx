@@ -30,8 +30,8 @@ export default function CreateAccount() {
   const [error, setError] = useState("");
 
   const [userData, setUserData] = useState({
-    realName: "진채영",
-    phoneNumber: "01034663728",
+    realName: "",
+    phoneNumber: "",
     username: "",
     password: "",
     confirmPassword: "",

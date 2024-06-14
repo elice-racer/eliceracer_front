@@ -4,8 +4,9 @@ import { ChatRoomUsers } from "../../../servies/user";
 
 interface ChatRoomUsersProps {
   users?: ChatRoomUsers[] | undefined;
+  onOpenMiniProfile: (userId: string | null) => void;
 }
-function ChatRoomUsersList({ users }: ChatRoomUsersProps) {
+function ChatRoomUsersList({ users, onOpenMiniProfile }: ChatRoomUsersProps) {
   return (
     <Container>
       {/* <TitleWrapper>
@@ -14,7 +15,7 @@ function ChatRoomUsersList({ users }: ChatRoomUsersProps) {
       <UsersListWrapper>
         {users ? (
           users.map(user => (
-            <UserWrapper key={user.id} onClick={() => {}}>
+            <UserWrapper key={user.id} onClick={() => onOpenMiniProfile(user.id)}>
               <ProfileImg />
               <NameWrapper>
                 {user.track && <Text>{`[${user.track.trackName}${user.track.cardinalNo}]`}</Text>}
