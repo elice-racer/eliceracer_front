@@ -27,12 +27,18 @@ function OfficeHourWeekly({ officehours }: OfficeHourWeeklyProps) {
   const convertCalendarType = (arr: OfficehourProps[]): CustomCalendarProps[] => {
     if (isMyTypeArray(arr)) {
       const newEvents = arr.map(item => {
+        // Date 객체로 변환
+        const date = new Date(item.date);
+
+        // 9시간 빼기
+        date.setHours(date.getHours() - 9);
         const newEvent: CustomCalendarProps = {
           title: ` ${item.type} `,
           desc: `${item.coach}코치님`,
-          start: new Date(item.date),
-          end: new Date(item.date),
+          start: date,
+          end: date,
         };
+
         return newEvent;
       });
       return newEvents;

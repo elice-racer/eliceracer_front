@@ -70,6 +70,7 @@ const Container = styled.header`
   background-color: #fff;
   position: fixed;
   top: 0;
+  z-index: 777;
 `;
 
 // const Anchor = styled.a`

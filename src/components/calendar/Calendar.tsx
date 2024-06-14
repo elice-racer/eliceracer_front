@@ -3,7 +3,10 @@
 import { Calendar, momentLocalizer, Event } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import "moment/locale/ko"; // 한국어 locale을 불러옵니다
 
+// moment locale 설정
+moment.locale("ko");
 // moment locale 설정
 const localizer = momentLocalizer(moment);
 
