@@ -64,7 +64,7 @@ function Lounge() {
   const fetchGetProjectIdInfo = async () => {
     setLoading(true);
     try {
-      if (!myInfo?.track?.cardinalNo) return;
+      if (!myInfo?.track?.cardinalNo) return setLoading(false);
       const { trackName, cardinalNo } = myInfo?.track;
 
       const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });
@@ -84,9 +84,7 @@ function Lounge() {
 
   /** 전체 오피스아워 조회 */
   const fetchOfficehourProject = async () => {
-    console.log("--------projectId---------");
-    console.log(projectId);
-    if (!projectId) return;
+    if (!projectId) return setProjectId("decdcebb-2039-417c-9aca-3a5a381b1013");
     try {
       const res = await AxiosOffieHour.getProjectAllOfficehour(projectId);
       if (res.status === 200) setOfficeHours(res.data);

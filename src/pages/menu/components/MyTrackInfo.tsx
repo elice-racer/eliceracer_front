@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 interface MyTrackInfoProps {
@@ -20,9 +19,9 @@ function MyTrackInfo({ myTrackInfo, myProjectInfo }: MyTrackInfoProps) {
       <SubTitleWrapper>
         <SubTitle>✏️ 수강 중인 트랙</SubTitle>
         {myTrackInfo ? (
-          <Link to={myTrackInfo.notion}>
-            <SubTitle>{myTrackInfo.track}기 노션 바로가기</SubTitle>
-          </Link>
+          <a href={myTrackInfo.notion} target="_blank" rel="noopener noreferrer">
+            <SubTitle>{myTrackInfo.track}기 강의실 바로가기</SubTitle>
+          </a>
         ) : (
           <Text className="info">현재 진행 중인 트랙이 없습니다.</Text>
         )}
@@ -31,15 +30,15 @@ function MyTrackInfo({ myTrackInfo, myProjectInfo }: MyTrackInfoProps) {
         <SubTitle>✏️ 내 프로젝트</SubTitle>
         {myProjectInfo ? (
           <>
-            <Link to={myProjectInfo.gitlab}>
+            <a href={myProjectInfo.gitlab} target="_blank" rel="noopener noreferrer">
               <Text>Gitlab바로가기</Text>
-            </Link>
-            <Link to={myProjectInfo.projectNotion}>
+            </a>
+            <a href={myProjectInfo.projectNotion} target="_blank" rel="noopener noreferrer">
               <Text>프로젝트 노션바로가기</Text>
-            </Link>
-            <Link to={myProjectInfo.teamNotion}>
+            </a>
+            <a href={myProjectInfo.teamNotion} target="_blank" rel="noopener noreferrer">
               <Text>우리팀 노션바로가기</Text>
-            </Link>
+            </a>
           </>
         ) : (
           <Text className="info">현재 진행 중인 프로젝트가 없습니다.</Text>

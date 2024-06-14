@@ -9,9 +9,9 @@ function UsersMenu() {
         <FastLinkItem to={paths.OFFICE_HOUR_SCHEDULE}>오피스아워 확인</FastLinkItem>
       </Wrapper>
       <Wrapper>
-        <LinkItem to={paths.MYPAGE}>
+        {/* <LinkItem to={paths.MYPAGE}>
           <Text>마이페이지</Text>
-        </LinkItem>
+        </LinkItem> */}
         <LinkItem to={paths.CHAT_HOME}>
           <Text>채팅 바로가기</Text>
         </LinkItem>

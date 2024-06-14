@@ -31,12 +31,12 @@ function MenuHome() {
   // todo 노션 받으면 여기 넣기~~
   const myTrackInfo = {
     track: "AI 11",
-    notion: "",
+    notion: "https://aitrack.elice.io/tracks/4879/info",
   };
   const myProjectInfo = {
-    gitlab: "",
-    projectNotion: "",
-    teamNotion: "",
+    gitlab: "https://kdt-gitlab.elice.io/ai_track/class_11/web_project",
+    projectNotion: "https://www.notion.so/elice-track/I-9c6f09a0ffc54218a7b0f8d6415a790f",
+    teamNotion: "https://www.notion.so/elice-track/I-600f6f4dbb9144149a58dba9e18ef6e7",
   };
   const [quote, setQuote] = useState({ quote: "", author: "" });
   const [projectId, setProjectId] = useState<string>();
@@ -61,7 +61,6 @@ function MenuHome() {
       if (!userInfo?.track?.cardinalNo) return;
       setLoading(true);
       const { trackName, cardinalNo } = userInfo?.track;
-
       const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });
       if (res.statusCode === 200) {
         if (res.data) {
@@ -102,7 +101,7 @@ function MenuHome() {
 
   /** 전체 오피스아워 조회 */
   const fetchOfficehourProject = async () => {
-    if (!projectId) return;
+    if (!projectId) return setProjectId("decdcebb-2039-417c-9aca-3a5a381b1013");
     try {
       const res = await AxiosOffieHour.getProjectAllOfficehour(projectId);
       if (res.status === 200) setOfficeHours(res.data);
@@ -116,11 +115,11 @@ function MenuHome() {
     fetchMyPage();
     fetchQuote();
     setLoading(false);
+    fetchOfficehourProject();
   }, []);
 
   useEffect(() => {
     fetchGetProjectIdInfo();
-    fetchOfficehourProject();
   }, [userInfo]);
 
   return (
