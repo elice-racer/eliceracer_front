@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import ChatList from "./components/ChatList";
 import UsersList from "./components/UsersList";
-import { AxiosUser, UsersInfo } from "../../servies/user";
+import { AxiosUser, ChatRoomUsers } from "../../servies/user";
 import { useEffect, useState } from "react";
 import { AxiosChat, Chats } from "../../servies/chat";
 import { useRecoilValue } from "recoil";
@@ -13,9 +13,15 @@ function ChatHome() {
   const [userInfo, setUsetInfo] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
-  const [users, setUsers] = useState<UsersInfo[]>([]);
+  const [users, setUsers] = useState<ChatRoomUsers[]>();
   const [chatsList, setChatList] = useState<Chats[]>();
 
+  const [_selectedUsers, _setSelectedUsers] = useState<string[]>([]);
+
+  const [_chatName, _setChatName] = useState();
+
+  const [_chatNameInput, _setChatNameInput] = useState();
+  /** 채팅 리스트 가져오기 */
   const fetchGetChatList = async () => {
     try {
       const res = await AxiosChat.getChats();
@@ -25,12 +31,13 @@ function ChatHome() {
     }
   };
 
+  /** current user 친구 목록 */
   const fetchGetUsers = async () => {
     try {
       const res = await AxiosUser.getChatUsersList();
-      if (res.status === 200) setUsers(res.data.data);
+      console.log(res);
+      if (res.statusCode === 200) setUsers(res.data);
     } catch (e: any) {
-      console.error(e);
       setError(e.response.data.message);
     }
   };
@@ -46,17 +53,49 @@ function ChatHome() {
   };
 
   const handleClick = (e: any) => {
-    console.dir(e.target.id);
-
-    if (!e.target.id) return alert("유저 프로필을 확인할 수 없습니다.");
-    fetchUserInfo(e.target.id);
+    if (!e) return alert("유저 프로필을 확인할 수 없습니다.");
+    fetchUserInfo(e);
     setIsModalOpen(true);
   };
+
+  /** 생성할 채팅방의 유저를 선택 */
+  // const handleSelectedchatUsers = (e: any) => {
+  //   const newUsers = e.target.id;
+  //   setSelectedUsers(users => [...users, newUsers]);
+  // };
+
+  const handleStartUsersChat = async (e: any) => {
+    try {
+      const userId = e.target.id;
+      const chatName = e.target.innerText;
+
+      const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
+      if (res.status === 201) alert(`채팅방이 생성되었습니다! 채팅 목록에서 생성된 채팅방을 확인하세요!`);
+      console.log(res);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  // const handleStartGroupChat = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (e.key !== "Enter") return;
+
+  //   if (e.nativeEvent.isComposing) return;
+
+  //   if (_chatNameInput.trim() === "") return;
+  //   try {
+  //     const res = await AxiosChat.createChat({e.target.id})
+  //   } catch (e) {
+  //     console.dir(e);
+  //   }
+  // };
 
   useEffect(() => {
     fetchGetChatList();
     fetchGetUsers();
   }, []);
+
+  useEffect(() => {}, [chatsList]);
 
   return (
     <>
@@ -65,12 +104,14 @@ function ChatHome() {
         onClose={() => {
           setIsModalOpen(false);
         }}
-        userData={userInfo}
+        userdata={userInfo}
+        onClick={handleStartUsersChat}
       />
       <Container>
         <Section>
+          <SelectedUsers></SelectedUsers>
           <Error>{error}</Error>
-          <UsersList users={users} myInfo={myInfo} onOpenMiniProfile={handleClick} />
+          {users && <UsersList users={users} myInfo={myInfo} onOpenMiniProfile={handleClick} />}
         </Section>
         <Section>
           <ChatList chatsList={chatsList} />
@@ -103,4 +144,8 @@ const Section = styled.div`
 
 const Error = styled.p`
   color: tomato;
+`;
+
+const SelectedUsers = styled.div`
+  width: 100%;
 `;

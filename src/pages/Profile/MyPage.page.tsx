@@ -10,7 +10,7 @@ import SkillBadge from "./components/SkillBadge";
 import { imgPaths, paths } from "../../utils/path";
 
 // api
-import { AxiosUser, UsersInfo } from "../../servies/user";
+import { AxiosUser, UsersPageInfo } from "../../servies/user";
 
 // hooks
 import { useEffect, useState } from "react";
@@ -20,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 
 function MyPage() {
   const navigate = useNavigate();
-  const [usersInfo, setUsersInfo] = useState<UsersInfo | null>();
+  const [usersInfo, setUsersInfo] = useState<UsersPageInfo | null>();
 
   const fetchMyInfo = async () => {
     try {

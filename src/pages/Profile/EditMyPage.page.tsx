@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import Button from "../../components/commons/Button";
 import { imgPaths, paths } from "../../utils/path";
-import { AxiosUser, Skills, UsersInfo } from "../../servies/user";
+import { AxiosUser, Skills, UsersPageInfo } from "../../servies/user";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import EditInput from "./components/EditInput";
@@ -16,7 +16,7 @@ function EditMyPage() {
   const setLoading = useSetRecoilState(loadingAtom);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [usersInfo, setUsersInfo] = useState<UsersInfo | undefined | null>(null);
+  const [usersInfo, setUsersInfo] = useState<UsersPageInfo | undefined | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -105,7 +105,7 @@ function EditMyPage() {
       });
 
       if (res.status === 200) {
-        const newMypage = res.data.data as UsersInfo;
+        const newMypage = res.data.data as UsersPageInfo;
         setUsersInfo(newMypage);
       }
       navigate(paths.MYPAGE);

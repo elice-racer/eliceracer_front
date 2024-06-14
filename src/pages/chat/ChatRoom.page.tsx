@@ -7,12 +7,26 @@ import ChatList from "./components/ChatList";
 import ChatRoomUsersList from "./components/ChatRoomUsersList";
 import TeamChatInfo from "./components/TeamChatInfo";
 import { AxiosChat, ChatMessage, Chats } from "../../servies/chat";
-import { AxiosUser } from "../../servies/user";
-import { AxiosOffieHour } from "../../servies/officehour";
+import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../servies/user";
+import { AxiosOffieHour, OfficehourProps } from "../../servies/officehour";
 import { useRecoilValue } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 import Loading from "../../components/commons/Loading";
 import { baseURL } from "../../servies/api";
+
+interface TeamInfo {
+  id: string;
+  gitlab: string;
+  notion: string;
+  teamName: string;
+  teamNumber: number;
+}
+interface ChatRoomInfo {
+  id: string;
+  chatName: string;
+  team: TeamInfo;
+  users: UsersPageInfo[];
+}
 
 const socket = io(import.meta.env.VITE_SOKET_IO, { autoConnect: false });
 
@@ -35,21 +49,20 @@ const ChatRoom = () => {
 
   const [nextUrl, setNextUrl] = useState<string | null>(null);
 
-  const [users, setUsers] = useState();
-  const [chatRoomInfo, setChatRoomInfo] = useState({
-    id: chatId,
-    chatName: "",
-    createAt: "",
-    updatedAt: "",
-    team: null,
-  });
+  const [users, setUsers] = useState<ChatRoomUsers[]>();
+  const [chatRoomInfo, setChatRoomInfo] = useState<ChatRoomInfo>();
+
+  // todo 주말동안 오피스아워 스케줄 등록
+  const [_officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
+
+  const [_selectedUsers, _setSelectedUsers] = useState<string[]>([]);
 
   /** 팀 오피스아워 조회 */
   const fetchOfficehourTeams = async () => {
     try {
-      const res = await AxiosOffieHour.getTeamOfficehour("be171eb7-5ab0-440a-a5bf-f13854b88dd7");
-      console.log("-----팀별 오피스아워 목업 데이터 조회------");
-      console.log(res);
+      if (!chatRoomInfo?.team?.id) return;
+      const res = await AxiosOffieHour.getTeamOfficehour(chatRoomInfo.team.id);
+      if (res.status === 200) setOfficeHours(res.data);
     } catch (e) {
       console.error(e);
     }
@@ -59,7 +72,10 @@ const ChatRoom = () => {
   const fetchChatIdInfo = async () => {
     try {
       const res = await AxiosChat.getChatIdInfo(chatId);
-      if (res.statusCode === 200) setChatRoomInfo(res.data);
+      if (res.statusCode === 200) {
+        setChatRoomInfo(res.data);
+        setUsers(res.data.users);
+      }
     } catch (e) {
       console.error(e);
     }
@@ -70,7 +86,7 @@ const ChatRoom = () => {
   const fetchGetUsers = async () => {
     try {
       const res = await AxiosUser.getChatUsersList();
-      if (res.status === 200) setUsers(res.data.data);
+      if (res.statusCode === 200) setUsers(res.data);
     } catch (e: any) {
       console.error(e);
     }
@@ -82,8 +98,6 @@ const ChatRoom = () => {
     try {
       const res = await AxiosChat.getChatMessages(chatId);
       setIsLoading(false);
-      console.log("---chat message---");
-      console.log(res.pagination.next);
       setNextUrl(typeof res.pagination.next === "string" ? res.pagination.next.replace(baseURL, "") : null);
 
       if (res.statusCode === 200) {
@@ -112,7 +126,6 @@ const ChatRoom = () => {
   /** 채팅 보내기 */
   const handleSendMessage = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key !== "Enter") return;
-
     // 조합형 입력이 끝났을 때는 isComposing이 false가 됨
     if (e.nativeEvent.isComposing) return;
 
@@ -148,6 +161,26 @@ const ChatRoom = () => {
     }
   };
 
+  /** 채팅룸 삭제 */
+  // const fetchDeleteChatRoom = async () => {
+  //   try {
+  //     const res = await AxiosChat.deleteChatRoom(chatId);
+  //     console.log(res);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
+
+  /** 유저 초대 */
+  // const fetchInviteUsers = async () => {
+  //   try {
+  //     const res = await AxiosChat.postUserToChat(chatId, selectedUsers);
+  //     console.log(res);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
+
   useEffect(() => {
     fetchOfficehourTeams();
     fetchGetUsers();
@@ -160,12 +193,12 @@ const ChatRoom = () => {
     socket.connect();
 
     socket.on("connect", () => {
-      console.log("Socket connected");
+      // console.log("Socket connected");
       socket.emit("joinChat", { chatId });
     });
 
     socket.on("disconnect", () => {
-      console.log("Socket disconnected");
+      // console.log("Socket disconnected");
     });
 
     socket.on("roomCreate", (chatId: string) => {
@@ -209,7 +242,6 @@ const ChatRoom = () => {
     const observer = new IntersectionObserver(
       entries => {
         if (entries[0].isIntersecting) {
-          console.log("끝에 닿임 이전꺼 호출");
           fetchPrevMessage();
         }
       },
@@ -231,9 +263,6 @@ const ChatRoom = () => {
   }, [nextUrl]);
   return (
     <Container>
-      <Section>
-        <ChatList chatsList={chatsList} />
-      </Section>
       <Section>
         <ChatContainer id={String(chatRoomInfo?.id)}>
           <Header>
@@ -277,7 +306,6 @@ const ChatRoom = () => {
             </MessagesWrapper>
           </ChatBody>
           <FooterTypingBar>
-            <OptionBar></OptionBar>
             <TypingBar>
               <Input
                 disabled={isLoading}
@@ -287,12 +315,18 @@ const ChatRoom = () => {
                 value={chatInput}
                 placeholder="send Message"
               />
-              <SendBtn></SendBtn>
+              <OptionBar>
+                <Button onClick={() => alert("준비중인 기능입니다.")}>채팅방 나가기</Button>
+                <Button>전송</Button>
+              </OptionBar>
             </TypingBar>
           </FooterTypingBar>
         </ChatContainer>
       </Section>
-      <Section>
+      <Section className="onTablet">
+        <ChatList chatsList={chatsList} />
+      </Section>
+      <Section className="onMobile">
         <ChatInfoWrapper>
           <TeamChatInfo />
           <UsersWrapper>
@@ -312,17 +346,24 @@ const Container = styled.div`
   gap: 12px;
   justify-content: space-around;
 
+  @media ${({ theme }) => theme.device.tablet} {
+    justify-content: space-between;
+  }
   padding: 0 12px;
 `;
 
 const UsersWrapper = styled.div`
   border: solid ${({ theme }) => theme.colors.gray1} 3px;
-  height: 450px;
+  height: 130px;
   flex-wrap: wrap;
   overflow-y: auto;
 `;
 
-const SendBtn = styled.div``;
+const Button = styled.div`
+  background-color: ${({ theme }) => theme.colors.purple1};
+  padding: 2px 6px;
+  border-radius: 2px;
+`;
 
 const TopBar = styled.div`
   width: 100%;
@@ -336,6 +377,11 @@ const TopBar = styled.div`
 const Section = styled.div`
   width: 100%;
   height: 100%;
+  @media ${({ theme }) => theme.device.tablet} {
+    &.onTablet {
+      display: none;
+    }
+  }
 `;
 
 const ChatInfoWrapper = styled.div`
@@ -447,9 +493,13 @@ const FooterTypingBar = styled.div`
 `;
 
 const OptionBar = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
   height: 36px;
   width: 100%;
-  border-radius: 6px;
+
   background-color: ${({ theme }) => theme.colors.purple2};
 `;
 
@@ -462,7 +512,7 @@ const TypingBar = styled.div`
 
 const Input = styled.input`
   width: 100%;
-  height: 100%;
+  height: 70%;
   background-color: none;
   border: none;
   padding: 12px;

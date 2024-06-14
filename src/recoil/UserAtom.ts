@@ -1,7 +1,7 @@
 import { atom } from "recoil";
-import { UsersInfo } from "../servies/user";
+import { UsersPageInfo } from "../servies/user";
 
-export const currentUserAtom = atom<UsersInfo | null>({
+export const currentUserAtom = atom<UsersPageInfo | null>({
   key: "currentUserAtom",
   default: null,
 });

@@ -6,7 +6,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 import { useEffect, useState } from "react";
 import { AxiosChat, Chats } from "../../servies/chat";
-import { AxiosUser, UsersInfo } from "../../servies/user";
+import { AxiosUser, ChatRoomUsers } from "../../servies/user";
 import UrlDashboard from "./components/UrlDashboard";
 import { AxiosProject, ProjectInfo } from "../../servies/projects";
 import { loadingAtom } from "../../recoil/LoadingAtom";
@@ -25,7 +25,7 @@ function Lounge() {
 
   const setLoading = useSetRecoilState(loadingAtom);
   const [error, setError] = useState("");
-  const [users, setUsers] = useState<UsersInfo[]>([]);
+  const [users, setUsers] = useState<ChatRoomUsers[]>();
   const [_chatsList, setChatList] = useState<Chats[]>();
   const [projectsInfo, setProjectsInfo] = useState<ProjectInfo[]>([]);
 
@@ -44,19 +44,7 @@ function Lounge() {
   const fetchOfficehourProject = async () => {
     try {
       const res = await AxiosOffieHour.getProjectAllOfficehour("ab98d368-a71a-48da-9ce9-6382042a4686");
-      if (res.status === 200) {
-        setOfficeHours(res.data);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  /** 팀 오피스아워 조회 */
-  const fetchOfficehourTeams = async () => {
-    try {
-      const res = await AxiosOffieHour.getTeamOfficehour("a13124e8-0563-4f93-80f9-3e13af0f7c72");
-      console.log(res);
+      if (res.status === 200) setOfficeHours(res.data);
     } catch (e) {
       console.error(e);
     }
@@ -93,7 +81,7 @@ function Lounge() {
   const fetchGetUsersList = async () => {
     try {
       const res = await AxiosUser.getChatUsersList();
-      if (res.status === 200) setUsers(res.data.data);
+      if (res.statusCode === 200) setUsers(res.data);
     } catch (e: any) {
       console.error(e);
       setError(e.response.data.message);
@@ -135,7 +123,6 @@ function Lounge() {
     fetchGetChatList();
     fetchGetProjectIdInfo();
     fetchOfficehourProject();
-    fetchOfficehourTeams();
     if (myInfo?.role === "RACER") fetchGetUsersList();
   }, []);
 
@@ -146,7 +133,7 @@ function Lounge() {
 
   return (
     <>
-      <MiniProfileModal isModalOpen={isModalOpen} userData={userInfo} onClose={() => setIsModalOpen(false)} />
+      <MiniProfileModal isModalOpen={isModalOpen} userdata={userInfo} onClose={() => setIsModalOpen(false)} />
 
       <Container>
         <Section>
@@ -174,7 +161,8 @@ function Lounge() {
               <SearchIcon onClick={fetchSearchUserList}>🔎</SearchIcon>
             </SubItemWrapper>
           </TitleWrapper>
-          <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />
+
+          {users && <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />}
         </Section>
       </Container>
     </>
@@ -272,3 +260,51 @@ const SearchIcon = styled.p`
 
   cursor: pointer;
 `;
+
+/**
+ * blog
+: 
+null
+comment
+: 
+null
+description
+: 
+null
+email
+: 
+"testtest@test.com"
+github
+: 
+null
+id
+: 
+"d1f28fff-0ec1-44b1-98e8-52c0b9a28bb5"
+position
+: 
+null
+profileImage
+: 
+null
+realName
+: 
+"노지예은"
+role
+: 
+"COACH"
+sns
+: 
+null
+status
+: 
+0
+tmi
+: 
+null
+track
+: 
+null
+username
+: 
+null
+ */

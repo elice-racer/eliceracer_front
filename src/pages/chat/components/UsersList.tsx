@@ -1,13 +1,13 @@
 import styled from "styled-components";
-import { UsersInfo } from "../../../servies/user";
+import { ChatRoomUsers } from "../../../servies/user";
 import ProfileImg from "../../Profile/components/ProfileImg";
 import { useNavigate } from "react-router-dom";
 import { paths } from "../../../utils/path";
 import EmptyImage from "../../../components/commons/EmptyImage";
 
 interface UsersListProps {
-  users: UsersInfo[];
-  myInfo: UsersInfo | null | undefined;
+  users: ChatRoomUsers[];
+  myInfo: ChatRoomUsers | null | undefined;
   error?: string;
   onOpenMiniProfile: (userId: string | null) => void;
 }
@@ -33,12 +33,12 @@ function UsersList({ users, myInfo, error, onOpenMiniProfile }: UsersListProps) 
         </UserWrapper>
         {error && <Text className="error">Error...</Text>}
 
-        {users.length === 0 ? (
+        {!users ? (
           <EmptyImage message="친구가 존재하지 않습니다." />
         ) : (
           <>
             {users.map(user => (
-              <UserWrapper key={user.id} id={user.id ? user.id : ""} onClick={() => onOpenMiniProfile(user.id || null)}>
+              <UserWrapper key={user.id} id={user.id ? user.id : ""} onClick={() => onOpenMiniProfile(user.id)}>
                 <ProfileImg />
                 <NameWrapper>
                   {user.track && <Text>{`[${user.track.trackName}${user.track.cardinalNo}]`}</Text>}
@@ -83,15 +83,6 @@ const UserWrapper = styled.div`
   }
 `;
 
-// const Wrapper = styled.div`
-//   height: 80px;
-//   margin-top: 34px;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-//   align-items: center;
-//   width: 100%;
-// `;
 const NameWrapper = styled.div`
   width: 100%;
   display: flex;

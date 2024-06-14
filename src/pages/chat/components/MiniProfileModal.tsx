@@ -2,14 +2,15 @@ import styled from "styled-components";
 import { imgPaths } from "../../../utils/path";
 import { Link } from "react-router-dom";
 import { Dimed } from "../../Profile/components/SkillsModal";
-import { UsersInfo } from "../../../servies/user";
+import { UsersPageInfo } from "../../../servies/user";
 
 interface MiniProfileModalProps {
   isModalOpen: boolean;
   onClose: () => void;
-  userData: UsersInfo | undefined;
+  onClick?: any;
+  userdata: UsersPageInfo | undefined;
 }
-function MiniProfileModal({ isModalOpen, onClose, userData }: MiniProfileModalProps) {
+function MiniProfileModal({ isModalOpen, onClose, onClick, userdata }: MiniProfileModalProps) {
   return (
     <>
       <Container className={isModalOpen ? "" : "disable"}>
@@ -20,36 +21,35 @@ function MiniProfileModal({ isModalOpen, onClose, userData }: MiniProfileModalPr
               <UserProfileImg src={imgPaths.DEFAULT_PROFILE_IMG} />
             </ImgWrapper>
           </Header>
-          {userData ? (
+          {userdata ? (
             <Body>
               <ColWrapper>
                 <Wrapper>
-                  <Title>{userData.realName}</Title>
-                  <Text className="subInfo">{userData.role}🏁</Text>
+                  <Title>{userdata.realName}</Title>
+                  <Text className="subInfo">{userdata.role}🏁</Text>
                 </Wrapper>
-                {userData.comment ? <Text>{userData.comment}</Text> : <Text>안녕하세요. {userData.realName}입니다.</Text>}
-                {userData.track ? (
+                {userdata.comment ? <Text>{userdata.comment}</Text> : <Text>안녕하세요. {userdata.realName}입니다.</Text>}
+                {userdata.track ? (
                   <Text className="subInfo">
-                    {userData.track.trackName}
-                    {userData.track.cardinalNo}
+                    {userdata.track.trackName}
+                    {userdata.track.cardinalNo}
                   </Text>
                 ) : (
                   ""
                 )}
                 <SubTitle>보유 스택</SubTitle>
                 <SkillInfoWrapper>
-                  {userData.skills.length === 0 ? (
+                  {userdata.skills.length === 0 ? (
                     <Text>등록된 기술 스택이 없습니다.</Text>
                   ) : (
-                    userData.skills.map(skill => (
+                    userdata.skills.map(skill => (
                       <Text className="skill" key={skill.id}>
                         {skill.skillName}
                       </Text>
                     ))
                   )}
                 </SkillInfoWrapper>
-
-                {userData.github ? <Link to={userData.github ? userData.github : ""}>깃허브 바로가기</Link> : ""}
+                {userdata.github ? <Link to={userdata.github ? userdata.github : ""}>깃허브 바로가기</Link> : ""}
                 {/* <Wrapper>
                   <SubTitle>진행한 프로젝트 :</SubTitle>
                   <Text></Text>
@@ -59,7 +59,11 @@ function MiniProfileModal({ isModalOpen, onClose, userData }: MiniProfileModalPr
               </ColWrapper>
               <ButtonWrapper>
                 {/* <Button onClick={() => navigate(paths.USERS_PAGE)}>더보기</Button> */}
-                <Button>1 : 1 채팅</Button>
+                {userdata.id && (
+                  <Button id={userdata.id} onClick={onClick}>
+                    {`${userdata.realName}님과 1 : 1 채팅`}
+                  </Button>
+                )}
               </ButtonWrapper>
             </Body>
           ) : (
