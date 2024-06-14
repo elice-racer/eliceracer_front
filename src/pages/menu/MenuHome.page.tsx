@@ -28,7 +28,6 @@ function MenuHome() {
   const [_userId, setUserId] = useState<string | null>(null);
   const [userdata, setUserdata] = useState<UsersPageInfo>();
 
-  // todo 노션 받으면 여기 넣기~~
   const myTrackInfo = {
     track: "AI 11",
     notion: "https://aitrack.elice.io/tracks/4879/info",
