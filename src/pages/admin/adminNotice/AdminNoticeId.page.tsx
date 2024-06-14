@@ -107,6 +107,7 @@ const TitleWrapper = styled.div`
 `;
 
 const Wrapper = styled.div``;
+
 const Flex = styled.div`
   display: flex;
   gap: 6px;

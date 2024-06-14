@@ -79,6 +79,7 @@ function Lounge() {
     if (!projectId) return;
     try {
       const res = await AxiosOffieHour.getProjectAllOfficehour(projectId);
+      console.log(res);
       if (res.status === 200) setOfficeHours(res.data);
     } catch (e) {
       console.error(e);
