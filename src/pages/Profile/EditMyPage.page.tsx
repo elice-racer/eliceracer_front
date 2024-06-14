@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import Btn from "../../components/commons/Btn";
+import Button from "../../components/commons/Button";
 import { imgPaths, paths } from "../../utils/path";
-import { AxiosUser, Skills, UsersInfo } from "../../servies/user";
+import { AxiosUser, Skills, UsersPageInfo } from "../../servies/user";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import EditInput from "./components/EditInput";
@@ -16,7 +16,7 @@ function EditMyPage() {
   const setLoading = useSetRecoilState(loadingAtom);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [usersInfo, setUsersInfo] = useState<UsersInfo | undefined | null>(null);
+  const [usersInfo, setUsersInfo] = useState<UsersPageInfo | undefined | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -105,7 +105,7 @@ function EditMyPage() {
       });
 
       if (res.status === 200) {
-        const newMypage = res.data.data as UsersInfo;
+        const newMypage = res.data.data as UsersPageInfo;
         setUsersInfo(newMypage);
       }
       navigate(paths.MYPAGE);
@@ -183,7 +183,7 @@ function EditMyPage() {
           )}
         </TextWrapper>
         <BtnWrapper>
-          <Btn children="저장하기" onClick={handleClick} />
+          <Button onClick={handleClick}>저장하기</Button>
         </BtnWrapper>
       </Header>
       <Wrapper>
@@ -319,7 +319,6 @@ const TextWrapper = styled.div`
   justify-content: center;
   align-items: center;
   &.sub-title {
-    margin-left: 10px;
   }
 `;
 
@@ -336,7 +335,6 @@ const SubTitleWrapper = styled.div`
   gap: 8px;
   width: 590px;
   height: 30px;
-  border-bottom: 1px soild ${({ theme }) => theme.colors.gray2};
 `;
 
 const TMIBox = styled.div`
@@ -344,15 +342,15 @@ const TMIBox = styled.div`
   height: 200px;
   padding: 12px;
   border-radius: 6px;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const TextArea = styled.textarea`
   width: 100%;
   height: 100%;
-  background-color: ${({ theme }) => theme.colors.gray1};
-
+  background-color: #fff;
   border: none;
+  outline: none;
   padding: 12px;
 `;
 
@@ -387,7 +385,7 @@ const ProfileWrapper = styled.div`
   border-radius: 8px;
   padding: 10px;
   width: 200px;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const RoleWrapper = styled.div`
@@ -421,7 +419,7 @@ const UserInfoWrapper = styled.div`
   padding: 16px;
   width: 380px;
   height: 300px;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const ItemWrapper = styled.div`
@@ -435,7 +433,7 @@ const AchievBox = styled.div`
   border-radius: 6px;
   width: 590px;
   height: 60px;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const SKillWrapper = styled.div`
@@ -451,7 +449,7 @@ const SKillWrapper = styled.div`
   padding-left: 12px;
 
   border-radius: 6px;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const DescriptBox = styled.div`
@@ -459,5 +457,5 @@ const DescriptBox = styled.div`
   padding: 12px;
   width: 590px;
   height: 250px;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;

@@ -25,8 +25,6 @@ const Header = ({ adminMenu }: any) => {
   const handleClickLogout = async () => {
     try {
       const res = await AxiosAuth.fetchLogout();
-      console.log("logout------");
-      console.log(res);
       if (res.data.statusCode === 200) localStorage.removeItem("userToken");
     } catch (e) {
       console.error(e);
@@ -111,7 +109,7 @@ const Img = styled.img`
   padding: 10px;
 
   position: absolute;
-  left: 0px;
+  left: 12px;
   top: 50%;
   transform: translateY(-50%);
 

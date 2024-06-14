@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import ChatList from "../chat/components/ChatList";
 import UsersList from "../chat/components/UsersList";
 import { paths } from "../../utils/path";
 import { useNavigate } from "react-router-dom";
@@ -7,12 +6,15 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 import { useEffect, useState } from "react";
 import { AxiosChat, Chats } from "../../servies/chat";
-import { AxiosUser, UsersInfo } from "../../servies/user";
-import InfoBoard from "./components/InfoBoard";
+import { AxiosUser, ChatRoomUsers } from "../../servies/user";
+import UrlDashboard from "./components/UrlDashboard";
 import { AxiosProject, ProjectInfo } from "../../servies/projects";
 import { loadingAtom } from "../../recoil/LoadingAtom";
 import MiniProfileModal from "../chat/components/MiniProfileModal";
-import { AxiosOffieHour } from "../../servies/officehour";
+import { AxiosOffieHour, OfficehourProps } from "../../servies/officehour";
+
+import Button from "../../components/commons/Button";
+import OfficeHourWeekly from "../../components/officehour/OfficehourWeekly";
 
 function Lounge() {
   const navigate = useNavigate();
@@ -23,11 +25,13 @@ function Lounge() {
 
   const setLoading = useSetRecoilState(loadingAtom);
   const [error, setError] = useState("");
-  const [users, setUsers] = useState<UsersInfo[]>([]);
-  const [chatsList, setChatList] = useState<Chats[]>();
+  const [users, setUsers] = useState<ChatRoomUsers[]>();
+  const [_chatsList, setChatList] = useState<Chats[]>();
   const [projectsInfo, setProjectsInfo] = useState<ProjectInfo[]>([]);
 
   const [searchUser, setSearchUser] = useState("");
+
+  const [officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
 
   /** 미니프로필창 열기 */
   const handleOpenMiniProfile = (userId: string | null) => {
@@ -36,21 +40,11 @@ function Lounge() {
     setIsModalOpen(true);
   };
 
-  /** 프로젝트 오피스아워 조회 */
+  /** 전체 오피스아워 조회 */
   const fetchOfficehourProject = async () => {
     try {
-      const res = await AxiosOffieHour.getProjectOfficehour("8ab92d20-9835-4bc8-9f17-1da291343b82");
-      console.log(res);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  /** 팀 오피스아워 조회 */
-  const fetchOfficehourTeams = async () => {
-    try {
-      const res = await AxiosOffieHour.getTeamOfficehour("f41806f5-aec4-4758-b6ce-3dcbb6e7f59e");
-      console.log(res);
+      const res = await AxiosOffieHour.getProjectAllOfficehour("ab98d368-a71a-48da-9ce9-6382042a4686");
+      if (res.status === 200) setOfficeHours(res.data);
     } catch (e) {
       console.error(e);
     }
@@ -87,7 +81,7 @@ function Lounge() {
   const fetchGetUsersList = async () => {
     try {
       const res = await AxiosUser.getChatUsersList();
-      if (res.status === 200) setUsers(res.data.data);
+      if (res.statusCode === 200) setUsers(res.data);
     } catch (e: any) {
       console.error(e);
       setError(e.response.data.message);
@@ -121,7 +115,7 @@ function Lounge() {
 
   useEffect(() => {
     if (searchUser.length === 0) {
-      fetchGetUsersList();
+      if (myInfo?.role === "RACER") fetchGetUsersList();
     }
   }, [searchUser]);
 
@@ -129,7 +123,6 @@ function Lounge() {
     fetchGetChatList();
     fetchGetProjectIdInfo();
     fetchOfficehourProject();
-    fetchOfficehourTeams();
     if (myInfo?.role === "RACER") fetchGetUsersList();
   }, []);
 
@@ -140,14 +133,15 @@ function Lounge() {
 
   return (
     <>
-      <MiniProfileModal isModalOpen={isModalOpen} userData={userInfo} onClose={() => setIsModalOpen(false)} />
+      <MiniProfileModal isModalOpen={isModalOpen} userdata={userInfo} onClose={() => setIsModalOpen(false)} />
 
       <Container>
         <Section>
-          <Button onClick={() => navigate(paths.CHAT_HOME)}>
+          <Button onClick={() => navigate(paths.CHAT_HOME)} className="chat-home">
             <Text>채팅홈 바로가기</Text>
           </Button>
-          <InfoBoard projectsInfo={projectsInfo} />
+          <UrlDashboard projectUrls={projectsInfo} />
+          <OfficeHourWeekly officehours={officeHours} />
         </Section>
         <Section>
           <TitleWrapper>
@@ -167,10 +161,8 @@ function Lounge() {
               <SearchIcon onClick={fetchSearchUserList}>🔎</SearchIcon>
             </SubItemWrapper>
           </TitleWrapper>
-          <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />
-        </Section>
-        <Section>
-          <ChatList chatsList={chatsList} error={error} />
+
+          {users && <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />}
         </Section>
       </Container>
     </>
@@ -183,37 +175,43 @@ const Container = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  gap: 4px;
+  gap: 12px;
 
   @media ${({ theme }) => theme.device.tablet} {
     flex-direction: column;
-    margin-top: 68px;
   }
 
-  margin-top: 68px;
+  padding: 0 24px;
 `;
 
 const Section = styled.div`
   width: 100%;
-`;
 
-const Button = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 48px;
-  background-color: ${({ theme }) => theme.colors.purple1};
-  padding: 3px 5px;
-  margin: 6px 0;
-  border-radius: 8px;
-  cursor: pointer;
-  &:hover {
-    color: #fff;
-    background-color: ${({ theme }) => theme.colors.purple2};
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  .chat-home {
+    width: 100%;
+    height: 48px !important;
+
+    margin-bottom: 12px;
   }
 `;
+
+// const Button2 = styled.div`
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   width: 100%;
+//   height: 48px;
+//   background-color: ${({ theme }) => theme.colors.purple1};
+//   padding: 3px 5px;
+//   margin: 6px 0;
+//   border-radius: 8px;
+//   cursor: pointer;
+//   &:hover {
+//     color: #fff;
+//     background-color: ${({ theme }) => theme.colors.purple2};
+//     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+//   }
+// `;
 
 const Text = styled.p`
   text-align: center;
@@ -262,3 +260,51 @@ const SearchIcon = styled.p`
 
   cursor: pointer;
 `;
+
+/**
+ * blog
+: 
+null
+comment
+: 
+null
+description
+: 
+null
+email
+: 
+"testtest@test.com"
+github
+: 
+null
+id
+: 
+"d1f28fff-0ec1-44b1-98e8-52c0b9a28bb5"
+position
+: 
+null
+profileImage
+: 
+null
+realName
+: 
+"노지예은"
+role
+: 
+"COACH"
+sns
+: 
+null
+status
+: 
+0
+tmi
+: 
+null
+track
+: 
+null
+username
+: 
+null
+ */

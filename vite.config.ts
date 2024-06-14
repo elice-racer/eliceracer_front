@@ -8,12 +8,22 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "prompt",
-      includeAssets: ["favicon.ico", "apple-touc-icon.png", "masked-icon.png"],
+      includeAssets: ["favicon.ico", "pwa/apple-touch-icon.png"],
       injectRegister: "script",
       workbox: {
         clientsClaim: true,
         skipWaiting: true,
         globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
+      },
+
+      injectManifest: {
+        swSrc: "public/sw.js",
+        swDest: "dist/sw.js",
+        globDirectory: "dist",
+        globPatterns: ["**/*.{html,js,css,json,png}"],
+      },
+      devOptions: {
+        enabled: true,
       },
     }),
   ],

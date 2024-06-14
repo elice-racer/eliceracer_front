@@ -12,7 +12,6 @@ function AdminNoticeId() {
     try {
       const noticeId = id;
       const res = await AxiosNotice.getNoticeId(noticeId);
-      console.log(res.data);
       if (res.statusCode === 200) setNotice(res.data);
     } catch (e) {
       console.error(e);
@@ -23,7 +22,6 @@ function AdminNoticeId() {
     try {
       const noticeId = id;
       const res = await AxiosNotice.deleteNotice(noticeId);
-      console.log(res.data.statusCode);
       if (res.data.statusCode === 200) {
         alert("삭제되었습니다");
         navigate(paths.ADMIN_NOTICE_LIST);

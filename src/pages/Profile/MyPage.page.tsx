@@ -1,14 +1,16 @@
 import styled from "styled-components";
 
 // component
-import Btn from "../../components/commons/Btn";
+
+import Button from "../../components/commons/Button";
+
 import SkillBadge from "./components/SkillBadge";
 
 // paths
 import { imgPaths, paths } from "../../utils/path";
 
 // api
-import { AxiosUser, UsersInfo } from "../../servies/user";
+import { AxiosUser, UsersPageInfo } from "../../servies/user";
 
 // hooks
 import { useEffect, useState } from "react";
@@ -18,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 
 function MyPage() {
   const navigate = useNavigate();
-  const [usersInfo, setUsersInfo] = useState<UsersInfo | null>();
+  const [usersInfo, setUsersInfo] = useState<UsersPageInfo | null>();
 
   const fetchMyInfo = async () => {
     try {
@@ -46,7 +48,7 @@ function MyPage() {
           )}
         </TextWrapper>
         <BtnWrapper>
-          <Btn children="수정하기" onClick={() => navigate(paths.EDIT_MYPAGE)} />
+          <Button onClick={() => navigate(paths.EDIT_MYPAGE)}>수정하기</Button>
         </BtnWrapper>
       </Header>
       <Wrapper>
@@ -139,7 +141,6 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  width: 470px;
   width: 100%;
 `;
 
@@ -147,7 +148,7 @@ const Header = styled.div`
   display: flex;
   justify-content: end;
   gap: 12px;
-  width: 590px;
+  width: 100%;
   height: 50px;
 `;
 
@@ -178,7 +179,7 @@ const SubTitleWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: start;
-  width: 590px;
+  width: 100%;
   height: 30px;
   border-bottom: 1px soild ${({ theme }) => theme.colors.gray2};
 `;
@@ -204,8 +205,8 @@ const BasicInfoWrapper = styled.div`
 const ProfileWrapper = styled.div`
   border-radius: 8px;
   padding: 10px;
-  width: 200px;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  width: 30%;
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const RoleWrapper = styled.div`
@@ -235,7 +236,7 @@ const UserInfoWrapper = styled.div`
   padding: 16px;
   width: 380px;
   height: 300px;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const ItemWrapper = styled.div`
@@ -249,7 +250,7 @@ const AchievBox = styled.div`
   border-radius: 6px;
   width: 590px;
   height: 60px;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const SKillWrapper = styled.div`
@@ -257,7 +258,8 @@ const SKillWrapper = styled.div`
   width: 100%;
   display: flex;
   min-height: 60px;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
+
   align-items: center;
   gap: 4px;
   padding-left: 12px;
@@ -266,7 +268,7 @@ const SKillWrapper = styled.div`
 const TMIBox = styled.div`
   width: 590px;
   height: 200px;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const DescriptBox = styled.div`
@@ -274,5 +276,5 @@ const DescriptBox = styled.div`
   padding: 12px;
   width: 590px;
   height: 250px;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;

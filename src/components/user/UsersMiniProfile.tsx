@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { imgPaths, paths } from "../../utils/path";
 import { Link, useNavigate } from "react-router-dom";
-import { UsersInfo } from "../../servies/user";
+import { UsersPageInfo } from "../../servies/user";
 
 interface UserMiniProfileProps {
-  userdata?: UsersInfo;
+  userdata?: UsersPageInfo;
 }
 function UsersMiniProfile({ userdata }: UserMiniProfileProps) {
   const navigate = useNavigate();

@@ -1,22 +1,21 @@
 import styled from "styled-components";
-import OfficeHourWeekly from "../../../components/officehour/OfficehourWeekly";
 import { ProjectInfo } from "../../../servies/projects";
-interface InfoBoardProps {
-  projectsInfo: ProjectInfo[];
+interface UrlDashboardProps {
+  projectUrls: ProjectInfo[];
 }
 
-function InfoBoard({ projectsInfo }: InfoBoardProps) {
+function UrlDashboard({ projectUrls }: UrlDashboardProps) {
   return (
     <Container>
-      <ProjectInfoWrapper>
+      <UrlDashboardWrapper>
         <Wapper>
           <TitleWrapper>
-            <Title>프로젝트</Title>
+            <Title>바로 가기 📎</Title>
           </TitleWrapper>
           <DataWrapper>
             <ProjectListWrapper>
-              {projectsInfo ? (
-                projectsInfo.map(project => (
+              {projectUrls ? (
+                projectUrls.map(project => (
                   // 클릭하면 해당 프로젝트 노션으로 이동할 수 있게!
                   <ProjectWrapper key={project.id} onClick={() => {}}>
                     <NameWrapper>
@@ -41,20 +40,19 @@ function InfoBoard({ projectsInfo }: InfoBoardProps) {
             </ProjectListWrapper>
           </DataWrapper>
         </Wapper>
-      </ProjectInfoWrapper>
-      <OfficeHourWeekly />
+      </UrlDashboardWrapper>
     </Container>
   );
 }
 
-export default InfoBoard;
+export default UrlDashboard;
 
 const Container = styled.div`
   width: 100%;
-  height: 100%;
+  margin-bottom: 12px;
 `;
 
-const ProjectInfoWrapper = styled.div``;
+const UrlDashboardWrapper = styled.div``;
 
 const Wapper = styled.div`
   width: 100%;
@@ -90,7 +88,7 @@ const DataWrapper = styled.div`
   height: 158px;
   display: flex;
   justify-content: center;
-  background-color: ${({ theme }) => theme.colors.gray1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const ProjectWrapper = styled.div`

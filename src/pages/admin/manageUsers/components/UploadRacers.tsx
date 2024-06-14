@@ -55,7 +55,7 @@ const TitleWrapper = styled.div`
 
   padding: 12px;
   width: 100%;
-  background-color: ${({ theme }) => theme.colors.purple1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
 
 const Title = styled.h1`
@@ -84,7 +84,8 @@ const CreateTrackBtn = styled.button`
   height: 30px;
   border-radius: 8px;
   border: none;
-  background-color: ${({ theme }) => theme.colors.purple1};
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
+
   color: ${({ theme }) => theme.colors.gray2};
   margin-bottom: 12px;
 `;

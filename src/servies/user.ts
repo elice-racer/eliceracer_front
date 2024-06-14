@@ -25,11 +25,12 @@ export interface Skills {
   id?: string;
   skillName: string;
 }
-export interface UsersInfo {
+export interface UsersPageInfo {
   id: string | null;
   email: string | null;
   username: string | null;
   realName: string;
+  profileImage: string;
   phoneNumber: string | null;
   comment: string | null;
   position: string | null;
@@ -44,26 +45,28 @@ export interface UsersInfo {
   teams: [] | null;
   tmi: string | null;
 }
+export type ChatRoomUsers = Omit<UsersPageInfo, "phoneNumber">;
 
-export type OmitUserInfo = Omit<UsersInfo, "username" | "email" | "id" | "skill" | "role" | "teams" | "track" | "status">;
+export type OmitUserInfo = Omit<UsersPageInfo, "username" | "email" | "id" | "skill" | "role" | "teams" | "track" | "status">;
 export type UpdateUserInfo = Partial<OmitUserInfo>;
 export namespace AxiosUser {
   /** 현재 유저 정보 가져오기 */
-  export const getCurrentUser = async (): Promise<ResData<UsersInfo>> => {
+  export const getCurrentUser = async (): Promise<ResData<UsersPageInfo>> => {
     const url = `users/current`;
     const res = await api.get(url).then(res => res.data);
+
     return res;
   };
 
   /** 마이페이지 조회 */
-  export const getMyPage = async (): Promise<ResData<UsersInfo>> => {
+  export const getMyPage = async (): Promise<ResData<UsersPageInfo>> => {
     const url = `users/mypage`;
     const res = await api.get(url).then(res => res.data);
     return res;
   };
 
   /** 미니프로필 */
-  export const getUsersMiniProfile = async (id: string): Promise<ResData<UsersInfo>> => {
+  export const getUsersMiniProfile = async (id: string): Promise<ResData<UsersPageInfo>> => {
     const url = `users/miniprofiles/${id}`;
     const res = await api.get(url).then(res => res.data);
     return res;
@@ -98,9 +101,9 @@ export namespace AxiosUser {
   };
 
   /** 유저 메인에서 친구 목록 조회 */
-  export const getChatUsersList = async (pageSize = 10) => {
+  export const getChatUsersList = async (pageSize = 30): Promise<ResData<ChatRoomUsers[]>> => {
     const url = `users/participants?pageSize=${pageSize}`;
-    const res = await api.get(url);
+    const res = await api.get(url).then(res => res.data);
     return res;
   };
 

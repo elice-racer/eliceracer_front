@@ -8,6 +8,8 @@ import InputFiled from "./components/InputField";
 import { imgPaths, paths } from "../../utils/path";
 import { loadingAtom } from "../../recoil/LoadingAtom";
 import { useSnackbar } from "../../hooks/useSnackbar";
+import Button from "../../components/commons/Button";
+
 // import Cookies from "js-cookie";
 
 export default function Login() {
@@ -63,8 +65,6 @@ export default function Login() {
       setLoading(false);
     } catch (e: any) {
       const errorMessage = e.response?.data?.message || "에러가 발생했습니다.";
-      console.log(e.response);
-      // snackbarOpen({ message: e.response?.data?.message || "에러가 발생했습니다.", open: true });
       setError(errorMessage);
       setLoading(false);
     }
@@ -101,8 +101,12 @@ export default function Login() {
           onKeyDown={onKeyDown}
         />
       </Form>
+      <ButtonWrapper>
+        <Button onClick={handleLogin} className="login-button">
+          로그인
+        </Button>
+      </ButtonWrapper>
 
-      <Btn onClick={handleLogin}>로그인</Btn>
       <TextWrapper>
         <StyledLink to={paths.FIND_ID}>아이디</StyledLink> | <StyledLink to={paths.FIND_PW}>비밀번호 찾기</StyledLink>
       </TextWrapper>
@@ -119,8 +123,11 @@ const Wrapper = styled.div`
   align-items: center;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
+
+  max-width: 540px;
+  margin: 0 auto;
   height: 100%;
-  margin-top: 68px;
   /* @media ${({ theme }) => theme.device.tablet} {
     background-color: blue;
   }
@@ -132,6 +139,18 @@ const Wrapper = styled.div`
   } */
 `;
 
+const ButtonWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin-top: 12px;
+
+  .login-button {
+    width: 280px;
+  }
+`;
 const Form = styled.form`
   display: flex;
   flex-direction: column;
@@ -140,16 +159,6 @@ const Form = styled.form`
 const Img = styled.img`
   width: 230px;
   margin: 50px 0 40px 0;
-`;
-
-const Btn = styled.button`
-  width: 230px;
-  height: 30px;
-  border-radius: 16px;
-  border: none;
-  background-color: #b67bff;
-
-  cursor: pointer;
 `;
 
 const Text = styled.p`

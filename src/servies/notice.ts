@@ -28,7 +28,6 @@ export namespace AxiosNotice {
   export const deleteNotice = async (noticeId: string | undefined) => {
     const url = `admins/notices/${noticeId}`;
     const res = await api.delete(url);
-    console.log(res);
     return res;
   };
 

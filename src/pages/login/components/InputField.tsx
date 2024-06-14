@@ -45,10 +45,17 @@ const Error = styled.div`
 `;
 const Input = styled.input`
   width: 100%;
-  height: 30px;
+  height: 36px;
   padding-left: 10px;
   border-width: 0;
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.colors.purple1};
+  border: 1px solid ${({ theme }) => theme.colors.gray2};
+  outline: none;
+
+  transition: 0.3s all ease-in-out;
+
+  &:focus {
+    border: 1px solid ${({ theme }) => theme.colors.purple2};
+  }
   color: ${({ theme }) => theme.colors.gray2};
 `;

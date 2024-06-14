@@ -50,16 +50,35 @@ export namespace AxiosChat {
     return res;
   };
 
+  /** 채팅방 정보 조회 */
   export const getChatIdInfo = async (chatId: string) => {
     const url = `chats/${chatId}`;
     const res = await api.get(url).then(res => res.data);
     return res;
   };
 
-  /** 채팅방 생성 */
-  export const createChat = async (data: CreateChatData) => {
+  /** 채팅 메시지 페이지네이션 */
+  export const getPrevChatMessage = async (next: string): Promise<ResData<ChatMessage[]>> => {
+    const res = await api.get(next).then(res => res.data);
+    return res;
+  };
+
+  /** 유저간의 채팅 생성 */
+  export const createUsersChat = async (data: CreateChatData) => {
     const url = `chats`;
     const res = await api.post(url, data);
+    return res;
+  };
+
+  /** 기존 채팅방에 유저 초대 */
+  export const postUserToChat = async (chatId: string, userIds: string[]) => {
+    const url = `chats/${chatId}/users`;
+    const res = await api.post(url, { userIds });
+    return res;
+  };
+  export const deleteChatRoom = async (chatId: string) => {
+    const url = `chats/${chatId}`;
+    const res = await api.delete(url);
     return res;
   };
 }

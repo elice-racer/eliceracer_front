@@ -59,7 +59,6 @@ export default function CreateAccount() {
     try {
       const { realName, phoneNumber } = userData;
       const res = await AxiosAuth.fetchAuthUserNumber({ realName, phoneNumber });
-      console.log(res);
       if (res.status === 201) {
         setTimerStart(true);
         snackbarOpen({ message: "인증번호가 전송되었습니다", open: true });

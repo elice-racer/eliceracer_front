@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import ProfileImg from "../../Profile/components/ProfileImg";
-import { UsersInfo } from "../../../servies/user";
+import { ChatRoomUsers } from "../../../servies/user";
 
 interface ChatRoomUsersProps {
-  users?: UsersInfo[] | undefined;
+  users?: ChatRoomUsers[] | undefined;
 }
 function ChatRoomUsersList({ users }: ChatRoomUsersProps) {
   return (

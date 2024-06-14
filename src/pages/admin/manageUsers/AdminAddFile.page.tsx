@@ -5,7 +5,7 @@ import { AxiosAdmin, TeamsInfo } from "../../../servies/admin";
 
 import * as XLSX from "xlsx";
 
-import DataBoard from "./components/DataBoard";
+// import DataBoard from "./components/DataBoard";
 import UploadRacers from "./components/UploadRacers";
 import UploadCoaches from "./components/UploadCoaches";
 import UploadTeamBuilding from "./components/UploadTeamBuilding";
@@ -16,6 +16,10 @@ import { useSetRecoilState } from "recoil";
 import UploadOfficehour from "./components/UploadOfficehour";
 import { AxiosProject, ProjectInfo } from "../../../servies/projects";
 
+// tabs
+
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
 export interface RowData {
   [key: string]: any;
 }
@@ -40,11 +44,13 @@ function AdminAddFile() {
     cardinalNo: "",
     lastRound: "",
   });
-  const [data, setData] = useState<RowData[]>([]);
+  const [_data, setData] = useState<RowData[]>([]);
   const [error, setError] = useState("");
-  const [tabIdx, setTabIdx] = useState(3);
+  const [tabIdx, setTabIdx] = useState<number>(0);
 
-  const handleChangeTabIndex = (idx: number) => setTabIdx(idx);
+  const handleChange = (_event: React.SyntheticEvent, idx: number) => {
+    setTabIdx(idx);
+  };
 
   /** 프로젝트 기수별 조회 */
   const handleGetProjects = async () => {
@@ -52,7 +58,6 @@ function AdminAddFile() {
       if (track.cardinalNo) {
         const { trackName, cardinalNo } = track;
         const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });
-        console.log(res);
         if (res.statusCode === 200) setProjects(res.data);
       }
     } catch (e) {
@@ -95,7 +100,6 @@ function AdminAddFile() {
     try {
       const { trackName, cardinalNo, lastRound } = track;
       const res = await AxiosAdmin.getTrackTeamList({ trackName, cardinalNo, lastRound });
-      console.log(res);
       setLoading(true);
       if (res.statusCode === 200) {
         if (res.data?.length === 0) setError("생성된 팀을 확인할 수 없습니다.");
@@ -233,11 +237,11 @@ function AdminAddFile() {
     <Container>
       <Wrapper>
         <TabWrapper>
-          {tabList.map((tabName, index) => (
-            <Tab selected={tabIdx === index} onClick={() => handleChangeTabIndex(index)}>
-              <Text>{tabName}</Text>
-            </Tab>
-          ))}
+          <Tabs value={tabIdx} onChange={handleChange} textColor="secondary" indicatorColor="secondary" aria-label="secondary tabs example">
+            {tabList.map((tabName, index) => (
+              <Tab value={index} label={tabName} />
+            ))}
+          </Tabs>
         </TabWrapper>
         <SectionWrapper>
           <Error>{error}</Error>
@@ -278,7 +282,7 @@ function AdminAddFile() {
           }
         </SectionWrapper>
         <Text style={{ paddingTop: "24px" }}>아래는 업로드된 파일 양식입니다.</Text>
-        <DataBoard data={data} />
+        {/* <DataBoard data={data} /> */}
       </Wrapper>
     </Container>
   );
@@ -295,6 +299,8 @@ const Container = styled.div`
 
   max-width: 540px;
   margin: 0 auto;
+
+  margin-top: 64px;
 `;
 
 const TabWrapper = styled.div`
@@ -310,20 +316,20 @@ const Wrapper = styled.div`
   margin-top: 48px;
 `;
 
-const Tab = styled.div<{ selected: boolean }>`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 30%;
-  height: 40px;
-  border-radius: 12px 12px 0 0;
+// const Tab = styled.div<{ selected: boolean }>`
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
+//   width: 30%;
+//   height: 40px;
+//   border-radius: 12px 12px 0 0;
 
-  background-color: ${({ theme, selected }) => (selected ? theme.colors.purple2 : theme.colors.purple1)};
-  color: ${({ selected }) => (selected ? "#fff" : "#333")};
+//   background-color: ${({ theme, selected }) => (selected ? theme.colors.purple2 : theme.colors.purple1)};
+//   color: ${({ selected }) => (selected ? "#fff" : "#333")};
 
-  transition: all 0.3s ease-in-out;
-`;
+//   transition: all 0.3s ease-in-out;
+// `;
 
 const SectionWrapper = styled.div`
   &.selected {

@@ -69,9 +69,6 @@ export namespace AxiosAuth {
 
   /** 로그아웃 */
   export const fetchLogout = async () => {
-    console.log("========api token=======");
-    console.log(api.defaults.headers.common.Authorization);
-    console.log("========api token=======");
     const res = await api.post(`auth/logout`);
     return res;
   };

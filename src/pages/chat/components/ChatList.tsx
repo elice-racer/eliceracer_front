@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { paths } from "../../../utils/path";
 import { Chats } from "../../../servies/chat";
+import EmptyImage from "../../../components/commons/EmptyImage";
 
 interface ChatsListProps {
   chatsList: Chats[] | undefined;
@@ -19,7 +20,7 @@ function ChatList({ chatsList, error }: ChatsListProps) {
           <Title>채팅 목록</Title>
         </TitleWrapper>
         <ChatListWrapper>
-          {error && <Text>{error}</Text>}
+          {error && <EmptyImage message={error} />}
           {chatsList ? (
             chatsList?.map(chat => (
               <ChatItem key={chat.id} onClick={() => navigate(`${paths.CHAT_HOME}/${chat.id}`)}>
