@@ -15,7 +15,7 @@ export default defineConfig({
         skipWaiting: true,
         globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
       },
-      strategies: "injectManifest",
+
       injectManifest: {
         swSrc: "public/sw.js",
         swDest: "dist/sw.js",
