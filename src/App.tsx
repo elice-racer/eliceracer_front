@@ -27,7 +27,7 @@ import FindPW from "./pages/login/FindPW.page";
 import Lounge from "./pages/home/Lounge.page";
 import ChatHome from "./pages/chat/ChatHome.page";
 import MenuHome from "./pages/menu/MenuHome.page";
-import MyPage from "./pages/Profile/MyPage.page";
+import MyPage from "./pages/usersProfile/MyPage.page";
 import OfficeHour from "./pages/officeHour/OfficeHour.page";
 import Settings from "./pages/settings/Settings.page";
 
@@ -60,10 +60,10 @@ import { snackbarAtom } from "./recoil/SnackbarAtom";
 // page
 import MyAlert from "./pages/alert/MyAlert.Page";
 import AboutProjects from "./pages/projects/AboutProjects.page";
-import UsersPage from "./pages/Profile/UsersPage.page";
+import UsersPage from "./pages/usersProfile/UsersPage.page";
 import ChatRoom from "./pages/chat/ChatRoom.page";
 import NoticeList from "./pages/notice/NoticeList.page";
-import EditMyPage from "./pages/Profile/EditMyPage.page";
+import EditMyPage from "./pages/usersProfile/EditMyPage.page";
 import BasicRoute from "./routes/BasicRoute";
 import Notfound from "./pages/404/Notfound.page";
 import SuccessCreateUsers from "./pages/login/SuccessCreateUsers.page";
