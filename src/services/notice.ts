@@ -1,25 +1,24 @@
 import { ResData } from "./admin";
 import { api } from "./api";
 
-export interface CreateNotice {
-  title: string;
-  content: string;
-}
-
 interface NoticeUser {
   id: string;
   realName: string;
 }
-export interface Notice extends CreateNotice {
+export interface Notice {
   id: string;
+  title: string;
+  content: string;
   createdAt: string;
   updatedAt: string;
   user: NoticeUser;
 }
 
+export type OmitNotice = Omit<Notice, "createdAt" | "updatedAt" | "user" | "id">;
+
 export namespace AxiosNotice {
   /** 관리자 공지 업로드  */
-  export const postNotice = async (createNotice: CreateNotice) => {
+  export const postNotice = async (createNotice: OmitNotice) => {
     const url = `admins/notices`;
     const res = await api.post(url, createNotice);
     return res;
@@ -37,9 +36,17 @@ export namespace AxiosNotice {
     return res;
   };
 
+  /** 공자 조회 */
   export const getNoticeId = async (noticeId: string | undefined): Promise<ResData<Notice>> => {
     const url = `notices/${noticeId}`;
     const res = await api.get(url).then(res => res.data);
+    return res;
+  };
+
+  /** 공지 수정 */
+  export const updateNotice = async (noticeId: string, data: OmitNotice) => {
+    const url = `admins/notices/${noticeId}`;
+    const res = await api.put(url, data).then(res => res.data);
     return res;
   };
 }
