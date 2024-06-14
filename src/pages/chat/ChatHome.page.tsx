@@ -1,19 +1,20 @@
 import styled from "styled-components";
 import ChatList from "./components/ChatList";
 import UsersList from "./components/UsersList";
-import { AxiosUser, ChatRoomUsers } from "../../servies/user";
+import { AxiosUser, ChatRoomUsers } from "../../services/user";
 import { useEffect, useState } from "react";
-import { AxiosChat, Chats } from "../../servies/chat";
+import { AxiosChat, Chats } from "../../services/chat";
 import { useRecoilValue } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 import MiniProfileModal from "./components/MiniProfileModal";
 
-function ChatHome() {
-  const myInfo = useRecoilValue(currentUserAtom);
-  const [userInfo, setUsetInfo] = useState();
+export default function ChatHome() {
+  const user = useRecoilValue(currentUserAtom);
+
+  const [miniProfile, setMiniProfile] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
-  const [users, setUsers] = useState<ChatRoomUsers[]>();
+  const [userList, setUserList] = useState<ChatRoomUsers[]>([]);
   const [chatsList, setChatList] = useState<Chats[]>();
 
   const [_selectedUsers, _setSelectedUsers] = useState<string[]>([]);
@@ -28,6 +29,7 @@ function ChatHome() {
       const res = await AxiosChat.getChats();
       if (res.statusCode === 200) setChatList(res.data);
     } catch (e: any) {
+      console.log("fetch Get ChatList Error!!");
       console.error(e);
     }
   };
@@ -36,17 +38,17 @@ function ChatHome() {
   const fetchGetUsers = async () => {
     try {
       const res = await AxiosUser.getChatUsersList();
-      if (res.statusCode === 200) setUsers(res.data);
+      if (res.statusCode === 200) setUserList(res.data || []);
     } catch (e: any) {
       setError(e.response.data.message);
     }
   };
 
   /** 유저 미니프로필 조회 */
-  const fetchUserInfo = async (id: string) => {
+  const fetchMiniProfile = async (id: string) => {
     try {
       const res = await AxiosUser.getUsersPage(id);
-      if (res.statusCode === 200) setUsetInfo(res.data);
+      if (res.statusCode === 200) setMiniProfile(res.data);
     } catch (e) {
       console.error(e);
     }
@@ -54,7 +56,7 @@ function ChatHome() {
 
   const handleClick = (e: any) => {
     if (!e) return alert("유저 프로필을 확인할 수 없습니다.");
-    fetchUserInfo(e);
+    fetchMiniProfile(e);
     setIsModalOpen(true);
   };
 
@@ -64,11 +66,8 @@ function ChatHome() {
   //   setSelectedUsers(users => [...users, newUsers]);
   // };
 
-  const handleStartUsersChat = async (e: any) => {
+  const handleStartUsersChat = async (userId: string, chatName: string) => {
     try {
-      const userId = e.target.id;
-      const chatName = e.target.innerText;
-
       const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
 
       if (res.status === 201) {
@@ -107,14 +106,14 @@ function ChatHome() {
         onClose={() => {
           setIsModalOpen(false);
         }}
-        userdata={userInfo}
-        onClick={handleStartUsersChat}
+        userdata={miniProfile}
+        onCreateChat={handleStartUsersChat}
       />
       <Container>
         <Section>
           <SelectedUsers></SelectedUsers>
           <Error>{error}</Error>
-          {users && <UsersList users={users} myInfo={myInfo} onOpenMiniProfile={handleClick} />}
+          <UsersList users={userList} myInfo={user} onOpenMiniProfile={handleClick} />
         </Section>
         <Section>
           <ChatList chatsList={chatsList} />
@@ -123,8 +122,6 @@ function ChatHome() {
     </>
   );
 }
-
-export default ChatHome;
 
 const Container = styled.div`
   width: 100%;

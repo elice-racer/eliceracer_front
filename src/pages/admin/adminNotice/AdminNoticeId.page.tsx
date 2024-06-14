@@ -1,6 +1,6 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { AxiosNotice, Notice } from "../../../servies/notice";
+import { AxiosNotice, Notice } from "../../../services/notice";
 import { useEffect, useState } from "react";
 import { paths } from "../../../utils/path";
 

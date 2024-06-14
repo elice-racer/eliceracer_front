@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { paths } from "../../../utils/path";
-import { AxiosNotice, CreateNotice } from "../../../servies/notice";
+import { AxiosNotice, CreateNotice } from "../../../services/notice";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 

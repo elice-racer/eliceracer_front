@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import CustomCalendar, { CustomCalendarProps } from "../calendar/Calendar";
-import { OfficehourProps } from "../../servies/officehour";
+import { OfficehourProps } from "../../services/officehour";
 
 interface OfficeHourWeeklyProps {
   officehours: OfficehourProps[];

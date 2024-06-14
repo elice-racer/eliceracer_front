@@ -14,11 +14,11 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 
 // api
-import { AxiosNotice, Notice } from "../../servies/notice";
-import { AxiosUser, UsersPageInfo } from "../../servies/user";
+import { AxiosNotice, Notice } from "../../services/notice";
+import { AxiosUser, UsersPageInfo } from "../../services/user";
 import { loadingAtom } from "../../recoil/LoadingAtom";
-import { AxiosProject } from "../../servies/projects";
-import { AxiosOffieHour, OfficehourProps } from "../../servies/officehour";
+import { AxiosProject } from "../../services/projects";
+import { AxiosOffieHour, OfficehourProps } from "../../services/officehour";
 
 // todo 오늘날짜 기준으로 올라온 공지면 new 배찌 달아주기
 function MenuHome() {
@@ -28,7 +28,6 @@ function MenuHome() {
   const [_userId, setUserId] = useState<string | null>(null);
   const [userdata, setUserdata] = useState<UsersPageInfo>();
 
-  // todo 노션 받으면 여기 넣기~~
   const myTrackInfo = {
     track: "AI 11",
     notion: "https://aitrack.elice.io/tracks/4879/info",

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import * as XLSX from "xlsx";
-import { AxiosAdmin } from "../../../servies/admin";
+import { AxiosAdmin } from "../../../services/admin";
 interface RowData {
   [key: string]: any;
 }

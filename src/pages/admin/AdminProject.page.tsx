@@ -3,7 +3,7 @@ import { paths } from "../../utils/path";
 import { Link, useNavigate } from "react-router-dom";
 import SelectBox from "./manageUsers/components/SelectBox";
 import { useEffect, useState } from "react";
-import { AxiosProject, ProjectInfo } from "../../servies/projects";
+import { AxiosProject, ProjectInfo } from "../../services/projects";
 
 const OptTrack = [
   { value: "", name: "트랙" },

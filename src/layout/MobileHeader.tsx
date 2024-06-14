@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { paths, imgPaths } from "../utils/path";
 interface MobileHeaderProps {
   toggleMenu: () => void;
-  isOpen: boolean;
+  $isOpen: boolean;
   children: React.ReactNode;
 }
 
-export default function MobileHeader({ toggleMenu, isOpen, children }: MobileHeaderProps) {
+export default function MobileHeader({ toggleMenu, $isOpen, children }: MobileHeaderProps) {
   const navigate = useNavigate();
 
   const handleLogoClick = () => {
@@ -24,7 +24,7 @@ export default function MobileHeader({ toggleMenu, isOpen, children }: MobileHea
         <span />
         <span />
       </HamburgerButton>
-      <MenuPanel $isopen={isOpen}>
+      <MenuPanel $isopen={$isOpen}>
         <ImgWrapper>
           <Absolute>
             <LogoImage src={imgPaths.ELICE_LOGO} alt="logo" onClick={handleLogoClick} />

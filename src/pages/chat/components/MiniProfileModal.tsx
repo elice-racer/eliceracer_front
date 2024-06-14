@@ -2,115 +2,124 @@ import styled from "styled-components";
 import { imgPaths } from "../../../utils/path";
 import { Link } from "react-router-dom";
 import { Dimed } from "../../profile/components/SkillsModal";
-import { UsersPageInfo } from "../../../servies/user";
+import { UsersPageInfo } from "../../../services/user";
+import ChatNameModal from "./ChatNameModal";
+import ReactDom from "react-dom";
+import Button from "../../../components/commons/Button";
+import { useState } from "react";
 
 interface MiniProfileModalProps {
   isModalOpen: boolean;
   onClose: () => void;
-  onClick?: any;
+  onCreateChat?: (userId: string, chatName: string) => void;
   userdata: UsersPageInfo | undefined;
 }
-function MiniProfileModal({ isModalOpen, onClose, onClick, userdata }: MiniProfileModalProps) {
-  return (
+function MiniProfileModal({ isModalOpen, onClose, onCreateChat, userdata }: MiniProfileModalProps) {
+  const el = document.getElementById("modal") as HTMLElement;
+
+  const [chatNameModalOpen, setChatNameModalOpen] = useState(false);
+  const [chatNameInput, setChatNameInput] = useState("");
+
+  const handleCreateChat = () => {
+    if (!userdata) return;
+    if (chatNameInput.trim() === "") return;
+    if (chatNameInput.length >= 15) alert("채팅방 이름이 너무 깁니다.");
+
+    setChatNameModalOpen(false);
+
+    if (onCreateChat && userdata.id) {
+      alert("채팅방 생성 시작");
+      onCreateChat(userdata.id, chatNameInput);
+      setChatNameInput("");
+    }
+  };
+
+  if (!el) return null;
+
+  return ReactDom.createPortal(
     <>
-      <Container className={isModalOpen ? "" : "disable"}>
-        <ModalWrapper className={isModalOpen ? "" : "disable"}>
-          <CloseBtn onClick={onClose}>Ⅹ</CloseBtn>
-          <Header>
-            <ImgWrapper>
-              <UserProfileImg src={imgPaths.DEFAULT_PROFILE_IMG} />
-            </ImgWrapper>
-          </Header>
-          {userdata ? (
-            <Body>
-              <ColWrapper>
-                <Wrapper>
-                  <Title>{userdata.realName}</Title>
-                  <Text className="subInfo">{userdata.role}🏁</Text>
-                </Wrapper>
-                {userdata.comment ? <Text>{userdata.comment}</Text> : <Text>안녕하세요. {userdata.realName}입니다.</Text>}
-                {userdata.track ? (
-                  <Text className="subInfo">
-                    {userdata.track.trackName}
-                    {userdata.track.cardinalNo}
-                  </Text>
+      <ChatNameModal
+        $isOpen={chatNameModalOpen}
+        onClick={handleCreateChat}
+        value={chatNameInput}
+        onChange={e => setChatNameInput(e.target.value)}
+        onClose={() => setChatNameModalOpen(false)}
+      />
+      <ModalContainer className={isModalOpen ? "" : "disable"}>
+        <CloseBtn onClick={onClose}>Ⅹ</CloseBtn>
+        <Header>
+          <ImgWrapper>
+            <UserProfileImg src={imgPaths.DEFAULT_PROFILE_IMG} />
+          </ImgWrapper>
+        </Header>
+        {userdata ? (
+          <Body>
+            <ColWrapper>
+              <Wrapper>
+                <Title>{userdata.realName}</Title>
+                <Text className="subInfo">{userdata.role}🏁</Text>
+              </Wrapper>
+              {userdata.comment ? <Text>{userdata.comment}</Text> : <Text>안녕하세요. {userdata.realName}입니다.</Text>}
+              {userdata.track ? (
+                <Text className="subInfo">
+                  {userdata.track.trackName}
+                  {userdata.track.cardinalNo}
+                </Text>
+              ) : (
+                ""
+              )}
+              <SubTitle>보유 스택</SubTitle>
+              <SkillInfoWrapper>
+                {userdata.skills.length === 0 ? (
+                  <Text>등록된 기술 스택이 없습니다.</Text>
                 ) : (
-                  ""
+                  userdata.skills.map(skill => (
+                    <Text className="skill" key={skill.id}>
+                      {skill.skillName}
+                    </Text>
+                  ))
                 )}
-                <SubTitle>보유 스택</SubTitle>
-                <SkillInfoWrapper>
-                  {userdata.skills.length === 0 ? (
-                    <Text>등록된 기술 스택이 없습니다.</Text>
-                  ) : (
-                    userdata.skills.map(skill => (
-                      <Text className="skill" key={skill.id}>
-                        {skill.skillName}
-                      </Text>
-                    ))
-                  )}
-                </SkillInfoWrapper>
-                {userdata.github ? <Link to={userdata.github ? userdata.github : ""}>깃허브 바로가기</Link> : ""}
-                {/* <Wrapper>
+              </SkillInfoWrapper>
+              {userdata.github ? <Link to={userdata.github ? userdata.github : ""}>깃허브 바로가기</Link> : ""}
+              {/* <Wrapper>
                   <SubTitle>진행한 프로젝트 :</SubTitle>
                   <Text></Text>
                 </Wrapper> */}
-                <SubTitle>업적</SubTitle>
-                <Text className="skill">성실한 엘리스🏆</Text>
-              </ColWrapper>
-              <ButtonWrapper>
-                {/* <Button onClick={() => navigate(paths.USERS_PAGE)}>더보기</Button> */}
-                {userdata.id && (
-                  <Button id={userdata.id} onClick={onClick}>
-                    {`${userdata.realName}님과 1 : 1 채팅`}
-                  </Button>
-                )}
-              </ButtonWrapper>
-            </Body>
-          ) : (
-            ""
-          )}
-        </ModalWrapper>
-      </Container>
+              <SubTitle>업적</SubTitle>
+              <Text className="skill">성실한 엘리스🏆</Text>
+            </ColWrapper>
+            <ButtonWrapper>
+              {/* <Button onClick={() => navigate(paths.USERS_PAGE)}>더보기</Button> */}
+              {userdata.id && (
+                <Button id={userdata.id} onClick={() => setChatNameModalOpen(true)} className="chat-start">
+                  {`${userdata.realName}님과 1 : 1 채팅`}
+                </Button>
+              )}
+            </ButtonWrapper>
+          </Body>
+        ) : (
+          ""
+        )}
+      </ModalContainer>
       <Dimed className={isModalOpen ? "" : "disable"} onClick={onClose} />
-    </>
+    </>,
+    el
   );
 }
 
 export default MiniProfileModal;
 
-const Container = styled.div`
+const ModalContainer = styled.div`
   position: fixed;
   display: flex;
   flex-direction: column;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 11;
   width: 100%;
   max-width: 700px;
-  height: 100%;
-  z-index: 999;
-  border-radius: 10px;
-  background-color: transparent;
-
-  &.disable {
-    display: none;
-  }
-  padding: 24px 20px;
-`;
-
-const ModalWrapper = styled.div`
-  position: fixed;
-  display: flex;
-  flex-direction: column;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 11;
-  width: 100%;
-  max-width: 435px;
   height: 600px;
-  z-index: 999;
+  z-index: 8888;
   border-radius: 10px;
   background-color: #fff;
 
@@ -118,6 +127,11 @@ const ModalWrapper = styled.div`
     display: none;
   }
   padding: 24px 20px;
+
+  @media ${({ theme }) => theme.device.mobileL} {
+    height: 100%;
+    border-radius: 0px;
+  }
 `;
 
 const CloseBtn = styled.div`
@@ -167,17 +181,27 @@ const ButtonWrapper = styled.div`
   display: flex;
   gap: 2px;
   margin-top: 10px;
+
+  .chat-start {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 32px !important;
+    background-color: ${({ theme }) => theme.colors.purple3} !important;
+    cursor: pointer !important;
+  }
 `;
 
-const Button = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 32px;
-  background-color: ${({ theme }) => theme.colors.purple1};
-  cursor: pointer;
-`;
+// const Button = styled.div`
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   width: 100%;
+//   height: 32px;
+//   background-color: ${({ theme }) => theme.colors.purple1};
+//   cursor: pointer;
+// `;
 
 const Title = styled.h1``;
 

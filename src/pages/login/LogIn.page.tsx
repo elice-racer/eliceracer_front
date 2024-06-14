@@ -1,7 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
-import { AxiosAuth } from "../../servies/auth";
+import { AxiosAuth } from "../../services/auth";
 import { useSetRecoilState } from "recoil";
 import { tokenAtom } from "../../recoil/TokenAtom";
 import InputFiled from "./components/InputField";
@@ -9,8 +9,6 @@ import { imgPaths, paths } from "../../utils/path";
 import { loadingAtom } from "../../recoil/LoadingAtom";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import Button from "../../components/commons/Button";
-
-// import Cookies from "js-cookie";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -55,7 +53,6 @@ export default function Login() {
 
     try {
       const res = await AxiosAuth.fetchLogin(userLoginForm);
-      // const test = Cookies.get("refreshToken");
       if (res.data?.statusCode === 200) {
         const loginToken = res.headers?.authorization.replace("Bearer ", "");
         setToken(loginToken);

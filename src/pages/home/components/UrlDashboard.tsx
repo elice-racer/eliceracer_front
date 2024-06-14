@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ProjectInfo } from "../../../servies/projects";
+import { ProjectInfo } from "../../../services/projects";
 interface UrlDashboardProps {
   projectUrls: ProjectInfo[];
 }

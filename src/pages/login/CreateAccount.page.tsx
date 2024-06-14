@@ -9,7 +9,7 @@ import AuthTimer from "../../components/commons/AuthTimer";
 import { imgPaths, paths } from "../../utils/path";
 
 // api
-import { AxiosAuth } from "../../servies/auth";
+import { AxiosAuth } from "../../services/auth";
 import { useSnackbar } from "../../hooks/useSnackbar";
 import { vaildatePhoneNumber, validatePassword } from "../../utils/regEx";
 

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ChatInfo, ChatMessage } from "../../../servies/chat";
+import { ChatInfo, ChatMessage } from "../../../services/chat";
 
 interface NoticeChatProps {
   chatRoomInfo?: ChatInfo;

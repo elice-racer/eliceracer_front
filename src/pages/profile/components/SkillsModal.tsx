@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Skills } from "../../../servies/user";
+import { Skills } from "../../../services/user";
 import React, { forwardRef, useState, Ref, useRef, useEffect } from "react";
 import SkillBadge from "./SkillBadge";
 
@@ -250,7 +250,7 @@ export const Dimed = styled.div`
   width: 100%;
   height: 100%;
   position: fixed;
-  z-index: 10;
+  z-index: 1000;
   top: 0;
   left: 0;
   background-color: #000;

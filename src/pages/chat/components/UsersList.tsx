@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ChatRoomUsers } from "../../../servies/user";
+import { ChatRoomUsers } from "../../../services/user";
 import ProfileImg from "../../profile/components/ProfileImg";
 import { useNavigate } from "react-router-dom";
 import { paths } from "../../../utils/path";

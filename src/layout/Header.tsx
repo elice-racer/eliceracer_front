@@ -6,7 +6,7 @@ import { imgPaths } from "../utils/path";
 import { useNavigate } from "react-router-dom";
 import { tokenAtom } from "../recoil/TokenAtom";
 import { useSetRecoilState } from "recoil";
-import { AxiosAuth } from "../servies/auth";
+import { AxiosAuth } from "../services/auth";
 import { currentUserAtom } from "../recoil/UserAtom";
 import MobileHeader from "./MobileHeader";
 
@@ -66,7 +66,7 @@ const Header = ({ adminMenu }: any) => {
         </Wrapper>
       </Flex>
 
-      <MobileHeader isOpen={isOpen} toggleMenu={toggleMenu}>
+      <MobileHeader $isOpen={isOpen} toggleMenu={toggleMenu}>
         <ul>
           {adminMenu && (
             <li>
