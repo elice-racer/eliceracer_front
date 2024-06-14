@@ -1,17 +1,3 @@
-/**
- * /api/users/current
- * "data": {
-        "id": string(uuid),
-	 "email": string, 
-	 "username”:string
-	 "profileImage”: string
-	 "phone”:string
-	 "role”:”racer”
-	 "position”:string
-	 "github”:string
-	 "track”:string
-   },  */
-
 import { ResData } from "./admin";
 import { api } from "./api";
 
