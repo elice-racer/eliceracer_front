@@ -39,7 +39,7 @@ function MenuHome() {
     teamNotion: "https://www.notion.so/elice-track/I-600f6f4dbb9144149a58dba9e18ef6e7",
   };
   const [quote, setQuote] = useState({ quote: "", author: "" });
-  const [projectId, setProjectId] = useState<string>();
+  const [projectId, setProjectId] = useState<string>("decdcebb-2039-417c-9aca-3a5a381b1013");
   const [notices, setNotices] = useState<Notice[]>([]);
   const [officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
 
@@ -133,11 +133,13 @@ function MenuHome() {
             <Text>{quote.quote}</Text>
           </QuotesWrapper>
         </TitleWrapper>
+        <NoticeList notices={notices} fetchPagination={() => {}} />
+
         <MyTrackInfo myTrackInfo={myTrackInfo} myProjectInfo={myProjectInfo} />
-        <OfficeHourWeekly officehours={officeHours} />
       </MainSection>
       <SideSection>
-        <NoticeList notices={notices} fetchPagination={() => {}} />
+        <OfficeHourWeekly officehours={officeHours} />
+
         <CheckedVersion />
       </SideSection>
       <SideSection>

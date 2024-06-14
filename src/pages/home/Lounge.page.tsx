@@ -29,7 +29,7 @@ function Lounge() {
   const [users, setUsers] = useState<ChatRoomUsers[]>();
   const [_chatsList, setChatList] = useState<Chats[]>();
   const [projectsInfo, setProjectsInfo] = useState<ProjectInfo[]>([]);
-  const [projectId, setProjectId] = useState<string>();
+  const [projectId, setProjectId] = useState<string>("decdcebb-2039-417c-9aca-3a5a381b1013");
   const [searchUser, setSearchUser] = useState("");
 
   const [officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
@@ -84,9 +84,10 @@ function Lounge() {
 
   /** 전체 오피스아워 조회 */
   const fetchOfficehourProject = async () => {
-    if (!projectId) return setProjectId("decdcebb-2039-417c-9aca-3a5a381b1013");
+    if (!projectId) return;
     try {
       const res = await AxiosOffieHour.getProjectAllOfficehour(projectId);
+      console.log(res.data);
       if (res.status === 200) setOfficeHours(res.data);
     } catch (e) {
       console.error(e);
