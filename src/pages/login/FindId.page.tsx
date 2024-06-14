@@ -1,5 +1,7 @@
+import ComingSoonPage from "../../components/commons/CommingSoon";
+
 function FindId() {
-  return <div>FindId.page</div>;
+  return <ComingSoonPage />;
 }
 
 export default FindId;

@@ -1,19 +1,7 @@
-import styled from "styled-components";
+import ComingSoonPage from "../../components/commons/CommingSoon";
 
 function FindPW() {
-  return (
-    <Container>
-      <Text>관리자에게 문의해주세요~.~</Text>
-    </Container>
-  );
+  return <ComingSoonPage />;
 }
 
 export default FindPW;
-
-const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const Text = styled.p``;

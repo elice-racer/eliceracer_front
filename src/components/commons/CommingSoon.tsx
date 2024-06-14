@@ -4,8 +4,9 @@ import { imgPaths } from "../../utils/path";
 function ComingSoonPage() {
   return (
     <Container>
-      <Img src={imgPaths.NO_AVAILABLE} alt="Coming Soon" />
       <Message>준비중인 페이지입니다</Message>
+      <Img src={imgPaths.NO_AVAILABLE} alt="Coming Soon" />
+      <Message>문의사항은 관리자에게 문의해주세요!</Message>
     </Container>
   );
 }

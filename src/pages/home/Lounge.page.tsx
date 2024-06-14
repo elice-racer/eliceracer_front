@@ -79,8 +79,7 @@ function Lounge() {
       const { trackName, cardinalNo } = myInfo?.track;
 
       const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });
-      console.log("---------프로젝트 조회--------");
-      console.log(res);
+
       if (res.statusCode === 200) {
         if (res.data) {
           setProjectsInfo(res.data);

@@ -93,8 +93,6 @@ const Container = styled.div`
 const ScrollBottom = styled.div`
   width: 100%;
   height: 2px;
-
-  background-color: blue;
 `;
 
 const Flex = styled.div``;
@@ -123,8 +121,6 @@ const NoticesWrapper = styled.div`
   overflow-y: scroll;
 
   margin-bottom: 24px;
-
-  border: 1px solid red;
 `;
 
 const Text = styled.p`
