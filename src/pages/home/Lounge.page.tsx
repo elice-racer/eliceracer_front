@@ -6,7 +6,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { useEffect, useState } from "react";
 import { AxiosChat, Chats } from "../../services/chat";
-import { AxiosUser, ChatRoomUsers } from "../../services/user";
+import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../services/user";
 import UrlDashboard from "./components/UrlDashboard";
 import { AxiosProject, ProjectInfo } from "../../services/projects";
 import { loadingAtom } from "../../recoil/LoadingAtom";
@@ -21,13 +21,17 @@ function Lounge() {
   const navigate = useNavigate();
   const setLoading = useSetRecoilState(loadingAtom);
   const myInfo = useRecoilValue(currentUserAtom);
-  // const [myInfo, setMyInfo] = useState<UsersPageInfo>();
-
-  const [userInfo, setUsetInfo] = useState();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [error, setError] = useState("");
+
+  /** 미니 프로필 */
+  const [miniProfile, setMiniProfile] = useState<UsersPageInfo>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [chatNameModalOpen, setChatNameModalOpen] = useState(false);
+
+  /** 친구 목록 */
   const [users, setUsers] = useState<ChatRoomUsers[]>([]);
+
+  /** 채팅 리스트 */
   const [_chatsList, setChatList] = useState<Chats[]>();
   const [projectsInfo, setProjectsInfo] = useState<ProjectInfo[]>([]);
   const [projectId, setProjectId] = useState<string>("decdcebb-2039-417c-9aca-3a5a381b1013");
@@ -46,7 +50,7 @@ function Lounge() {
   const fetchUserInfo = async (id: string) => {
     try {
       const res = await AxiosUser.getUsersPage(id);
-      if (res.statusCode === 200) setUsetInfo(res.data);
+      if (res.statusCode === 200) setMiniProfile(res.data);
     } catch (e) {
       console.error(e);
     }
@@ -138,6 +142,28 @@ function Lounge() {
     }
   };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setChatNameModalOpen(false);
+  };
+
+  const handleCloseChatNameModal = () => {
+    setChatNameModalOpen(false);
+  };
+  const handleCreateChat = () => {
+    if (!miniProfile) return;
+    if (chatNameInput.trim() === "") return;
+    if (chatNameInput.length >= 15) alert("채팅방 이름이 너무 깁니다.");
+
+    setChatNameModalOpen(false);
+
+    if (handleStartUsersChat && miniProfile.id) {
+      handleStartUsersChat(miniProfile.id, chatNameInput);
+      setChatNameInput("");
+    }
+  };
+  const [chatNameInput, setChatNameInput] = useState("");
+  const handleChageChatNameInput = (e: any) => setChatNameInput(e.target.value);
   useEffect(() => {
     if (searchUser.length === 0) {
       if (myInfo?.role === "RACER") fetchGetUsersList();
@@ -162,11 +188,14 @@ function Lounge() {
     <>
       <MiniProfileModal
         isModalOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-        }}
-        userdata={userInfo}
-        onCreateChat={handleStartUsersChat}
+        chatNameModalOpen={chatNameModalOpen}
+        onOpenChatName={() => setChatNameModalOpen(true)}
+        chatNameInput={chatNameInput}
+        onChagneInput={handleChageChatNameInput}
+        onClose={handleCloseModal}
+        userdata={miniProfile}
+        onCreateChat={handleCreateChat}
+        onCloseChatName={handleCloseChatNameModal}
       />
 
       <Container>

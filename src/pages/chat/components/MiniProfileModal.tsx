@@ -6,44 +6,36 @@ import { UsersPageInfo } from "../../../services/user";
 import ChatNameModal from "./ChatNameModal";
 import ReactDom from "react-dom";
 import Button from "../../../components/commons/Button";
-import { useState } from "react";
 
 interface MiniProfileModalProps {
   isModalOpen: boolean;
+  chatNameModalOpen: boolean;
+  onChagneInput: any;
+  onOpenChatName: () => void;
+  chatNameInput: string;
   onClose: () => void;
-  onCreateChat?: (userId: string, chatName: string) => void;
+  onCloseChatName: () => void;
+  onCreateChat: () => void;
   userdata: UsersPageInfo | undefined;
 }
-function MiniProfileModal({ isModalOpen, onClose, onCreateChat, userdata }: MiniProfileModalProps) {
+function MiniProfileModal({
+  isModalOpen,
+  chatNameModalOpen,
+  onChagneInput,
+  chatNameInput,
+  onOpenChatName,
+  onClose,
+  onCloseChatName,
+  onCreateChat,
+  userdata,
+}: MiniProfileModalProps) {
   const el = document.getElementById("modal") as HTMLElement;
-
-  const [chatNameModalOpen, setChatNameModalOpen] = useState(false);
-  const [chatNameInput, setChatNameInput] = useState("");
-
-  const handleCreateChat = () => {
-    if (!userdata) return;
-    if (chatNameInput.trim() === "") return;
-    if (chatNameInput.length >= 15) alert("채팅방 이름이 너무 깁니다.");
-
-    setChatNameModalOpen(false);
-
-    if (onCreateChat && userdata.id) {
-      onCreateChat(userdata.id, chatNameInput);
-      setChatNameInput("");
-    }
-  };
 
   if (!el) return null;
 
   return ReactDom.createPortal(
     <>
-      <ChatNameModal
-        $isOpen={chatNameModalOpen}
-        onClick={handleCreateChat}
-        value={chatNameInput}
-        onChange={e => setChatNameInput(e.target.value)}
-        onClose={() => setChatNameModalOpen(false)}
-      />
+      <ChatNameModal $isOpen={chatNameModalOpen} onClick={onCreateChat} value={chatNameInput} onChange={onChagneInput} onClose={onCloseChatName} />
       <ModalContainer className={isModalOpen ? "" : "disable"}>
         <CloseBtn onClick={onClose}>Ⅹ</CloseBtn>
         <Header>
@@ -90,7 +82,7 @@ function MiniProfileModal({ isModalOpen, onClose, onCreateChat, userdata }: Mini
             <ButtonWrapper>
               {/* <Button onClick={() => navigate(paths.USERS_PAGE)}>더보기</Button> */}
               {userdata.id && (
-                <Button id={userdata.id} onClick={() => setChatNameModalOpen(true)} className="chat-start">
+                <Button id={userdata.id} onClick={onOpenChatName} className="chat-start">
                   {`${userdata.realName}님과 1 : 1 채팅`}
                 </Button>
               )}

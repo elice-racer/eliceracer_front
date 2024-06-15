@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import ChatList from "./components/ChatList";
 import UsersList from "./components/UsersList";
-import { AxiosUser, ChatRoomUsers } from "../../services/user";
+import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../services/user";
 import { useEffect, useState } from "react";
 import { AxiosChat, Chats } from "../../services/chat";
 import { useRecoilValue } from "recoil";
@@ -14,9 +14,12 @@ export default function ChatHome() {
   const user = useRecoilValue(currentUserAtom);
 
   const navigate = useNavigate();
-  const [miniProfile, setMiniProfile] = useState();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
+
+  const [miniProfile, setMiniProfile] = useState<UsersPageInfo>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [chatNameModalOpen, setChatNameModalOpen] = useState(false);
+
   const [userList, setUserList] = useState<ChatRoomUsers[]>([]);
   const [chatsList, setChatList] = useState<Chats[]>();
 
@@ -101,16 +104,40 @@ export default function ChatHome() {
   }, []);
 
   useEffect(() => {}, [chatsList]);
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setChatNameModalOpen(false);
+  };
 
+  const handleCloseChatNameModal = () => {
+    setChatNameModalOpen(false);
+  };
+  const handleCreateChat = () => {
+    if (!miniProfile) return;
+    if (chatNameInput.trim() === "") return;
+    if (chatNameInput.length >= 15) alert("채팅방 이름이 너무 깁니다.");
+
+    setChatNameModalOpen(false);
+
+    if (handleStartUsersChat && miniProfile.id) {
+      handleStartUsersChat(miniProfile.id, chatNameInput);
+      setChatNameInput("");
+    }
+  };
+  const [chatNameInput, setChatNameInput] = useState("");
+  const handleChageChatNameInput = (e: any) => setChatNameInput(e.target.value);
   return (
     <>
       <MiniProfileModal
         isModalOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-        }}
+        chatNameModalOpen={chatNameModalOpen}
+        onOpenChatName={() => setChatNameModalOpen(true)}
+        chatNameInput={chatNameInput}
+        onChagneInput={handleChageChatNameInput}
+        onClose={handleCloseModal}
         userdata={miniProfile}
-        onCreateChat={handleStartUsersChat}
+        onCreateChat={handleCreateChat}
+        onCloseChatName={handleCloseChatNameModal}
       />
       <Container>
         <Section>
