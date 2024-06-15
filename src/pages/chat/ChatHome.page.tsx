@@ -7,10 +7,13 @@ import { AxiosChat, Chats } from "../../services/chat";
 import { useRecoilValue } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 import MiniProfileModal from "./components/MiniProfileModal";
+import { paths } from "../../utils/path";
+import { useNavigate } from "react-router-dom";
 
 export default function ChatHome() {
   const user = useRecoilValue(currentUserAtom);
 
+  const navigate = useNavigate();
   const [miniProfile, setMiniProfile] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [error, setError] = useState("");
@@ -69,10 +72,10 @@ export default function ChatHome() {
   const handleStartUsersChat = async (userId: string, chatName: string) => {
     try {
       const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
-
       if (res.status === 201) {
-        alert(`채팅방이 생성되었습니다! 채팅 목록에서 생성된 채팅방을 확인하세요!`);
+        alert(`채팅방이 생성되었습니다!`);
         fetchGetChatList();
+        navigate(`${paths.CHAT_HOME}/${res.data.data.id}`);
       }
     } catch (e) {
       console.log(e);

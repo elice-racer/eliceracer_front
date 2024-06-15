@@ -128,9 +128,10 @@ function Lounge() {
       const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
 
       if (res.status === 201) {
-        alert(`채팅방이 생성되었습니다! 채팅 목록에서 생성된 채팅방을 확인하세요!`);
+        alert(`채팅방이 생성되었습니다! `);
         setIsModalOpen(false);
         fetchGetChatList();
+        navigate(`${paths.CHAT_HOME}/${res.data.data.id}`);
       }
     } catch (e) {
       console.error(e);
@@ -159,7 +160,14 @@ function Lounge() {
 
   return (
     <>
-      <MiniProfileModal isModalOpen={isModalOpen} userdata={userInfo} onClose={() => setIsModalOpen(false)} onCreateChat={handleStartUsersChat} />
+      <MiniProfileModal
+        isModalOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
+        userdata={userInfo}
+        onCreateChat={handleStartUsersChat}
+      />
 
       <Container>
         <Section>

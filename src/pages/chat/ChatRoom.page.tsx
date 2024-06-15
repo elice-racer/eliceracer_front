@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useEffect, useState, useRef, useContext, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import ChatRoomUsersList from "./components/ChatRoomUsersList";
 import TeamChatInfo from "./components/TeamChatInfo";
@@ -14,6 +14,7 @@ import { baseURL } from "../../services/api";
 import MiniProfileModal from "./components/MiniProfileModal";
 import { SocketContext, SOCKET_EVENT } from "../../context/SocketContext";
 import ChatList from "./components/ChatList";
+import { paths } from "../../utils/path";
 
 interface TeamInfo {
   id: string;
@@ -33,7 +34,7 @@ const ChatRoom = () => {
   const { id: chatId } = useParams();
 
   if (!chatId) return;
-
+  const navigate = useNavigate();
   const socket = useContext(SocketContext);
   const currentUser = useRecoilValue(currentUserAtom);
 
@@ -77,9 +78,11 @@ const ChatRoom = () => {
       const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
 
       if (res.status === 201) {
-        alert(`채팅방이 생성되었습니다! 채팅 목록에서 생성된 채팅방을 확인하세요!`);
+        console.log(res);
+        alert(`채팅방이 생성되었습니다!`);
         fetchGetChatList();
         setIsModalOpen(false);
+        navigate(`${paths.CHAT_HOME}/${res.data.data.id}`);
       }
     } catch (e) {
       console.log(e);
@@ -309,32 +312,38 @@ const ChatRoom = () => {
                   <Loading isLoading={isLoading} onClose={() => setIsLoading(false)} />
                 ) : (
                   <>
-                    {messages.map(message => {
-                      const isCurrentUser = currentUser?.id === message.user.id;
-                      return (
-                        <Flex key={message.id} className={isCurrentUser ? "me" : ""}>
-                          <Wrapper>
-                            <NameWrapper className={isCurrentUser ? "me" : ""}>
-                              {message.user.track?.cardinalNo && (
-                                <Text className="track">
-                                  [{message.user.track.trackName}
-                                  {message.user.track.cardinalNo}]
-                                </Text>
-                              )}
-                              <UserName className={message.user.role}>{message.user.realName}</UserName>
-                            </NameWrapper>
-                            <>
-                              <ChatItem className={isCurrentUser ? "me" : ""}>
-                                <Text>{message.content}</Text>
-                              </ChatItem>
-                            </>
-                            <DateWapper className={isCurrentUser ? "me" : ""}>
-                              <Text className="date">{message.createdAt.split("T")[1].split(".")[0]}</Text>
-                            </DateWapper>
-                          </Wrapper>
-                        </Flex>
-                      );
-                    })}
+                    {messages.length === 0 ? (
+                      <EmptyMeaageWrapper>
+                        <Text className="date">작성된 메시지가 없습니다.</Text>
+                      </EmptyMeaageWrapper>
+                    ) : (
+                      messages.map(message => {
+                        const isCurrentUser = currentUser?.id === message.user.id;
+                        return (
+                          <Flex key={message.id} className={isCurrentUser ? "me" : ""}>
+                            <Wrapper>
+                              <NameWrapper className={isCurrentUser ? "me" : ""}>
+                                {message.user.track?.cardinalNo && (
+                                  <Text className="track">
+                                    [{message.user.track.trackName}
+                                    {message.user.track.cardinalNo}]
+                                  </Text>
+                                )}
+                                <UserName className={message.user.role}>{message.user.realName}</UserName>
+                              </NameWrapper>
+                              <>
+                                <ChatItem className={isCurrentUser ? "me" : ""}>
+                                  <Text>{message.content}</Text>
+                                </ChatItem>
+                              </>
+                              <DateWapper className={isCurrentUser ? "me" : ""}>
+                                <Text className="date">{message.createdAt.split("T")[1].split(".")[0]}</Text>
+                              </DateWapper>
+                            </Wrapper>
+                          </Flex>
+                        );
+                      })
+                    )}
                   </>
                 )}
               </MessagesWrapper>
@@ -358,13 +367,13 @@ const ChatRoom = () => {
           </ChatContainer>
         </Section>
         <Section>
+          <UsersWrapper>
+            <ChatRoomUsersList users={chatRoomInfo?.users || []} onOpenMiniProfile={handleOpenMiniProfile} />
+          </UsersWrapper>
           <ChatList chatsList={chatsList} />
         </Section>
         <Section className="onMobile">
           <ChatInfoWrapper>
-            <UsersWrapper>
-              <ChatRoomUsersList users={chatRoomInfo?.users || []} onOpenMiniProfile={handleOpenMiniProfile} />
-            </UsersWrapper>
             <TeamChatInfo />
           </ChatInfoWrapper>
         </Section>
@@ -376,7 +385,9 @@ const ChatRoom = () => {
 export default ChatRoom;
 
 const Container = styled.div`
-  width: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  max-height: 100%;
   display: flex;
   gap: 12px;
   justify-content: space-around;
@@ -388,6 +399,22 @@ const Container = styled.div`
     flex-direction: column;
   }
   padding: 0 12px;
+`;
+
+const Section = styled.div`
+  width: 100%;
+  min-height: 100%;
+  @media ${({ theme }) => theme.device.tablet} {
+    &.onTablet {
+      display: none;
+    }
+  }
+  @media ${({ theme }) => theme.device.mobileL} {
+    flex-direction: column;
+    &.onMobile {
+      display: none;
+    }
+  }
 `;
 
 const UsersWrapper = styled.div`
@@ -410,22 +437,6 @@ const TopBar = styled.div`
   border: 1px solid #dbdbdb;
   border-style: dotted;
   margin-bottom: 4px;
-`;
-
-const Section = styled.div`
-  width: 100%;
-  height: 100%;
-  @media ${({ theme }) => theme.device.tablet} {
-    &.onTablet {
-      display: none;
-    }
-  }
-  @media ${({ theme }) => theme.device.mobileL} {
-    flex-direction: column;
-    &.onMobile {
-      display: none;
-    }
-  }
 `;
 
 const ChatInfoWrapper = styled.div`
@@ -455,10 +466,17 @@ const ChatBody = styled.div`
   flex-wrap: wrap;
   overflow-y: scroll;
 `;
+
 const MessagesWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+`;
+
+const EmptyMeaageWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const ChatItem = styled.div`
   display: flex;

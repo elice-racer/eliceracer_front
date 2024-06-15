@@ -28,7 +28,6 @@ function MiniProfileModal({ isModalOpen, onClose, onCreateChat, userdata }: Mini
     setChatNameModalOpen(false);
 
     if (onCreateChat && userdata.id) {
-      alert("채팅방 생성 시작");
       onCreateChat(userdata.id, chatNameInput);
       setChatNameInput("");
     }
