@@ -41,9 +41,16 @@ function UsersList({ users, myInfo, error, onOpenMiniProfile }: UsersListProps) 
               <UserWrapper key={user.id} id={user.id ? user.id : ""} onClick={() => onOpenMiniProfile(user.id)}>
                 <ProfileImg />
                 <NameWrapper>
-                  {user.track && <Text>{`[${user.track.trackName}${user.track.cardinalNo}]`}</Text>}
-                  {user.role === "ADMIN" && <Text className={user.role}>[매니저]</Text>}
-                  {user.role === "COACH" && <Text className={user.role}>[코치]</Text>}
+                  {user.track ? (
+                    <Text>{`[${user.track.trackName}${user.track.cardinalNo}]`}</Text>
+                  ) : (
+                    <>
+                      {user.role === "RACER" && <Text className={user.role}>[레이서]</Text>}
+                      {user.role === "ADMIN" && <Text className={user.role}>[매니저]</Text>}
+                      {user.role === "COACH" && <Text className={user.role}>[코치]</Text>}
+                    </>
+                  )}
+
                   <Text>{user.realName || "이름없음"}</Text>
                 </NameWrapper>
                 <CommentWrapper>

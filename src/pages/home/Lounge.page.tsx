@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { useEffect, useState } from "react";
-import { AxiosChat, Chats } from "../../services/chat";
+import { AxiosChat } from "../../services/chat";
 import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../services/user";
 import UrlDashboard from "./components/UrlDashboard";
 import { AxiosProject, ProjectInfo } from "../../services/projects";
@@ -31,8 +31,6 @@ function Lounge() {
   /** 친구 목록 */
   const [users, setUsers] = useState<ChatRoomUsers[]>([]);
 
-  /** 채팅 리스트 */
-  const [_chatsList, setChatList] = useState<Chats[]>();
   const [projectsInfo, setProjectsInfo] = useState<ProjectInfo[]>([]);
   const [projectId, setProjectId] = useState<string>("decdcebb-2039-417c-9aca-3a5a381b1013");
   const [searchUser, setSearchUser] = useState("");
@@ -115,26 +113,11 @@ function Lounge() {
     try {
       const res = await AxiosUser.getSearchUser(searchUser);
       if (res.status === 200) {
+        console.log(res);
         setUsers(res.data.data);
       }
     } catch (e: any) {
       setError(e.response.data.message);
-    }
-  };
-
-  /** 채팅 목록 조회 */
-  const fetchGetChatList = async () => {
-    setLoading(true);
-    try {
-      const res = await AxiosChat.getChats();
-      if (res.statusCode === 200) {
-        setChatList(res.data);
-        setLoading(false);
-      }
-      setLoading(false);
-    } catch (e: any) {
-      setError(e.response.data.message);
-      setLoading(false);
     }
   };
 
@@ -145,7 +128,7 @@ function Lounge() {
       if (res.status === 201) {
         alert(`채팅방이 생성되었습니다! `);
         setIsModalOpen(false);
-        fetchGetChatList();
+
         navigate(`${paths.CHAT_HOME}/${res.data.data.id}`);
       }
     } catch (e) {

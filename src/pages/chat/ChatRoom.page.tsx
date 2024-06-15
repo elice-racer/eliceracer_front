@@ -38,6 +38,7 @@ const ChatRoom = () => {
   const socket = useContext(SocketContext);
   const currentUser = useRecoilValue(currentUserAtom);
 
+  const [error, setError] = useState<string>("");
   const [miniProfile, setMiniProfile] = useState<UsersPageInfo>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [chatNameModalOpen, setChatNameModalOpen] = useState(false);
@@ -58,7 +59,6 @@ const ChatRoom = () => {
 
   const [chatRoomInfo, setChatRoomInfo] = useState<ChatRoomInfo>();
 
-  // todo 주말동안 오피스아워 스케줄 등록
   const [officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
 
   const [_selectedUsers, _setSelectedUsers] = useState<string[]>([]);
@@ -91,8 +91,6 @@ const ChatRoom = () => {
     try {
       if (!id) return;
       const res = await AxiosOffieHour.getTeamOfficehour(id);
-      console.log("---------오피스아워---------");
-      console.log(res);
       if (res.status === 200) setOfficeHours(res.data);
     } catch (e) {
       console.error(e);
@@ -135,12 +133,14 @@ const ChatRoom = () => {
   const fetchChatInfoById = useCallback(async () => {
     try {
       const res = await AxiosChat.getChatIdInfo(chatId);
+      console.log("-------채팅방 정보 조회--------");
+      console.log(res);
       if (res.statusCode === 200) {
-        fetchOfficehourTeams(res.data.team.id);
         setChatRoomInfo(res.data);
+        if (res.data.team.id) fetchOfficehourTeams(res.data.team.id);
       }
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setError(e.response);
     }
   }, [chatId]);
 
@@ -225,15 +225,23 @@ const ChatRoom = () => {
     socket.emit(SOCKET_EVENT.JOIN_ROOM, { chatId });
   };
 
-  /** 채팅룸 삭제 */
-  // const fetchDeleteChatRoom = async () => {
-  //   try {
-  //     const res = await AxiosChat.deleteChatRoom(chatId);
-  //     console.log(res);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  /** 채팅룸 나가기 */
+  const fetchLeaveChatRoom = async () => {
+    try {
+      const res = await AxiosChat.deleteChatRoom(chatId);
+      if (res.data.statusCode === 200) {
+        alert("채팅방을 나왔습니다.");
+        navigate(paths.CHAT_HOME);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleClickLeaveChat = async () => {
+    if (chatRoomInfo?.team) alert("프로젝트 기간에는 팀 채팅방을 나가실 수 없습니다.");
+    if (chatRoomInfo?.team === null) fetchLeaveChatRoom();
+  };
 
   /** 유저 초대 */
   // const fetchInviteUsers = async () => {
@@ -281,6 +289,7 @@ const ChatRoom = () => {
   useEffect(() => {
     setMessages([]);
     setNextUrl(null);
+    setOfficeHours([]);
 
     if (chatId) {
       handleJoinChat(chatId);
@@ -289,6 +298,7 @@ const ChatRoom = () => {
     }
   }, [chatId]);
 
+  useEffect(() => {}, [officeHours]);
   useEffect(() => {}, [recoilUser]);
 
   useEffect(() => {
@@ -352,11 +362,16 @@ const ChatRoom = () => {
                           <Flex key={message.id} className={isCurrentUser ? "me" : ""}>
                             <Wrapper>
                               <NameWrapper className={isCurrentUser ? "me" : ""}>
-                                {message.user.track?.cardinalNo && (
+                                {message.user.track?.cardinalNo ? (
                                   <Text className="track">
                                     [{message.user.track.trackName}
                                     {message.user.track.cardinalNo}]
                                   </Text>
+                                ) : (
+                                  <>
+                                    {message.user.role === "ADMIN" && <Text className="ADMIN">[매니저]</Text>}
+                                    {message.user.role === "COACH" && <Text className="COACH">[코치]</Text>}
+                                  </>
                                 )}
                                 <UserName className={message.user.role}>{message.user.realName}</UserName>
                               </NameWrapper>
@@ -388,7 +403,7 @@ const ChatRoom = () => {
                   placeholder="send Message"
                 />
                 <OptionBar>
-                  <Button onClick={() => alert("준비중인 기능입니다.")}>채팅방 나가기</Button>
+                  <Button onClick={handleClickLeaveChat}>채팅방 나가기</Button>
                   <Button onClick={handleSendMessage}>전송</Button>
                 </OptionBar>
               </TypingBar>
@@ -397,15 +412,18 @@ const ChatRoom = () => {
         </Section>
         <Section>
           <UsersWrapper>
+            <Text className="error">{error}</Text>
             <ChatRoomUsersList users={chatRoomInfo?.users || []} onOpenMiniProfile={handleOpenMiniProfile} />
           </UsersWrapper>
           <ChatList chatsList={chatsList} />
         </Section>
-        <Section className="onMobile">
-          <ChatInfoWrapper>
-            <TeamChatInfo officehours={officeHours} />
-          </ChatInfoWrapper>
-        </Section>
+        {officeHours[0] && (
+          <Section className="onMobile">
+            <ChatInfoWrapper>
+              <TeamChatInfo officehours={officeHours} />
+            </ChatInfoWrapper>
+          </Section>
+        )}
       </Container>
     </>
   );
@@ -558,18 +576,19 @@ const Text = styled.p`
     font-size: 0.8em;
     color: ${({ theme }) => theme.colors.gray2};
   }
-`;
-
-const UserName = styled.p`
-  font-weight: 600;
-  &.RACER {
-  }
   &.ADMIN {
     color: ${({ theme }) => theme.colors.green2};
   }
   &.COACH {
-    color: ${({ theme }) => theme.colors.blue2};
+    color: orange;
   }
+  &.error {
+    color: tomato;
+  }
+`;
+
+const UserName = styled.p`
+  font-weight: 600;
 `;
 
 const FooterTypingBar = styled.div`
