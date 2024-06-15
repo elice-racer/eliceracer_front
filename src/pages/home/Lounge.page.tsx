@@ -103,7 +103,9 @@ function Lounge() {
 
   const fetchSearchUserList = async () => {
     try {
+      console.log("호출--------");
       const res = await AxiosUser.getSearchUser(searchUser);
+      console.log(res);
 
       if (res.status === 200) {
         setUsers(res.data.data);
@@ -177,6 +179,7 @@ function Lounge() {
   }, []);
 
   useEffect(() => {
+    fetchSearchUserList();
     fetchGetProjectIdInfo();
   }, []);
 
@@ -224,8 +227,9 @@ function Lounge() {
               <SearchIcon onClick={fetchSearchUserList}>🔎</SearchIcon>
             </SubItemWrapper>
           </TitleWrapper>
-
-          <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />
+          <UserListWrapper>
+            <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />
+          </UserListWrapper>
         </Section>
       </Container>
     </>
@@ -239,6 +243,8 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 12px;
+  height: 100%;
+  max-height: 100%;
 
   @media ${({ theme }) => theme.device.tablet} {
     flex-direction: column;
@@ -256,6 +262,11 @@ const Section = styled.div`
 
     margin-bottom: 12px;
   }
+`;
+
+const UserListWrapper = styled.div`
+  height: calc(100% - 130px);
+  overflow-y: scroll;
 `;
 
 const Text = styled.p`

@@ -29,7 +29,7 @@ export const Select = styled.select`
   color: inherit;
   background-color: transparent;
   &:focus {
-    border-color: red;
+    border-color: #333;
   }
 
   /* default 아이콘 숨기기 */

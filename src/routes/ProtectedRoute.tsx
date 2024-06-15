@@ -57,14 +57,13 @@ export const ProtectedRoute = () => {
 
 const Container = styled.div`
   position: relative;
-  min-width: 100%;
-  min-height: 100%;
-
-  margin-top: 68px;
+  height: 100%;
+  width: 100%;
+  margin-top: 56px;
 `;
 
 const Wrapper = styled.div`
-  min-width: 100%;
-  min-height: 100%;
-  max-height: 100%;
+  width: 100%;
+  height: 100%;
+  padding-top: 12px;
 `;
