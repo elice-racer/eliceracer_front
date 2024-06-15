@@ -38,6 +38,7 @@ function Lounge() {
   const [searchUser, setSearchUser] = useState("");
 
   const [officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
+  const [chatNameInput, setChatNameInput] = useState("");
 
   /** 미니프로필창 열기 */
   const handleOpenMiniProfile = (userId: string | null) => {
@@ -51,8 +52,9 @@ function Lounge() {
     try {
       const res = await AxiosUser.getUsersPage(id);
       if (res.statusCode === 200) setMiniProfile(res.data);
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setError(e.response.data.message);
+      setLoading(false);
     }
   };
 
@@ -64,17 +66,17 @@ function Lounge() {
       const { trackName, cardinalNo } = myInfo?.track;
 
       const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });
-      console.log(res);
       if (res.statusCode === 200) {
         if (res.data) {
           setProjectsInfo(res.data);
           setProjectId(res.data[0].id);
         }
+        setLoading(false);
       }
       setLoading(false);
-    } catch (e) {
+    } catch (e: any) {
       setLoading(false);
-      console.error(e);
+      setError(e.response.data.message);
     }
   };
 
@@ -84,8 +86,10 @@ function Lounge() {
     try {
       const res = await AxiosOffieHour.getProjectAllOfficehour(projectId);
       if (res.status === 200) setOfficeHours(res.data);
-    } catch (e) {
-      console.error(e);
+      setLoading(false);
+    } catch (e: any) {
+      setError(e.response.data.message);
+      setLoading(false);
     }
   };
 
@@ -95,22 +99,26 @@ function Lounge() {
       const res = await AxiosUser.getChatUsersList();
       if (res.statusCode === 200) setUsers(res.data || []);
     } catch (e: any) {
-      console.error(e);
       setError(e.response.data.message);
+      if (e.response.status === 404) {
+        try {
+          fetchSearchUserList();
+        } catch (e: any) {
+          setError(e.response.data.message);
+        }
+      }
     }
   };
 
+  /** 친구 검색 */
   const fetchSearchUserList = async () => {
     try {
-      console.log("호출--------");
       const res = await AxiosUser.getSearchUser(searchUser);
-      console.log(res);
-
       if (res.status === 200) {
         setUsers(res.data.data);
       }
     } catch (e: any) {
-      console.log(e.response);
+      setError(e.response.data.message);
     }
   };
 
@@ -119,10 +127,13 @@ function Lounge() {
     setLoading(true);
     try {
       const res = await AxiosChat.getChats();
-      if (res.statusCode === 200) setChatList(res.data);
+      if (res.statusCode === 200) {
+        setChatList(res.data);
+        setLoading(false);
+      }
       setLoading(false);
     } catch (e: any) {
-      console.error(e);
+      setError(e.response.data.message);
       setLoading(false);
     }
   };
@@ -131,7 +142,6 @@ function Lounge() {
   const handleStartUsersChat = async (userId: string, chatName: string) => {
     try {
       const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
-
       if (res.status === 201) {
         alert(`채팅방이 생성되었습니다! `);
         setIsModalOpen(false);
@@ -151,6 +161,7 @@ function Lounge() {
   const handleCloseChatNameModal = () => {
     setChatNameModalOpen(false);
   };
+
   const handleCreateChat = () => {
     if (!miniProfile) return;
     if (chatNameInput.trim() === "") return;
@@ -163,22 +174,27 @@ function Lounge() {
       setChatNameInput("");
     }
   };
-  const [chatNameInput, setChatNameInput] = useState("");
+
   const handleChageChatNameInput = (e: any) => setChatNameInput(e.target.value);
+
   useEffect(() => {
+    // 레이서가 아닐 경우 아무것도 없이 검색을 하면 전체 검색 불가
     if (searchUser.length === 0) {
       if (myInfo?.role === "RACER") fetchGetUsersList();
     }
   }, [searchUser]);
 
   useEffect(() => {
-    fetchGetChatList();
     fetchOfficehourProject();
-    if (myInfo?.role === "RACER") fetchGetUsersList();
+    if (myInfo?.role === "RACER") {
+      fetchGetUsersList();
+    }
+    if (myInfo?.role !== "RACER") {
+      fetchSearchUserList();
+    }
   }, []);
 
   useEffect(() => {
-    fetchSearchUserList();
     fetchGetProjectIdInfo();
   }, []);
 
