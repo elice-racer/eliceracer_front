@@ -59,7 +59,7 @@ const ChatRoom = () => {
   const [chatRoomInfo, setChatRoomInfo] = useState<ChatRoomInfo>();
 
   // todo 주말동안 오피스아워 스케줄 등록
-  const [_officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
+  const [officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
 
   const [_selectedUsers, _setSelectedUsers] = useState<string[]>([]);
 
@@ -87,10 +87,12 @@ const ChatRoom = () => {
     }
   };
   /** 팀 오피스아워 조회 */
-  const fetchOfficehourTeams = async () => {
+  const fetchOfficehourTeams = async (id: string) => {
     try {
-      if (!chatRoomInfo?.team?.id) return;
-      const res = await AxiosOffieHour.getTeamOfficehour(chatRoomInfo.team.id);
+      if (!id) return;
+      const res = await AxiosOffieHour.getTeamOfficehour(id);
+      console.log("---------오피스아워---------");
+      console.log(res);
       if (res.status === 200) setOfficeHours(res.data);
     } catch (e) {
       console.error(e);
@@ -134,6 +136,7 @@ const ChatRoom = () => {
     try {
       const res = await AxiosChat.getChatIdInfo(chatId);
       if (res.statusCode === 200) {
+        fetchOfficehourTeams(res.data.team.id);
         setChatRoomInfo(res.data);
       }
     } catch (e) {
@@ -265,7 +268,6 @@ const ChatRoom = () => {
   }, [socket]);
 
   useEffect(() => {
-    fetchOfficehourTeams();
     fetchCurrentUser();
     fetchGetChatList();
   }, []);
@@ -401,7 +403,7 @@ const ChatRoom = () => {
         </Section>
         <Section className="onMobile">
           <ChatInfoWrapper>
-            <TeamChatInfo />
+            <TeamChatInfo officehours={officeHours} />
           </ChatInfoWrapper>
         </Section>
       </Container>

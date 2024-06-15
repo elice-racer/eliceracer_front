@@ -1,8 +1,9 @@
 import styled from "styled-components";
 import EmptyImage from "../../../components/commons/EmptyImage";
+import TeamChatOfficehour from "./TeamChatOfficehour";
 
 interface TeamChatInfoProps {
-  officehours?: any;
+  officehours: any;
 }
 function TeamChatInfo({ officehours }: TeamChatInfoProps) {
   return (
@@ -12,17 +13,19 @@ function TeamChatInfo({ officehours }: TeamChatInfoProps) {
           <TitleWrapper>
             <Title>오피스아워 일정</Title>
           </TitleWrapper>
-          <DataWrapper>{officehours ? "" : <EmptyImage message="현재 등록된 오피스아워 일정이 없습니다." />}</DataWrapper>
+          <DataWrapper>
+            {officehours ? <TeamChatOfficehour officehours={officehours} /> : <EmptyImage message="현재 등록된 오피스아워 일정이 없습니다." />}
+          </DataWrapper>
         </>
         <TitleWrapper>
           <Title>팀 노션 페이지</Title>
         </TitleWrapper>
-        <DataWrapper>{officehours ? "" : <EmptyImage message="현재 등록된 오피스아워 일정이 없습니다." />}</DataWrapper>
+        <DataWrapper>{officehours ? "" : <p>등록된 노션 페이지가 없습니다.</p>}</DataWrapper>
 
         <TitleWrapper>
           <Title>프로젝트 깃랩</Title>
         </TitleWrapper>
-        <DataWrapper>{officehours ? "" : <EmptyImage message="현재 등록된 오피스아워 일정이 없습니다." />}</DataWrapper>
+        <DataWrapper>{officehours ? "" : <p>등록된 프로젝트 깃랩이 없습니다.</p>}</DataWrapper>
       </Wrapper>
     </Container>
   );

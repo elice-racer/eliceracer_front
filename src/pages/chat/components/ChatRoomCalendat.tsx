@@ -38,7 +38,7 @@ function EventAgenda({ event }: { event: CustomCalendarProps }) {
   );
 }
 
-const CustomCalendar = ({ events }: CustomCalendarEventProps) => {
+const ChatRoomCalendar = ({ events }: CustomCalendarEventProps) => {
   const { components } = useMemo(() => {
     const components: Components<CustomCalendarProps> = {
       agenda: {
@@ -54,7 +54,8 @@ const CustomCalendar = ({ events }: CustomCalendarEventProps) => {
       components={components}
       localizer={localizer}
       events={events}
-      views={["month", "work_week", "agenda"]}
+      views={["work_week", "agenda"]}
+      defaultView="agenda"
       startAccessor="start"
       endAccessor="end"
       selectable
@@ -81,4 +82,4 @@ const CustomCalendar = ({ events }: CustomCalendarEventProps) => {
 // onSelectSlot={handleSelectSlot}
 // onSelectEvent={handleSelectEvent}
 
-export default CustomCalendar;
+export default ChatRoomCalendar;

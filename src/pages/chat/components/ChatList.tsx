@@ -72,6 +72,8 @@ const ChatItem = styled.div`
   padding: 2px 12px;
   height: 46px;
   border-top: 1px solid ${({ theme }) => theme.colors.gray1};
+
+  transition: 0.3s all ease-in-out;
   &:hover {
     background-color: ${({ theme }) => theme.colors.purple1};
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

@@ -117,6 +117,9 @@ function EditMyPage() {
   useEffect(() => {
     const fetchMyInfo = async () => {
       const res = await AxiosUser.getMyPage();
+
+      console.log("-------내정보-------");
+      console.log(res);
       setUsersInfo(res.data);
       setSkills(res.data?.skills.map(skill => skill.skillName) || []);
       setTempSkills(res.data?.skills.map(skill => skill.skillName) || []);
@@ -302,7 +305,7 @@ const Header = styled.div`
   display: flex;
   justify-content: end;
   gap: 12px;
-  width: 590px;
+  width: 100%;
   height: 50px;
 `;
 
@@ -319,6 +322,7 @@ const TextWrapper = styled.div`
   justify-content: center;
   align-items: center;
   &.sub-title {
+    margin-left: 10px;
   }
 `;
 

@@ -1,40 +1,41 @@
 import styled from "styled-components";
-import CustomCalendar, { CustomCalendarProps } from "../calendar/Calendar";
-import { OfficehourProps } from "../../services/officehour";
+import { CustomCalendarProps } from "../../../components/calendar/Calendar";
+import { OmitOfficehourProps } from "../../../services/officehour";
+import ChatRoomCalendar from "./ChatRoomCalendat";
 
-interface OfficeHourWeeklyProps {
-  officehours: OfficehourProps[];
+interface TeamChatOfficehourProps {
+  officehours: OmitOfficehourProps[];
 }
-function OfficeHourWeekly({ officehours }: OfficeHourWeeklyProps) {
-  const _officeHours = officehours;
 
-  function isOfficehourType(obj: any): obj is OfficehourProps {
+export default function TeamChatOfficehour({ officehours }: TeamChatOfficehourProps) {
+  const officeHours = officehours;
+
+  function isOfficehourType(obj: any): obj is OmitOfficehourProps {
     return (
       typeof obj === "object" &&
       obj !== null &&
       typeof obj.id === "string" &&
       typeof obj.coach === "string" &&
+      typeof obj.date === "string" &&
       typeof obj.createdAt === "string" &&
       typeof obj.type === "string" &&
-      typeof obj.updatedAt === "string" &&
-      typeof obj.team.teamNumber === "number"
+      typeof obj.updatedAt === "string"
     );
   }
 
-  function isMyTypeArray(arr: any[]): arr is OfficehourProps[] {
+  function isMyTypeArray(arr: any[]): arr is OmitOfficehourProps[] {
     return arr?.every(item => isOfficehourType(item));
   }
 
-  const convertCalendarType = (arr: OfficehourProps[]): CustomCalendarProps[] => {
+  const convertCalendarType = (arr: OmitOfficehourProps[]): CustomCalendarProps[] => {
     if (isMyTypeArray(arr)) {
       const newEvents = arr.map(item => {
         // Date 객체로 변환
         const date = new Date(item.date);
-
         // 9시간 빼기
         date.setHours(date.getHours() - 9);
         const newEvent: CustomCalendarProps = {
-          title: `${item.team.teamNumber}팀 ${item.type} `,
+          title: `${item.type} `,
           desc: `${item.coach}코치님`,
           start: date,
           end: date,
@@ -52,14 +53,12 @@ function OfficeHourWeekly({ officehours }: OfficeHourWeeklyProps) {
         <TitleWrapper>
           <Title>전체 오피스아워 일정 📆</Title>
         </TitleWrapper>
-        <CustomCalendar events={convertCalendarType(_officeHours)} />
+        <ChatRoomCalendar events={convertCalendarType(officeHours)} />
         {/* <DataWrapper>{officehours ? "" : <EmptyImage message={"현재 등록된 전체 오피스아워 일정이 없습니다."} />}</DataWrapper> */}
       </Wapper>
     </Container>
   );
 }
-
-export default OfficeHourWeekly;
 
 const Container = styled.div`
   width: 100%;

@@ -6,7 +6,13 @@ export interface OfficehourProps {
   date: string;
   type: string;
   updatedAt: string;
+  team: {
+    teamNumber: number;
+  };
 }
+
+export type OmitOfficehourProps = Omit<OfficehourProps, "team">;
+
 export namespace AxiosOffieHour {
   export const getProjectAllOfficehour = async (projectId: string): Promise<any> => {
     const url = `officehours/projects/${projectId}`;
@@ -20,12 +26,3 @@ export namespace AxiosOffieHour {
     return res;
   };
 }
-
-// 프로젝트Id
-//ab98d368-a71a-48da-9ce9-6382042a4686
-
-// 8기 3팀 Id
-// a13124e8-0563-4f93-80f9-3e13af0f7c72
-
-// 8기 2팀 Id
-// 0b8982ab-1744-4b2f-8cce-90e1fe40117e
