@@ -132,6 +132,7 @@ const router = createBrowserRouter([
 
       { path: paths.ADMIN_PROJECTS, element: <AdminProject /> },
       { path: paths.ADMIN_PROJECTS_DETAIL, element: <AdminProjectDetail /> },
+      { path: paths.UPDATE_OFFICE_HOUR, element: <AdminOfficeHour /> },
     ],
   },
   {

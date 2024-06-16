@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { AxiosUser } from "../services/user";
 import { useSetRecoilState } from "recoil";
 import { currentUserAtom } from "../recoil/UserAtom";
+import AdminNavbar from "../layout/navbar/AdminNavbar";
 
 export const AdminRoute = () => {
   const navigate = useNavigate();
@@ -47,7 +48,10 @@ export const AdminRoute = () => {
   return (
     <Container>
       <Header />
-      <Outlet />
+      <Flex>
+        <AdminNavbar />
+        <Outlet />
+      </Flex>
     </Container>
   );
 };
@@ -57,4 +61,8 @@ const Container = styled.div`
   width: 100dvw;
   height: 100%;
   margin-top: 68px;
+`;
+
+const Flex = styled.div`
+  display: flex;
 `;
