@@ -92,8 +92,8 @@ const ChatRoom = () => {
       if (!id) return;
       const res = await AxiosOffieHour.getTeamOfficehour(id);
       if (res.status === 200) setOfficeHours(res.data);
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setError(e.response?.data.message);
     }
   };
 
@@ -108,8 +108,8 @@ const ChatRoom = () => {
         setIsModalOpen(false);
         navigate(`${paths.CHAT_HOME}/${res.data.data.id}`);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (e: any) {
+      setError(e.response?.data.message);
     }
   };
 
@@ -133,14 +133,12 @@ const ChatRoom = () => {
   const fetchChatInfoById = useCallback(async () => {
     try {
       const res = await AxiosChat.getChatIdInfo(chatId);
-      console.log("-------채팅방 정보 조회--------");
-      console.log(res);
       if (res.statusCode === 200) {
         setChatRoomInfo(res.data);
         if (res.data.team.id) fetchOfficehourTeams(res.data.team.id);
       }
     } catch (e: any) {
-      setError(e.response);
+      setError(e.response?.data.message);
     }
   }, [chatId]);
 
@@ -156,8 +154,8 @@ const ChatRoom = () => {
         if (res.data) setMessages(res.data.reverse());
       }
       setIsLoading(false);
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setError(e.response?.data.message);
       setIsLoading(false);
     }
   };
@@ -174,8 +172,9 @@ const ChatRoom = () => {
           setMessages(newState);
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       console.log("fetch prev Message error!!");
+      setError(e.response?.data.message);
     }
   };
 
@@ -206,8 +205,8 @@ const ChatRoom = () => {
       if (res.statusCode === 200) {
         setUserId(res.data?.id);
       }
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setError(e.response?.data.message);
     }
   };
 
@@ -216,7 +215,7 @@ const ChatRoom = () => {
       const res = await AxiosChat.getChats();
       if (res.statusCode === 200) setChatList(res.data);
     } catch (e: any) {
-      console.error(e);
+      setError(e.response?.data.message);
     }
   };
 

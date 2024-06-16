@@ -37,8 +37,7 @@ export default function ChatHome() {
       const res = await AxiosChat.getChats();
       if (res.statusCode === 200) setChatList(res.data);
     } catch (e: any) {
-      console.log("fetch Get ChatList Error!!");
-      console.error(e);
+      setError(e.response?.data.message);
     }
   };
 
@@ -53,7 +52,7 @@ export default function ChatHome() {
         try {
           fetchSearchUserList();
         } catch (e: any) {
-          setError(e.response.data.message);
+          setError(e.response?.data.message);
         }
       }
     }
@@ -65,7 +64,7 @@ export default function ChatHome() {
       const res = await AxiosUser.getUsersPage(id);
       if (res.statusCode === 200) setMiniProfile(res.data);
     } catch (e: any) {
-      setError(e.response.data.message);
+      setError(e.response?.data.message);
     }
   };
 
@@ -85,7 +84,7 @@ export default function ChatHome() {
         setUserList(res.data.data);
       }
     } catch (e: any) {
-      setError(e.response.data.message);
+      setError(e.response?.data.message);
     }
   };
 
@@ -104,7 +103,7 @@ export default function ChatHome() {
         navigate(`${paths.CHAT_HOME}/${res.data.data.id}`);
       }
     } catch (e: any) {
-      setError(e.response.data.message);
+      setError(e.response?.data.message);
     }
   };
 

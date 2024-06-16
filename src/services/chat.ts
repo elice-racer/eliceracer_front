@@ -72,10 +72,11 @@ export namespace AxiosChat {
 
   /** 기존 채팅방에 유저 초대 */
   export const postUserToChat = async (chatId: string, userIds: string[]) => {
-    const url = `chats/${chatId}/users`;
+    const url = `chats/users/${chatId}`;
     const res = await api.post(url, { userIds });
     return res;
   };
+
   export const deleteChatRoom = async (chatId: string) => {
     const url = `chats/${chatId}`;
     const res = await api.delete(url);
