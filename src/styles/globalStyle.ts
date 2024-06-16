@@ -19,6 +19,8 @@ const GlobalStyles = createGlobalStyle`
   line-height: 1.5;
   font-weight: 400;
 
+  height: 100%;
+
   color-scheme: light dark;
 
   font-synthesis: none;

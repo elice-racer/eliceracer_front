@@ -1,21 +1,23 @@
 import styled from "styled-components";
-import { imgPaths } from "../../utils/path";
-import { Link } from "react-router-dom";
+import { imgPaths, paths } from "../../utils/path";
+import { Link, useNavigate } from "react-router-dom";
 import { UsersPageInfo } from "../../services/user";
+import SkillBadge from "../../pages/profile/components/SkillBadge";
 
 interface UserMiniProfileProps {
   userdata?: UsersPageInfo;
 }
 function UsersMiniProfile({ userdata }: UserMiniProfileProps) {
+  const navigate = useNavigate();
   return (
     <>
       {userdata ? (
         <Container>
-          <Header>
+          <TitleWrapper>
             <ImgWrapper>
               <UserProfileImg src={imgPaths.DEFAULT_PROFILE_IMG} />
             </ImgWrapper>
-          </Header>
+          </TitleWrapper>
           {userdata ? (
             <Body>
               <ColWrapper>
@@ -23,7 +25,7 @@ function UsersMiniProfile({ userdata }: UserMiniProfileProps) {
                   <Title>{userdata.realName}</Title>
                   <Text className="subInfo">{userdata.role} 🏁</Text>
                 </Wrapper>
-                {userdata.comment ? <Text>{userdata.comment}</Text> : <Text className="subInfo">한 줄 소개를 입력해주세요.</Text>}
+                {userdata.comment ? <Text>{userdata.comment}</Text> : <Text className="subInfo">더 보기 버튼을 통해 한 줄 소개를 등록하세요!</Text>}
                 {userdata.track ? (
                   <Text className="subInfo">
                     {userdata.track.trackName}
@@ -33,29 +35,23 @@ function UsersMiniProfile({ userdata }: UserMiniProfileProps) {
                   ""
                 )}
                 <SubTitle>보유 스택</SubTitle>
-                <SkillInfoWrapper>
+                <Wrapper>
                   {userdata.skills.length === 0 ? (
                     <Text className="subInfo">등록된 기술 스택이 없습니다.</Text>
                   ) : (
-                    userdata.skills.map(skill => (
-                      <Text className="skill" key={skill.id}>
-                        {skill.skillName}
-                      </Text>
-                    ))
+                    userdata.skills.map(skill => <SkillBadge key={skill.id} skillName={skill.skillName} />)
                   )}
-                </SkillInfoWrapper>
-
-                {userdata.github ? <Link to={userdata.github ? userdata.github : ""}>깃허브 바로가기</Link> : ""}
+                </Wrapper>
+                {userdata.github ? <Link to={userdata.github ? userdata.github : ""}>깃 바로가기</Link> : ""}
                 {/* <Wrapper>
-                <SubTitle>진행한 프로젝트 :</SubTitle>
-                <Text></Text>
-              </Wrapper> */}
+                  <SubTitle>진행한 프로젝트 :</SubTitle>
+                  <Text></Text>
+                </Wrapper> */}
                 <SubTitle>업적</SubTitle>
                 <Text className="skill">성실한 엘리스🏆</Text>
               </ColWrapper>
               <ButtonWrapper>
-                {/* <Button onClick={() => navigate(paths.MYPAGE)}>더보기</Button> */}
-                <Button onClick={() => alert("Comming soom...")}>더보기</Button>
+                <Button onClick={() => navigate(paths.MYPAGE)}>더 보기</Button>
               </ButtonWrapper>
             </Body>
           ) : (
@@ -80,7 +76,7 @@ const Container = styled.div`
   background-color: #ffffff7d;
 `;
 
-const Header = styled.div`
+const TitleWrapper = styled.div`
   height: 240px;
 `;
 
@@ -110,13 +106,10 @@ const ColWrapper = styled.div`
 `;
 
 const Wrapper = styled.div`
+  width: 100%;
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
-`;
-
-const SkillInfoWrapper = styled.div`
-  display: flex;
-  gap: 10px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -145,7 +138,7 @@ const Text = styled.p`
   }
   &.skill {
     width: auto;
-    max-width: 94px;
+    max-width: 100px;
     background-color: ${({ theme }) => theme.colors.blue2};
     padding: 2px 4px;
     border-radius: 12px;

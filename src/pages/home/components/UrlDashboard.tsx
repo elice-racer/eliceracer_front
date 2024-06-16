@@ -80,12 +80,13 @@ const ProjectListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  overflow-y: scroll;
 `;
 
 const DataWrapper = styled.div`
   margin: 6px 0;
   width: 100%;
-  height: 158px;
+  height: 80px;
   display: flex;
   justify-content: center;
   border: 1px solid ${({ theme }) => theme.colors.gray1};

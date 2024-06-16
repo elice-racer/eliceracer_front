@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Skills } from "../../../services/user";
 import React, { forwardRef, useState, Ref, useRef, useEffect } from "react";
 import SkillBadge from "./SkillBadge";
+import ReactDOM from "react-dom";
 
 interface SkillModalProps {
   isModalOpen: boolean;
@@ -19,6 +20,9 @@ function SkillsModal(
   { isModalOpen, onClose, onChangeValue, searchValue, searchSkills, showSkills, onAddSkill, onAddTempSkill, onDeleteTempSkill }: SkillModalProps,
   ref: Ref<HTMLInputElement>
 ) {
+  const el = document.getElementById("modal") as HTMLElement;
+
+  if (!el) return null;
   const skillboxRef = useRef<HTMLDivElement>(null);
   const [skillModalOpen, setSkillModalOpen] = useState(false);
 
@@ -40,16 +44,16 @@ function SkillsModal(
       if (height > 32) setHeight(height);
     }
   }, [skillModalOpen]);
-  return (
+  return ReactDOM.createPortal(
     <>
-      <StyledSkillMoal className={isModalOpen ? "" : "disable"}>
+      <StyledSkillModal className={isModalOpen ? "" : "disable"}>
         <Container className={isModalOpen ? "" : "disable"}>
           <TitleWrapper>
             <Title>보유 기술 스택</Title>
           </TitleWrapper>
           <Wrapper ref={skillboxRef}>
             {showSkills.map(skill => (
-              <SkillBadge skillName={skill} isDelete onDelete={onDeleteTempSkill} />
+              <SkillBadge key={skill} skillName={skill} isDelete onDelete={onDeleteTempSkill} />
             ))}
             <Input
               value={searchValue}
@@ -68,7 +72,7 @@ function SkillsModal(
             </Button>
           </ButtonWrapper>
         </Container>
-        <SkillContainer isOpen={skillModalOpen && searchValue !== ""} style={{ top: `calc(45% + ${height / 2}px` }}>
+        <SkillContainer $isOpen={skillModalOpen && searchValue !== ""} style={{ top: `calc(45% + ${height / 2}px` }}>
           {searchSkills.map(skill => (
             <SkillItem skillName={skill.skillName} onClick={() => onAddTempSkill(skill.skillName)} />
           ))}
@@ -84,9 +88,10 @@ function SkillsModal(
             </StyledAddSkillButton>
           )}
         </SkillContainer>
-      </StyledSkillMoal>
+      </StyledSkillModal>
       <Dimed className={isModalOpen ? "" : "disable"} onClick={onClose} />
-    </>
+    </>,
+    el
   );
 }
 
@@ -114,14 +119,13 @@ function SkillItem({ skillName, onClick }: SkillItemProps) {
 
 export default forwardRef<HTMLInputElement, SkillModalProps>(SkillsModal);
 
-const StyledSkillMoal = styled.div`
+const StyledSkillModal = styled.div`
   position: fixed;
   display: flex;
   flex-direction: column;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 11;
   width: 100%;
   max-width: 700px;
   height: 560px;
@@ -142,11 +146,10 @@ const Container = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 11;
+  z-index: 999;
   width: 100%;
   max-width: 435px;
   height: 280px;
-  z-index: 999;
   border-radius: 10px;
   background-color: #fff;
 
@@ -208,7 +211,7 @@ const Button = styled.button`
 `;
 
 // skill style
-const SkillContainer = styled.div<{ isOpen: boolean }>`
+const SkillContainer = styled.div<{ $isOpen: boolean }>`
   width: 100%;
   height: 200px;
   background-color: #fff;
@@ -219,7 +222,7 @@ const SkillContainer = styled.div<{ isOpen: boolean }>`
   transform: translateX(-50%);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
-  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
 `;
 
 const StyledSkillItem = styled.div`
@@ -250,7 +253,7 @@ export const Dimed = styled.div`
   width: 100%;
   height: 100%;
   position: fixed;
-  z-index: 1000;
+  z-index: 888;
   top: 0;
   left: 0;
   background-color: #000;

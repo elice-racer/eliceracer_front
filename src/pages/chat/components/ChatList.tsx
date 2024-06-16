@@ -11,7 +11,6 @@ interface ChatsListProps {
 
 function ChatList({ chatsList, error }: ChatsListProps) {
   const navigate = useNavigate();
-  // 유저를 눌렀을 때 채팅방 생성되게
 
   return (
     <Container>
@@ -41,6 +40,7 @@ export default ChatList;
 
 const Container = styled.div`
   width: 100%;
+  min-height: 100%;
 `;
 
 const Flex = styled.div`
@@ -57,7 +57,13 @@ const TitleWrapper = styled.div`
   padding: 2px 6px;
 `;
 
-const ChatListWrapper = styled.div``;
+const ChatListWrapper = styled.div`
+  position: relative;
+  gap: 4px;
+  flex-wrap: wrap;
+  overflow-y: auto;
+  height: 450px;
+`;
 
 const ChatItem = styled.div`
   display: flex;
@@ -66,7 +72,10 @@ const ChatItem = styled.div`
   padding: 2px 12px;
   height: 46px;
   border-top: 1px solid ${({ theme }) => theme.colors.gray1};
+
+  transition: 0.3s all ease-in-out;
   &:hover {
+    background-color: ${({ theme }) => theme.colors.purple1};
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 `;

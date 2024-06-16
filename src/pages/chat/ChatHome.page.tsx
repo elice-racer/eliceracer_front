@@ -1,21 +1,29 @@
 import styled from "styled-components";
 import ChatList from "./components/ChatList";
 import UsersList from "./components/UsersList";
-import { AxiosUser, ChatRoomUsers } from "../../services/user";
+import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../services/user";
 import { useEffect, useState } from "react";
 import { AxiosChat, Chats } from "../../services/chat";
 import { useRecoilValue } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 import MiniProfileModal from "./components/MiniProfileModal";
+import { paths } from "../../utils/path";
+import { useNavigate } from "react-router-dom";
 
 export default function ChatHome() {
   const user = useRecoilValue(currentUserAtom);
 
-  const [miniProfile, setMiniProfile] = useState();
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
   const [error, setError] = useState("");
+
+  const [miniProfile, setMiniProfile] = useState<UsersPageInfo>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [chatNameModalOpen, setChatNameModalOpen] = useState(false);
+
   const [userList, setUserList] = useState<ChatRoomUsers[]>([]);
   const [chatsList, setChatList] = useState<Chats[]>();
+
+  const [searchUser, setSearchUser] = useState("");
 
   const [_selectedUsers, _setSelectedUsers] = useState<string[]>([]);
 
@@ -29,8 +37,7 @@ export default function ChatHome() {
       const res = await AxiosChat.getChats();
       if (res.statusCode === 200) setChatList(res.data);
     } catch (e: any) {
-      console.log("fetch Get ChatList Error!!");
-      console.error(e);
+      setError(e.response?.data.message);
     }
   };
 
@@ -41,6 +48,13 @@ export default function ChatHome() {
       if (res.statusCode === 200) setUserList(res.data || []);
     } catch (e: any) {
       setError(e.response.data.message);
+      if (e.response.status === 404) {
+        try {
+          fetchSearchUserList();
+        } catch (e: any) {
+          setError(e.response?.data.message);
+        }
+      }
     }
   };
 
@@ -49,18 +63,32 @@ export default function ChatHome() {
     try {
       const res = await AxiosUser.getUsersPage(id);
       if (res.statusCode === 200) setMiniProfile(res.data);
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setError(e.response?.data.message);
     }
   };
 
+  /** 프로필 열기 */
   const handleClick = (e: any) => {
     if (!e) return alert("유저 프로필을 확인할 수 없습니다.");
     fetchMiniProfile(e);
     setIsModalOpen(true);
   };
 
-  /** 생성할 채팅방의 유저를 선택 */
+  /** 멤버 검색 */
+  const fetchSearchUserList = async () => {
+    try {
+      const res = await AxiosUser.getSearchUser(searchUser);
+
+      if (res.status === 200) {
+        setUserList(res.data.data);
+      }
+    } catch (e: any) {
+      setError(e.response?.data.message);
+    }
+  };
+
+  /** 그룹채팅 시 초대할 채팅방의 유저를 선택 */
   // const handleSelectedchatUsers = (e: any) => {
   //   const newUsers = e.target.id;
   //   setSelectedUsers(users => [...users, newUsers]);
@@ -69,13 +97,13 @@ export default function ChatHome() {
   const handleStartUsersChat = async (userId: string, chatName: string) => {
     try {
       const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
-
       if (res.status === 201) {
-        alert(`채팅방이 생성되었습니다! 채팅 목록에서 생성된 채팅방을 확인하세요!`);
+        alert(`채팅방이 생성되었습니다!`);
         fetchGetChatList();
+        navigate(`${paths.CHAT_HOME}/${res.data.data.id}`);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (e: any) {
+      setError(e.response?.data.message);
     }
   };
 
@@ -88,7 +116,7 @@ export default function ChatHome() {
   //   try {
   //     const res = await AxiosChat.createChat({e.target.id})
   //   } catch (e) {
-  //     console.dir(e);
+  //      setError(e.response.data.message);
   //   }
   // };
 
@@ -98,19 +126,57 @@ export default function ChatHome() {
   }, []);
 
   useEffect(() => {}, [chatsList]);
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setChatNameModalOpen(false);
+  };
 
+  const handleCloseChatNameModal = () => {
+    setChatNameModalOpen(false);
+  };
+  const handleCreateChat = () => {
+    if (!miniProfile) return;
+    if (chatNameInput.trim() === "") return;
+    if (chatNameInput.length >= 15) alert("채팅방 이름이 너무 깁니다.");
+
+    setChatNameModalOpen(false);
+
+    if (handleStartUsersChat && miniProfile.id) {
+      handleStartUsersChat(miniProfile.id, chatNameInput);
+      setChatNameInput("");
+    }
+  };
+  const [chatNameInput, setChatNameInput] = useState("");
+  const handleChageChatNameInput = (e: any) => setChatNameInput(e.target.value);
   return (
     <>
       <MiniProfileModal
         isModalOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-        }}
+        chatNameModalOpen={chatNameModalOpen}
+        onOpenChatName={() => setChatNameModalOpen(true)}
+        chatNameInput={chatNameInput}
+        onChagneInput={handleChageChatNameInput}
+        onClose={handleCloseModal}
         userdata={miniProfile}
-        onCreateChat={handleStartUsersChat}
+        onCreateChat={handleCreateChat}
+        onCloseChatName={handleCloseChatNameModal}
       />
       <Container>
         <Section>
+          <SearchWrapper>
+            <Input
+              type="text"
+              placeholder="유저를 검색해주세요"
+              value={searchUser}
+              onChange={e => setSearchUser(e.target.value)}
+              onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === "Enter") {
+                  fetchSearchUserList();
+                }
+              }}
+            />
+          </SearchWrapper>
+          <SearchIcon onClick={fetchSearchUserList}>🔎</SearchIcon>
           <SelectedUsers></SelectedUsers>
           <Error>{error}</Error>
           <UsersList users={userList} myInfo={user} onOpenMiniProfile={handleClick} />
@@ -148,4 +214,26 @@ const Error = styled.p`
 
 const SelectedUsers = styled.div`
   width: 100%;
+`;
+
+const SearchWrapper = styled.div`
+  width: 100%;
+  padding: 12px;
+`;
+
+const Input = styled.input`
+  width: 100%;
+  border: 1px solid ${({ theme }) => theme.colors.gray1};
+  height: 36px;
+`;
+
+const SearchIcon = styled.p`
+  position: absolute;
+  top: 50%;
+  right: 12px;
+
+  transform: translateY(-50%);
+  font-size: 14px;
+
+  cursor: pointer;
 `;

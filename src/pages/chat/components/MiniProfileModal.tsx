@@ -1,50 +1,40 @@
 import styled from "styled-components";
 import { imgPaths } from "../../../utils/path";
-import { Link } from "react-router-dom";
 import { Dimed } from "../../profile/components/SkillsModal";
 import { UsersPageInfo } from "../../../services/user";
 import ChatNameModal from "./ChatNameModal";
 import ReactDom from "react-dom";
 import Button from "../../../components/commons/Button";
-import { useState } from "react";
 
 interface MiniProfileModalProps {
   isModalOpen: boolean;
+  chatNameModalOpen: boolean;
+  onChagneInput: any;
+  onOpenChatName: () => void;
+  chatNameInput: string;
   onClose: () => void;
-  onCreateChat?: (userId: string, chatName: string) => void;
+  onCloseChatName: () => void;
+  onCreateChat: () => void;
   userdata: UsersPageInfo | undefined;
 }
-function MiniProfileModal({ isModalOpen, onClose, onCreateChat, userdata }: MiniProfileModalProps) {
+function MiniProfileModal({
+  isModalOpen,
+  chatNameModalOpen,
+  onChagneInput,
+  chatNameInput,
+  onOpenChatName,
+  onClose,
+  onCloseChatName,
+  onCreateChat,
+  userdata,
+}: MiniProfileModalProps) {
   const el = document.getElementById("modal") as HTMLElement;
-
-  const [chatNameModalOpen, setChatNameModalOpen] = useState(false);
-  const [chatNameInput, setChatNameInput] = useState("");
-
-  const handleCreateChat = () => {
-    if (!userdata) return;
-    if (chatNameInput.trim() === "") return;
-    if (chatNameInput.length >= 15) alert("채팅방 이름이 너무 깁니다.");
-
-    setChatNameModalOpen(false);
-
-    if (onCreateChat && userdata.id) {
-      alert("채팅방 생성 시작");
-      onCreateChat(userdata.id, chatNameInput);
-      setChatNameInput("");
-    }
-  };
 
   if (!el) return null;
 
   return ReactDom.createPortal(
     <>
-      <ChatNameModal
-        $isOpen={chatNameModalOpen}
-        onClick={handleCreateChat}
-        value={chatNameInput}
-        onChange={e => setChatNameInput(e.target.value)}
-        onClose={() => setChatNameModalOpen(false)}
-      />
+      <ChatNameModal $isOpen={chatNameModalOpen} onClick={onCreateChat} value={chatNameInput} onChange={onChagneInput} onClose={onCloseChatName} />
       <ModalContainer className={isModalOpen ? "" : "disable"}>
         <CloseBtn onClick={onClose}>Ⅹ</CloseBtn>
         <Header>
@@ -59,7 +49,7 @@ function MiniProfileModal({ isModalOpen, onClose, onCreateChat, userdata }: Mini
                 <Title>{userdata.realName}</Title>
                 <Text className="subInfo">{userdata.role}🏁</Text>
               </Wrapper>
-              {userdata.comment ? <Text>{userdata.comment}</Text> : <Text>안녕하세요. {userdata.realName}입니다.</Text>}
+              {userdata.comment ? <Text>{userdata.comment}</Text> : ""}
               {userdata.track ? (
                 <Text className="subInfo">
                   {userdata.track.trackName}
@@ -80,18 +70,23 @@ function MiniProfileModal({ isModalOpen, onClose, onCreateChat, userdata }: Mini
                   ))
                 )}
               </SkillInfoWrapper>
-              {userdata.github ? <Link to={userdata.github ? userdata.github : ""}>깃허브 바로가기</Link> : ""}
+              {userdata.github ? <StyledA href={userdata.github}>👨‍💻 {userdata.realName}님의 Git 바로가기</StyledA> : ""}
               {/* <Wrapper>
                   <SubTitle>진행한 프로젝트 :</SubTitle>
                   <Text></Text>
                 </Wrapper> */}
               <SubTitle>업적</SubTitle>
-              <Text className="skill">성실한 엘리스🏆</Text>
+              <AchiveWrapper>
+                <Text className="skill">성실한 엘리스🏆</Text>
+              </AchiveWrapper>
             </ColWrapper>
             <ButtonWrapper>
               {/* <Button onClick={() => navigate(paths.USERS_PAGE)}>더보기</Button> */}
+              <Button className="user-page" onClick={() => alert("Comming Soon... June 18th")}>
+                더 보기
+              </Button>
               {userdata.id && (
-                <Button id={userdata.id} onClick={() => setChatNameModalOpen(true)} className="chat-start">
+                <Button id={userdata.id} onClick={onOpenChatName} className="chat-start">
                   {`${userdata.realName}님과 1 : 1 채팅`}
                 </Button>
               )}
@@ -138,6 +133,7 @@ const CloseBtn = styled.div`
   position: absolute;
   cursor: pointer;
 `;
+
 const Header = styled.div`
   height: 240px;
 `;
@@ -191,17 +187,17 @@ const ButtonWrapper = styled.div`
     background-color: ${({ theme }) => theme.colors.purple3} !important;
     cursor: pointer !important;
   }
-`;
 
-// const Button = styled.div`
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   width: 100%;
-//   height: 32px;
-//   background-color: ${({ theme }) => theme.colors.purple1};
-//   cursor: pointer;
-// `;
+  .user-page {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 32px !important;
+    background-color: ${({ theme }) => theme.colors.purple2} !important;
+    cursor: pointer !important;
+  }
+`;
 
 const Title = styled.h1``;
 
@@ -212,10 +208,30 @@ const Text = styled.p`
     color: ${({ theme }) => theme.colors.gray2};
   }
   &.skill {
+    position: relative;
     width: auto;
-    max-width: 94px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 26px;
+    position: relative;
     background-color: ${({ theme }) => theme.colors.blue2};
-    padding: 2px 4px;
     border-radius: 12px;
+    padding: 0 4px;
   }
+`;
+
+const StyledA = styled.a`
+  cursor: pointer;
+  text-decoration: none;
+  color: ${({ theme }) => theme.colors.purple9};
+`;
+
+const AchiveWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 4px;
 `;

@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import { useEffect, useState } from "react";
-import { AxiosChat, Chats } from "../../services/chat";
-import { AxiosUser, ChatRoomUsers } from "../../services/user";
+import { AxiosChat } from "../../services/chat";
+import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../services/user";
 import UrlDashboard from "./components/UrlDashboard";
 import { AxiosProject, ProjectInfo } from "../../services/projects";
 import { loadingAtom } from "../../recoil/LoadingAtom";
@@ -21,19 +21,22 @@ function Lounge() {
   const navigate = useNavigate();
   const setLoading = useSetRecoilState(loadingAtom);
   const myInfo = useRecoilValue(currentUserAtom);
-  // const [myInfo, setMyInfo] = useState<UsersPageInfo>();
-
-  const [userInfo, setUsetInfo] = useState();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [error, setError] = useState("");
+
+  /** 미니 프로필 */
+  const [miniProfile, setMiniProfile] = useState<UsersPageInfo>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [chatNameModalOpen, setChatNameModalOpen] = useState(false);
+
+  /** 친구 목록 */
   const [users, setUsers] = useState<ChatRoomUsers[]>([]);
-  const [_chatsList, setChatList] = useState<Chats[]>();
+
   const [projectsInfo, setProjectsInfo] = useState<ProjectInfo[]>([]);
   const [projectId, setProjectId] = useState<string>("decdcebb-2039-417c-9aca-3a5a381b1013");
   const [searchUser, setSearchUser] = useState("");
 
   const [officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
+  const [chatNameInput, setChatNameInput] = useState("");
 
   /** 미니프로필창 열기 */
   const handleOpenMiniProfile = (userId: string | null) => {
@@ -46,9 +49,10 @@ function Lounge() {
   const fetchUserInfo = async (id: string) => {
     try {
       const res = await AxiosUser.getUsersPage(id);
-      if (res.statusCode === 200) setUsetInfo(res.data);
-    } catch (e) {
-      console.error(e);
+      if (res.statusCode === 200) setMiniProfile(res.data);
+    } catch (e: any) {
+      setError(e.response.data.message);
+      setLoading(false);
     }
   };
 
@@ -60,17 +64,17 @@ function Lounge() {
       const { trackName, cardinalNo } = myInfo?.track;
 
       const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });
-      console.log(res);
       if (res.statusCode === 200) {
         if (res.data) {
           setProjectsInfo(res.data);
           setProjectId(res.data[0].id);
         }
+        setLoading(false);
       }
       setLoading(false);
-    } catch (e) {
+    } catch (e: any) {
       setLoading(false);
-      console.error(e);
+      setError(e.response.data.message);
     }
   };
 
@@ -79,10 +83,11 @@ function Lounge() {
     if (!projectId) return;
     try {
       const res = await AxiosOffieHour.getProjectAllOfficehour(projectId);
-      console.log(res);
       if (res.status === 200) setOfficeHours(res.data);
-    } catch (e) {
-      console.error(e);
+      setLoading(false);
+    } catch (e: any) {
+      setError(e.response.data.message);
+      setLoading(false);
     }
   };
 
@@ -92,33 +97,26 @@ function Lounge() {
       const res = await AxiosUser.getChatUsersList();
       if (res.statusCode === 200) setUsers(res.data || []);
     } catch (e: any) {
-      console.error(e);
       setError(e.response.data.message);
+      if (e.response.status === 404) {
+        try {
+          fetchSearchUserList();
+        } catch (e: any) {
+          setError(e.response.data.message);
+        }
+      }
     }
   };
 
+  /** 친구 검색 */
   const fetchSearchUserList = async () => {
     try {
       const res = await AxiosUser.getSearchUser(searchUser);
-
       if (res.status === 200) {
         setUsers(res.data.data);
       }
     } catch (e: any) {
-      console.log(e.response);
-    }
-  };
-
-  /** 채팅 목록 조회 */
-  const fetchGetChatList = async () => {
-    setLoading(true);
-    try {
-      const res = await AxiosChat.getChats();
-      if (res.statusCode === 200) setChatList(res.data);
-      setLoading(false);
-    } catch (e: any) {
-      console.error(e);
-      setLoading(false);
+      setError(e.response.data.message);
     }
   };
 
@@ -126,27 +124,56 @@ function Lounge() {
   const handleStartUsersChat = async (userId: string, chatName: string) => {
     try {
       const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
-
       if (res.status === 201) {
-        alert(`채팅방이 생성되었습니다! 채팅 목록에서 생성된 채팅방을 확인하세요!`);
+        alert(`채팅방이 생성되었습니다! `);
         setIsModalOpen(false);
-        fetchGetChatList();
+
+        navigate(`${paths.CHAT_HOME}/${res.data.data.id}`);
       }
     } catch (e) {
       console.error(e);
     }
   };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setChatNameModalOpen(false);
+  };
+
+  const handleCloseChatNameModal = () => {
+    setChatNameModalOpen(false);
+  };
+
+  const handleCreateChat = () => {
+    if (!miniProfile) return;
+    if (chatNameInput.trim() === "") return;
+    if (chatNameInput.length >= 15) alert("채팅방 이름이 너무 깁니다.");
+
+    setChatNameModalOpen(false);
+
+    if (handleStartUsersChat && miniProfile.id) {
+      handleStartUsersChat(miniProfile.id, chatNameInput);
+      setChatNameInput("");
+    }
+  };
+
+  const handleChageChatNameInput = (e: any) => setChatNameInput(e.target.value);
+
   useEffect(() => {
+    // 레이서가 아닐 경우 아무것도 없이 검색을 하면 전체 검색 불가
     if (searchUser.length === 0) {
       if (myInfo?.role === "RACER") fetchGetUsersList();
     }
   }, [searchUser]);
 
   useEffect(() => {
-    fetchGetChatList();
     fetchOfficehourProject();
-    if (myInfo?.role === "RACER") fetchGetUsersList();
+    if (myInfo?.role === "RACER") {
+      fetchGetUsersList();
+    }
+    if (myInfo?.role !== "RACER") {
+      fetchSearchUserList();
+    }
   }, []);
 
   useEffect(() => {
@@ -159,7 +186,17 @@ function Lounge() {
 
   return (
     <>
-      <MiniProfileModal isModalOpen={isModalOpen} userdata={userInfo} onClose={() => setIsModalOpen(false)} onCreateChat={handleStartUsersChat} />
+      <MiniProfileModal
+        isModalOpen={isModalOpen}
+        chatNameModalOpen={chatNameModalOpen}
+        onOpenChatName={() => setChatNameModalOpen(true)}
+        chatNameInput={chatNameInput}
+        onChagneInput={handleChageChatNameInput}
+        onClose={handleCloseModal}
+        userdata={miniProfile}
+        onCreateChat={handleCreateChat}
+        onCloseChatName={handleCloseChatNameModal}
+      />
 
       <Container>
         <Section>
@@ -187,8 +224,9 @@ function Lounge() {
               <SearchIcon onClick={fetchSearchUserList}>🔎</SearchIcon>
             </SubItemWrapper>
           </TitleWrapper>
-
-          <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />
+          <UserListWrapper>
+            <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />
+          </UserListWrapper>
         </Section>
       </Container>
     </>
@@ -202,6 +240,8 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 12px;
+  height: 100%;
+  max-height: 100%;
 
   @media ${({ theme }) => theme.device.tablet} {
     flex-direction: column;
@@ -219,6 +259,11 @@ const Section = styled.div`
 
     margin-bottom: 12px;
   }
+`;
+
+const UserListWrapper = styled.div`
+  height: calc(100% - 130px);
+  overflow-y: scroll;
 `;
 
 const Text = styled.p`

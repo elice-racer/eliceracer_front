@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useEffect, useState, useRef, useContext, useCallback } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import ChatRoomUsersList from "./components/ChatRoomUsersList";
 import TeamChatInfo from "./components/TeamChatInfo";
@@ -14,6 +14,8 @@ import { baseURL } from "../../services/api";
 import MiniProfileModal from "./components/MiniProfileModal";
 import { SocketContext, SOCKET_EVENT } from "../../context/SocketContext";
 import ChatList from "./components/ChatList";
+import { paths } from "../../utils/path";
+import SelectUsersModal from "./components/inviteUsers/SelectUserModal";
 
 interface TeamInfo {
   id: string;
@@ -33,19 +35,26 @@ const ChatRoom = () => {
   const { id: chatId } = useParams();
 
   if (!chatId) return;
-
+  const navigate = useNavigate();
   const socket = useContext(SocketContext);
   const currentUser = useRecoilValue(currentUserAtom);
-
-  const [miniProfile, setMiniProfile] = useState<UsersPageInfo>();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [userId, setUserId] = useState<any>(null);
-
+  // ?
   const recoilUser = useRecoilValue(currentUserAtom);
 
   const chatBodyRef = useRef<HTMLDivElement>(null);
   const observeRef = useRef<HTMLDivElement>(null);
+  const [userId, setUserId] = useState<any>(null);
+
+  const [error, setError] = useState<string>("");
+  const [miniProfile, setMiniProfile] = useState<UsersPageInfo>();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [chatNameModalOpen, setChatNameModalOpen] = useState(false);
+
+  /** 채팅방 멤버 초대  */
+  const [userList, setUserList] = useState();
+  const [isSelectUserModalOpne, setIsSelectUserModalOpen] = useState<boolean>(false);
+  const [searchUser, setSearchUser] = useState("");
+  const [selectedUsers, _setSelectedUsers] = useState<string[]>([]);
 
   const [chatsList, setChatList] = useState<Chats[]>();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -56,19 +65,57 @@ const ChatRoom = () => {
 
   const [chatRoomInfo, setChatRoomInfo] = useState<ChatRoomInfo>();
 
-  // todo 주말동안 오피스아워 스케줄 등록
-  const [_officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
+  const [officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
 
-  const [_selectedUsers, _setSelectedUsers] = useState<string[]>([]);
+  const [chatNameInput, setChatNameInput] = useState("");
+
+  const handleChageChatNameInput = (e: any) => setChatNameInput(e.target.value);
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setChatNameModalOpen(false);
+  };
+
+  const handleCloseChatNameModal = () => {
+    setChatNameModalOpen(false);
+  };
+  const handleCreateChat = () => {
+    if (!miniProfile) return;
+    if (chatNameInput.trim() === "") return;
+    if (chatNameInput.length >= 15) alert("채팅방 이름이 너무 깁니다.");
+
+    setChatNameModalOpen(false);
+
+    if (handleStartUsersChat && miniProfile.id) {
+      handleStartUsersChat(miniProfile.id, chatNameInput);
+      setChatNameInput("");
+    }
+  };
+
+  /** 멤버 검색 */
+  const fetchSearchUserList = async () => {
+    try {
+      const res = await AxiosUser.getSearchUser(searchUser);
+      if (res.status === 200) setUserList(res.data.data);
+    } catch (e: any) {
+      setError(e.response?.data.message);
+    }
+  };
+
+  const handleSearchUser = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      fetchSearchUserList();
+    }
+  };
 
   /** 팀 오피스아워 조회 */
-  const fetchOfficehourTeams = async () => {
+  const fetchOfficehourTeams = async (id: string) => {
     try {
-      if (!chatRoomInfo?.team?.id) return;
-      const res = await AxiosOffieHour.getTeamOfficehour(chatRoomInfo.team.id);
+      if (!id) return;
+      const res = await AxiosOffieHour.getTeamOfficehour(id);
       if (res.status === 200) setOfficeHours(res.data);
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setError(e.response?.data.message);
     }
   };
 
@@ -77,12 +124,14 @@ const ChatRoom = () => {
       const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
 
       if (res.status === 201) {
-        alert(`채팅방이 생성되었습니다! 채팅 목록에서 생성된 채팅방을 확인하세요!`);
+        console.log(res);
+        alert(`채팅방이 생성되었습니다!`);
         fetchGetChatList();
         setIsModalOpen(false);
+        navigate(`${paths.CHAT_HOME}/${res.data.data.id}`);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (e: any) {
+      setError(e.response?.data.message);
     }
   };
 
@@ -108,9 +157,10 @@ const ChatRoom = () => {
       const res = await AxiosChat.getChatIdInfo(chatId);
       if (res.statusCode === 200) {
         setChatRoomInfo(res.data);
+        if (res.data.team.id) fetchOfficehourTeams(res.data.team.id);
       }
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setError(e.response?.data.message);
     }
   }, [chatId]);
 
@@ -126,8 +176,8 @@ const ChatRoom = () => {
         if (res.data) setMessages(res.data.reverse());
       }
       setIsLoading(false);
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setError(e.response?.data.message);
       setIsLoading(false);
     }
   };
@@ -144,8 +194,9 @@ const ChatRoom = () => {
           setMessages(newState);
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       console.log("fetch prev Message error!!");
+      setError(e.response?.data.message);
     }
   };
 
@@ -176,8 +227,8 @@ const ChatRoom = () => {
       if (res.statusCode === 200) {
         setUserId(res.data?.id);
       }
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setError(e.response?.data.message);
     }
   };
 
@@ -186,7 +237,7 @@ const ChatRoom = () => {
       const res = await AxiosChat.getChats();
       if (res.statusCode === 200) setChatList(res.data);
     } catch (e: any) {
-      console.error(e);
+      setError(e.response?.data.message);
     }
   };
 
@@ -195,25 +246,45 @@ const ChatRoom = () => {
     socket.emit(SOCKET_EVENT.JOIN_ROOM, { chatId });
   };
 
-  /** 채팅룸 삭제 */
-  // const fetchDeleteChatRoom = async () => {
-  //   try {
-  //     const res = await AxiosChat.deleteChatRoom(chatId);
-  //     console.log(res);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  /** 채팅룸 나가기 */
+  const fetchLeaveChatRoom = async () => {
+    try {
+      const res = await AxiosChat.deleteChatRoom(chatId);
+      if (res.data.statusCode === 200) {
+        alert("채팅방을 나왔습니다.");
+        navigate(paths.CHAT_HOME);
+      }
+    } catch (e: any) {
+      setError(e.response?.data.message);
+    }
+  };
+
+  /** 채팅방 나가기 이벤트 */
+  const handleClickLeaveChat = async () => {
+    if (chatRoomInfo?.team) alert("프로젝트 기간에는 팀 채팅방을 나가실 수 없습니다.");
+    if (chatRoomInfo?.team === null) fetchLeaveChatRoom();
+  };
+
+  const handleClickInviteButton = async () => {
+    if (chatRoomInfo?.team) {
+      if (recoilUser?.role === "RACER") alert("프로젝트 채팅방 초대는 관리자 권한이 필요합니다.");
+    }
+    return alert("Comming soon...");
+    // setIsSelectUserModalOpen(true);
+    // fetchInviteUsers();
+  };
 
   /** 유저 초대 */
-  // const fetchInviteUsers = async () => {
-  //   try {
-  //     const res = await AxiosChat.postUserToChat(chatId, selectedUsers);
-  //     console.log(res);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  const fetchInviteUsers = async () => {
+    try {
+      if (selectedUsers.length === 0) return alert("초대할 사람을 선택해주세요.");
+      console.log(selectedUsers);
+      const res = await AxiosChat.postUserToChat(chatId, selectedUsers);
+      console.log(res);
+    } catch (e: any) {
+      setError(e.response?.data.message);
+    }
+  };
 
   useEffect(() => {
     socket.on(SOCKET_EVENT.ROOM_CREATE, (chatId: string) => {
@@ -238,7 +309,6 @@ const ChatRoom = () => {
   }, [socket]);
 
   useEffect(() => {
-    fetchOfficehourTeams();
     fetchCurrentUser();
     fetchGetChatList();
   }, []);
@@ -252,6 +322,7 @@ const ChatRoom = () => {
   useEffect(() => {
     setMessages([]);
     setNextUrl(null);
+    setOfficeHours([]);
 
     if (chatId) {
       handleJoinChat(chatId);
@@ -260,6 +331,7 @@ const ChatRoom = () => {
     }
   }, [chatId]);
 
+  useEffect(() => {}, [officeHours]);
   useEffect(() => {}, [recoilUser]);
 
   useEffect(() => {
@@ -288,20 +360,41 @@ const ChatRoom = () => {
 
   return (
     <>
+      <SelectUsersModal
+        onOpen={isSelectUserModalOpne}
+        onClose={() => {
+          setIsSelectUserModalOpen(false);
+        }}
+        onChange={(e: any) => setSearchUser(e.target.value)}
+        onInviteUsers={fetchInviteUsers}
+        onSearch={handleSearchUser}
+        onClickSearch={fetchSearchUserList}
+        searchUser={searchUser}
+        userList={userList}
+      />
       <MiniProfileModal
         isModalOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-        }}
+        chatNameModalOpen={chatNameModalOpen}
+        onOpenChatName={() => setChatNameModalOpen(true)}
+        chatNameInput={chatNameInput}
+        onChagneInput={handleChageChatNameInput}
+        onClose={handleCloseModal}
         userdata={miniProfile}
-        onCreateChat={handleStartUsersChat}
+        onCreateChat={handleCreateChat}
+        onCloseChatName={handleCloseChatNameModal}
       />
       <Container>
         <Section>
           <ChatContainer id={chatRoomInfo?.id}>
-            <Header>
+            <TitleWrapper>
               <Title>{chatRoomInfo?.chatName}</Title>
-            </Header>
+              <IconWrapper>
+                <InviteIcon>➕👥</InviteIcon>
+                <InviteIcon className="altText" onClick={handleClickInviteButton}>
+                  초대하기
+                </InviteIcon>
+              </IconWrapper>
+            </TitleWrapper>
             <ChatBody ref={chatBodyRef}>
               <MessagesWrapper>
                 <TopBar ref={observeRef} />
@@ -309,32 +402,43 @@ const ChatRoom = () => {
                   <Loading isLoading={isLoading} onClose={() => setIsLoading(false)} />
                 ) : (
                   <>
-                    {messages.map(message => {
-                      const isCurrentUser = currentUser?.id === message.user.id;
-                      return (
-                        <Flex key={message.id} className={isCurrentUser ? "me" : ""}>
-                          <Wrapper>
-                            <NameWrapper className={isCurrentUser ? "me" : ""}>
-                              {message.user.track?.cardinalNo && (
-                                <Text className="track">
-                                  [{message.user.track.trackName}
-                                  {message.user.track.cardinalNo}]
-                                </Text>
-                              )}
-                              <UserName className={message.user.role}>{message.user.realName}</UserName>
-                            </NameWrapper>
-                            <>
-                              <ChatItem className={isCurrentUser ? "me" : ""}>
-                                <Text>{message.content}</Text>
-                              </ChatItem>
-                            </>
-                            <DateWapper className={isCurrentUser ? "me" : ""}>
-                              <Text className="date">{message.createdAt.split("T")[1].split(".")[0]}</Text>
-                            </DateWapper>
-                          </Wrapper>
-                        </Flex>
-                      );
-                    })}
+                    {messages.length === 0 ? (
+                      <EmptyMeaageWrapper>
+                        <Text className="date">작성된 메시지가 없습니다.</Text>
+                      </EmptyMeaageWrapper>
+                    ) : (
+                      messages.map(message => {
+                        const isCurrentUser = currentUser?.id === message.user.id;
+                        return (
+                          <Flex key={message.id} className={isCurrentUser ? "me" : ""}>
+                            <Wrapper>
+                              <NameWrapper className={isCurrentUser ? "me" : ""}>
+                                {message.user.track?.cardinalNo ? (
+                                  <Text className="track">
+                                    [{message.user.track.trackName}
+                                    {message.user.track.cardinalNo}]
+                                  </Text>
+                                ) : (
+                                  <>
+                                    {message.user.role === "ADMIN" && <Text className="ADMIN">[매니저]</Text>}
+                                    {message.user.role === "COACH" && <Text className="COACH">[코치]</Text>}
+                                  </>
+                                )}
+                                <UserName className={message.user.role}>{message.user.realName}</UserName>
+                              </NameWrapper>
+                              <>
+                                <ChatItem className={isCurrentUser ? "me" : ""}>
+                                  <Text>{message.content}</Text>
+                                </ChatItem>
+                              </>
+                              <DateWapper className={isCurrentUser ? "me" : ""}>
+                                <Text className="date">{message.createdAt.split("T")[1].split(".")[0]}</Text>
+                              </DateWapper>
+                            </Wrapper>
+                          </Flex>
+                        );
+                      })
+                    )}
                   </>
                 )}
               </MessagesWrapper>
@@ -350,7 +454,7 @@ const ChatRoom = () => {
                   placeholder="send Message"
                 />
                 <OptionBar>
-                  <Button onClick={() => alert("준비중인 기능입니다.")}>채팅방 나가기</Button>
+                  <Button onClick={handleClickLeaveChat}>채팅방 나가기</Button>
                   <Button onClick={handleSendMessage}>전송</Button>
                 </OptionBar>
               </TypingBar>
@@ -358,16 +462,19 @@ const ChatRoom = () => {
           </ChatContainer>
         </Section>
         <Section>
+          <UsersWrapper>
+            <Text className="error">{error}</Text>
+            <ChatRoomUsersList users={chatRoomInfo?.users || []} onOpenMiniProfile={handleOpenMiniProfile} />
+          </UsersWrapper>
           <ChatList chatsList={chatsList} />
         </Section>
-        <Section className="onMobile">
-          <ChatInfoWrapper>
-            <UsersWrapper>
-              <ChatRoomUsersList users={chatRoomInfo?.users || []} onOpenMiniProfile={handleOpenMiniProfile} />
-            </UsersWrapper>
-            <TeamChatInfo />
-          </ChatInfoWrapper>
-        </Section>
+        {officeHours[0] && (
+          <Section className="onMobile">
+            <ChatInfoWrapper>
+              <TeamChatInfo officehours={officeHours} />
+            </ChatInfoWrapper>
+          </Section>
+        )}
       </Container>
     </>
   );
@@ -376,7 +483,9 @@ const ChatRoom = () => {
 export default ChatRoom;
 
 const Container = styled.div`
-  width: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  max-height: 100%;
   display: flex;
   gap: 12px;
   justify-content: space-around;
@@ -388,6 +497,22 @@ const Container = styled.div`
     flex-direction: column;
   }
   padding: 0 12px;
+`;
+
+const Section = styled.div`
+  width: 100%;
+  min-height: 100%;
+  @media ${({ theme }) => theme.device.tablet} {
+    &.onTablet {
+      display: none;
+    }
+  }
+  @media ${({ theme }) => theme.device.mobileL} {
+    flex-direction: column;
+    &.onMobile {
+      display: none;
+    }
+  }
 `;
 
 const UsersWrapper = styled.div`
@@ -412,22 +537,6 @@ const TopBar = styled.div`
   margin-bottom: 4px;
 `;
 
-const Section = styled.div`
-  width: 100%;
-  height: 100%;
-  @media ${({ theme }) => theme.device.tablet} {
-    &.onTablet {
-      display: none;
-    }
-  }
-  @media ${({ theme }) => theme.device.mobileL} {
-    flex-direction: column;
-    &.onMobile {
-      display: none;
-    }
-  }
-`;
-
 const ChatInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -437,7 +546,8 @@ const ChatContainer = styled.div`
   width: 100%;
   height: 588px;
 `;
-const Header = styled.div`
+
+const TitleWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -448,6 +558,34 @@ const Header = styled.div`
 
 const Title = styled.h1``;
 
+const IconWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover > div + .altText {
+    display: block;
+    opacity: 1;
+    position: absolute;
+    right: 2px;
+    width: 5rem;
+    opacity: 1;
+    padding: 5px;
+    border: solid #333 1px;
+    border-radius: 4px;
+    background-color: ${({ theme }) => theme.colors.purple1};
+  }
+`;
+const InviteIcon = styled.div`
+  width: 30px;
+  text-align: center;
+  &.altText {
+    opacity: 0;
+    display: none;
+  }
+  cursor: pointer;
+`;
 const ChatBody = styled.div`
   padding: 10px 20px;
   border: 1px solid ${({ theme }) => theme.colors.gray1};
@@ -455,10 +593,17 @@ const ChatBody = styled.div`
   flex-wrap: wrap;
   overflow-y: scroll;
 `;
+
 const MessagesWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+`;
+
+const EmptyMeaageWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 const ChatItem = styled.div`
   display: flex;
@@ -511,18 +656,19 @@ const Text = styled.p`
     font-size: 0.8em;
     color: ${({ theme }) => theme.colors.gray2};
   }
-`;
-
-const UserName = styled.p`
-  font-weight: 600;
-  &.RACER {
-  }
   &.ADMIN {
     color: ${({ theme }) => theme.colors.green2};
   }
   &.COACH {
-    color: ${({ theme }) => theme.colors.blue2};
+    color: orange;
   }
+  &.error {
+    color: tomato;
+  }
+`;
+
+const UserName = styled.p`
+  font-weight: 600;
 `;
 
 const FooterTypingBar = styled.div`
