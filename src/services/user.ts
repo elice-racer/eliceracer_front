@@ -1,4 +1,4 @@
-import { ResData } from "./admin";
+import { ResData, TeamsInfo } from "./admin";
 import { api } from "./api";
 
 export interface Track {
@@ -28,7 +28,7 @@ export interface UsersPageInfo {
   skills: Skills[] | [];
   status: number;
   track: Track | null;
-  teams: [] | null;
+  teams: TeamsInfo[];
   tmi: string | null;
 }
 export type ChatRoomUsers = Omit<UsersPageInfo, "phoneNumber">;

@@ -117,9 +117,6 @@ function EditMyPage() {
   useEffect(() => {
     const fetchMyInfo = async () => {
       const res = await AxiosUser.getMyPage();
-
-      console.log("-------내정보-------");
-      console.log(res);
       setUsersInfo(res.data);
       setSkills(res.data?.skills.map(skill => skill.skillName) || []);
       setTempSkills(res.data?.skills.map(skill => skill.skillName) || []);
@@ -215,18 +212,24 @@ function EditMyPage() {
             </ItemWrapper>
             <ItemWrapper>
               <SubTitle>Email</SubTitle>
-              <Text>{usersInfo?.email || "이메일 인증 후 등록가능합니다."}</Text>
+              <Text>{usersInfo?.email || "이메일 인증 후 등록 가능합니다."}</Text>
             </ItemWrapper>
             <ItemWrapper>
               <SubTitle>연락처</SubTitle>
-              <Text className="sun-info">연락처는 본인만 확인가능합니다.</Text>
+              <Text className="sun-info">{usersInfo?.phoneNumber || "핸드폰 번호 인증 후 등록 가능합니다."}</Text>
               <Text>{usersInfo?.phoneNumber}</Text>
             </ItemWrapper>
-            {/* <ItemWrapper>
-            <SubTitle>팀</SubTitle>
-            <Text className="sun-info"></Text>
-            <Text>{usersInfo?.teams.teamName}</Text>
-          </ItemWrapper> */}
+            {usersInfo?.teams[0]?.teamName && (
+              <ItemWrapper>
+                <SubTitle>팀</SubTitle>
+                {usersInfo.teams.map(team => (
+                  <TeamWrapper onClick={() => team.gitlab}>
+                    <Text className="sun-info">{team.teamNumber}</Text>
+                    <Text>{team.teamName}</Text>
+                  </TeamWrapper>
+                ))}
+              </ItemWrapper>
+            )}
           </LeftSection>
           <RightSection>
             <ItemWrapper>
@@ -234,12 +237,12 @@ function EditMyPage() {
               <EditInput onChange={onChangeForm} value={usersInfo?.position || ""} placeholder="포지션을 입력해주세요" name="position" />
             </ItemWrapper>
             <ItemWrapper>
-              <SubTitle>Github</SubTitle>
-              <EditInput onChange={onChangeForm} value={usersInfo?.github || ""} placeholder="깃허브 url을 추가해주세요." name="github" />
+              <SubTitle>My Git</SubTitle>
+              <EditInput onChange={onChangeForm} value={usersInfo?.github || ""} placeholder="GitHub 또는 Gitlab url을 추가해주세요." name="github" />
             </ItemWrapper>
 
             <ItemWrapper>
-              <SubTitle>Blog</SubTitle>
+              <SubTitle>Blog | Velog | T Story</SubTitle>
               <EditInput onChange={onChangeForm} value={usersInfo?.blog || ""} placeholder="블로그 url을 추가해주세요." name="blog" />
             </ItemWrapper>
 
@@ -301,6 +304,7 @@ export default EditMyPage;
 
 const Container = styled.div`
   display: flex;
+  padding: 0 20px;
   flex-direction: column;
   align-items: center;
   gap: 8px;
@@ -318,7 +322,7 @@ const TitleWrapper = styled.div`
 const SectionWrapper = styled.div`
   display: flex;
   width: 100%;
-  padding: 0 12px;
+  gap: 16px;
 `;
 
 const LeftSection = styled.div`
@@ -348,8 +352,13 @@ const ImgWrapper = styled.label`
 const ItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 0 12px;
+
   gap: 4px;
+`;
+
+const TeamWrapper = styled.div`
+  display: flex;
+  gap: 2px;
 `;
 
 const TextWrapper = styled.div`
@@ -384,7 +393,6 @@ const TMIBox = styled.div`
 const TextArea = styled.textarea`
   width: 100%;
   height: 100%;
-  background-color: #fff;
   border: none;
   outline: none;
   padding: 12px;
