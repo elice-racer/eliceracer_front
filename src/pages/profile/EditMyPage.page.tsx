@@ -10,6 +10,10 @@ import SkillBadge from "./components/SkillBadge";
 import { loadingAtom } from "../../recoil/LoadingAtom";
 import { useSetRecoilState } from "recoil";
 
+export interface SkillProps {
+  id: string;
+  skillName: string;
+}
 function EditMyPage() {
   const navigate = useNavigate();
 
@@ -223,7 +227,7 @@ function EditMyPage() {
               <ItemWrapper>
                 <SubTitle>팀</SubTitle>
                 {usersInfo.teams.map(team => (
-                  <TeamWrapper onClick={() => team.gitlab}>
+                  <TeamWrapper key={team.id} onClick={() => team.gitlab}>
                     <Text className="sun-info">{team.teamNumber}</Text>
                     <Text>{team.teamName}</Text>
                   </TeamWrapper>
@@ -264,8 +268,8 @@ function EditMyPage() {
                 </AddSkillBtn>
               </SubTitleWrapper>
               <Wrapper>
-                {skills?.map(item => (
-                  <SkillBadge key={item} skillName={item} />
+                {skills?.map(skill => (
+                  <SkillBadge key={skill} skillName={skill} />
                 ))}
               </Wrapper>
             </ItemWrapper>
@@ -323,12 +327,18 @@ const SectionWrapper = styled.div`
   display: flex;
   width: 100%;
   gap: 16px;
+  @media ${({ theme }) => theme.device.mobileL} {
+    flex-direction: column;
+  }
 `;
 
 const LeftSection = styled.div`
   width: 36%;
   display: flex;
   flex-direction: column;
+  @media ${({ theme }) => theme.device.mobileL} {
+    width: 100%;
+  }
 `;
 
 const RightSection = styled.div`
@@ -336,6 +346,9 @@ const RightSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  @media ${({ theme }) => theme.device.mobileL} {
+    width: 100%;
+  }
 `;
 
 const Input = styled.input`

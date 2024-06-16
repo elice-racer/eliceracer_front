@@ -8,7 +8,7 @@ export interface Track {
 }
 
 export interface Skills {
-  id?: string;
+  id: string;
   skillName: string;
 }
 export interface UsersPageInfo {

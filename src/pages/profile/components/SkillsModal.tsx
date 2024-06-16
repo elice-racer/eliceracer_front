@@ -53,7 +53,7 @@ function SkillsModal(
           </TitleWrapper>
           <Wrapper ref={skillboxRef}>
             {showSkills.map(skill => (
-              <SkillBadge skillName={skill} isDelete onDelete={onDeleteTempSkill} />
+              <SkillBadge key={skill} skillName={skill} isDelete onDelete={onDeleteTempSkill} />
             ))}
             <Input
               value={searchValue}
@@ -72,7 +72,7 @@ function SkillsModal(
             </Button>
           </ButtonWrapper>
         </Container>
-        <SkillContainer isOpen={skillModalOpen && searchValue !== ""} style={{ top: `calc(45% + ${height / 2}px` }}>
+        <SkillContainer $isOpen={skillModalOpen && searchValue !== ""} style={{ top: `calc(45% + ${height / 2}px` }}>
           {searchSkills.map(skill => (
             <SkillItem skillName={skill.skillName} onClick={() => onAddTempSkill(skill.skillName)} />
           ))}
@@ -211,7 +211,7 @@ const Button = styled.button`
 `;
 
 // skill style
-const SkillContainer = styled.div<{ isOpen: boolean }>`
+const SkillContainer = styled.div<{ $isOpen: boolean }>`
   width: 100%;
   height: 200px;
   background-color: #fff;
@@ -222,7 +222,7 @@ const SkillContainer = styled.div<{ isOpen: boolean }>`
   transform: translateX(-50%);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
-  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
+  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
 `;
 
 const StyledSkillItem = styled.div`

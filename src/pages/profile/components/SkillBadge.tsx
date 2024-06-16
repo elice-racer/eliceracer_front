@@ -1,15 +1,16 @@
 import styled from "styled-components";
 
 interface SkillBadgeProps {
+  key: string;
   skillName: string;
-
   isDelete?: boolean;
   onDelete?: (skillName: string) => void;
 }
 
-function SkillBadge({ skillName, isDelete, onDelete }: SkillBadgeProps) {
+// todo key 수정
+function SkillBadge({ key, skillName, isDelete, onDelete }: SkillBadgeProps) {
   return (
-    <StyledSkillBadge>
+    <StyledSkillBadge key={key}>
       {skillName}
       {isDelete && <StyledDeleteIcon onClick={() => (onDelete ? onDelete(skillName) : {})}>Ⅹ</StyledDeleteIcon>}
     </StyledSkillBadge>

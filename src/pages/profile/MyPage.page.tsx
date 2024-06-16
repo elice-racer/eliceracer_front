@@ -121,9 +121,11 @@ function MyPage() {
             </TextWrapper>
           </SubTitleWrapper>
           <Wrapper>
-            {usersInfo?.skills?.map(skill => (
-              <SkillBadge key={skill.id} skillName={skill.skillName} />
-            ))}
+            {usersInfo?.skills.length === 0 ? (
+              <Text>등록된 기술 스택이 없습니다.</Text>
+            ) : (
+              usersInfo?.skills?.map(skill => <SkillBadge key={skill.id} skillName={skill.skillName} />)
+            )}
           </Wrapper>
           <ItemWrapper>
             <SubTitleWrapper>
@@ -173,12 +175,18 @@ const SectionWrapper = styled.div`
   display: flex;
   width: 100%;
   gap: 16px;
+  @media ${({ theme }) => theme.device.mobileL} {
+    flex-direction: column;
+  }
 `;
 
 const LeftSection = styled.div`
   width: 36%;
   display: flex;
   flex-direction: column;
+  @media ${({ theme }) => theme.device.mobileL} {
+    width: 100%;
+  }
 `;
 
 const RightSection = styled.div`
@@ -186,6 +194,9 @@ const RightSection = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  @media ${({ theme }) => theme.device.mobileL} {
+    width: 100%;
+  }
 `;
 
 const ImgWrapper = styled.label`
