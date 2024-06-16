@@ -87,9 +87,9 @@ export default function CreateAdmin() {
           {createAdminForm.password !== "" && createAdminForm.confirmPassword !== "" && (
             <>
               {createAdminForm.password === createAdminForm.confirmPassword ? (
-                <ConfirmText isConfirm>비밀번호가 일치합니다.</ConfirmText>
+                <ConfirmText $isConfirm>비밀번호가 일치합니다.</ConfirmText>
               ) : (
-                <ConfirmText isConfirm={false}>비밀번호가 일치하지 않습니다.</ConfirmText>
+                <ConfirmText $isConfirm={false}>비밀번호가 일치하지 않습니다.</ConfirmText>
               )}
             </>
           )}
@@ -111,7 +111,6 @@ const Wrapper = styled.div`
   align-items: center;
   flex-direction: column;
   gap: 12px;
-  height: 100%;
   margin-top: 50px;
 `;
 
@@ -141,7 +140,7 @@ const Text = styled.p`
   font-size: 0.8rem;
 `;
 
-const ConfirmText = styled.p<{ isConfirm: boolean }>`
-  color: ${({ isConfirm }) => (isConfirm ? "#b67bff" : "tomato")};
+const ConfirmText = styled.p<{ $isConfirm: boolean }>`
+  color: ${({ $isConfirm }) => ($isConfirm ? "#b67bff" : "tomato")};
   transition: all 0.3s ease-in;
 `;

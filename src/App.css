@@ -46,7 +46,7 @@
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
+    background-color: #fff;
   }
   /* :hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -56,12 +56,13 @@
   }
   button {
     background-color: #f9f9f9;
+    color: #838282;
   }
 }
-/* 
+
 @media (prefers-color-scheme: black) {
   :root {
-    color: #ffffff;
+    color: #fff;
     background-color: #242424;
     height: 100%;
   }
@@ -70,8 +71,9 @@
   }
   button {
     background-color: #beb2dc;
+    color: #fff;
   }
-} */
+}
 
 html,
 body {

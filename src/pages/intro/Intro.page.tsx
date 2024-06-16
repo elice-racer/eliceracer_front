@@ -33,8 +33,7 @@ const Container = styled.div`
   gap: 16px;
   height: 100vh;
   text-align: center;
-
-  margin-top: -68px;
+  margin-top: -120px;
 `;
 const BoxWrapper = styled.div`
   display: flex;
