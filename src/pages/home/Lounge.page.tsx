@@ -113,7 +113,6 @@ function Lounge() {
     try {
       const res = await AxiosUser.getSearchUser(searchUser);
       if (res.status === 200) {
-        console.log(res);
         setUsers(res.data.data);
       }
     } catch (e: any) {

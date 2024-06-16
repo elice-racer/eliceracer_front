@@ -112,7 +112,7 @@ function MyPage() {
             {usersInfo?.sns ? (
               <Text>{usersInfo.sns}</Text>
             ) : (
-              <Text className="sun-info">소통할 SNS나 쿠키챗 연락이 가능한 url을 등록하실 수 있습니다.</Text>
+              <Text className="sun-info">소통할 SNS나 커피챗 연락이 가능한 url을 등록하실 수 있습니다.</Text>
             )}
           </ItemWrapper>
           <SubTitleWrapper>

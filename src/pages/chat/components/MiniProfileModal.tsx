@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { imgPaths } from "../../../utils/path";
-import { Link } from "react-router-dom";
 import { Dimed } from "../../profile/components/SkillsModal";
 import { UsersPageInfo } from "../../../services/user";
 import ChatNameModal from "./ChatNameModal";
@@ -50,7 +49,7 @@ function MiniProfileModal({
                 <Title>{userdata.realName}</Title>
                 <Text className="subInfo">{userdata.role}🏁</Text>
               </Wrapper>
-              {userdata.comment ? <Text>{userdata.comment}</Text> : <Text>안녕하세요. {userdata.realName}입니다.</Text>}
+              {userdata.comment ? <Text>{userdata.comment}</Text> : ""}
               {userdata.track ? (
                 <Text className="subInfo">
                   {userdata.track.trackName}
@@ -71,16 +70,21 @@ function MiniProfileModal({
                   ))
                 )}
               </SkillInfoWrapper>
-              {userdata.github ? <Link to={userdata.github ? userdata.github : ""}>깃허브 바로가기</Link> : ""}
+              {userdata.github ? <StyledA href={userdata.github}>👨‍💻 {userdata.realName}님의 Git 바로가기</StyledA> : ""}
               {/* <Wrapper>
                   <SubTitle>진행한 프로젝트 :</SubTitle>
                   <Text></Text>
                 </Wrapper> */}
               <SubTitle>업적</SubTitle>
-              <Text className="skill">성실한 엘리스🏆</Text>
+              <AchiveWrapper>
+                <Text className="skill">성실한 엘리스🏆</Text>
+              </AchiveWrapper>
             </ColWrapper>
             <ButtonWrapper>
               {/* <Button onClick={() => navigate(paths.USERS_PAGE)}>더보기</Button> */}
+              <Button className="user-page" onClick={() => alert("Comming Soon... June 18th")}>
+                더 보기
+              </Button>
               {userdata.id && (
                 <Button id={userdata.id} onClick={onOpenChatName} className="chat-start">
                   {`${userdata.realName}님과 1 : 1 채팅`}
@@ -183,17 +187,17 @@ const ButtonWrapper = styled.div`
     background-color: ${({ theme }) => theme.colors.purple3} !important;
     cursor: pointer !important;
   }
-`;
 
-// const Button = styled.div`
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   width: 100%;
-//   height: 32px;
-//   background-color: ${({ theme }) => theme.colors.purple1};
-//   cursor: pointer;
-// `;
+  .user-page {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 32px !important;
+    background-color: ${({ theme }) => theme.colors.purple2} !important;
+    cursor: pointer !important;
+  }
+`;
 
 const Title = styled.h1``;
 
@@ -204,10 +208,30 @@ const Text = styled.p`
     color: ${({ theme }) => theme.colors.gray2};
   }
   &.skill {
+    position: relative;
     width: auto;
-    max-width: 94px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 26px;
+    position: relative;
     background-color: ${({ theme }) => theme.colors.blue2};
-    padding: 2px 4px;
     border-radius: 12px;
+    padding: 0 4px;
   }
+`;
+
+const StyledA = styled.a`
+  cursor: pointer;
+  text-decoration: none;
+  color: ${({ theme }) => theme.colors.purple9};
+`;
+
+const AchiveWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 4px;
 `;

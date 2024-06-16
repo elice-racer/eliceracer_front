@@ -54,7 +54,8 @@ const CustomCalendar = ({ events }: CustomCalendarEventProps) => {
       components={components}
       localizer={localizer}
       events={events}
-      views={["month", "work_week", "agenda"]}
+      views={["agenda", "month", "work_week"]}
+      defaultView="agenda"
       startAccessor="start"
       endAccessor="end"
       selectable

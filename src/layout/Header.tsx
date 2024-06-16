@@ -56,9 +56,9 @@ const Header = ({ adminMenu }: any) => {
           <LinkItem>
             <a href={"https://elice.io/ko"}>엘리스홈</a>
           </LinkItem>
-          {/* <LinkItem>
+          <LinkItem>
             <Link to={paths.MYPAGE}>마이페이지</Link>
-          </LinkItem> */}
+          </LinkItem>
 
           <LinkItem onClick={handleClickLogout}>
             <>로그아웃</>
@@ -92,11 +92,11 @@ const Header = ({ adminMenu }: any) => {
               엘리스홈
             </a>
           </li>
-          {/* <li>
+          <li>
             <LinkItem>
               <Link to={paths.MYPAGE}>마이페이지</Link>
             </LinkItem>
-          </li> */}
+          </li>
           <li>
             <LinkItem onClick={handleClickLogout}>
               <>로그아웃</>

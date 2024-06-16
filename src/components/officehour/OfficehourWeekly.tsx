@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import CustomCalendar, { CustomCalendarProps } from "../calendar/Calendar";
 import { OfficehourProps } from "../../services/officehour";
+import EmptyImage from "../commons/EmptyImage";
 
 interface OfficeHourWeeklyProps {
   officehours: OfficehourProps[];
@@ -52,8 +53,12 @@ function OfficeHourWeekly({ officehours }: OfficeHourWeeklyProps) {
         <TitleWrapper>
           <Title>전체 오피스아워 일정 📆</Title>
         </TitleWrapper>
-        <CustomCalendar events={convertCalendarType(_officeHours)} />
-        {/* <DataWrapper>{officehours ? "" : <EmptyImage message={"현재 등록된 전체 오피스아워 일정이 없습니다."} />}</DataWrapper> */}
+
+        {officehours ? (
+          <CustomCalendar events={convertCalendarType(_officeHours)} />
+        ) : (
+          <EmptyImage message={"현재 등록된 전체 오피스아워 일정이 없습니다."} />
+        )}
       </Wapper>
     </Container>
   );

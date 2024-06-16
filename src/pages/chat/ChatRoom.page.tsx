@@ -269,8 +269,8 @@ const ChatRoom = () => {
     if (chatRoomInfo?.team) {
       if (recoilUser?.role === "RACER") alert("프로젝트 채팅방 초대는 관리자 권한이 필요합니다.");
     }
-    alert("준비 중인 기능입니다.");
-    setIsSelectUserModalOpen(true);
+    return alert("Comming soon...");
+    // setIsSelectUserModalOpen(true);
     // fetchInviteUsers();
   };
 
@@ -388,7 +388,7 @@ const ChatRoom = () => {
           <ChatContainer id={chatRoomInfo?.id}>
             <TitleWrapper>
               <Title>{chatRoomInfo?.chatName}</Title>
-              <IconWrapper onClick={handleClickInviteButton}>
+              <IconWrapper>
                 <InviteIcon>➕👥</InviteIcon>
                 <InviteIcon className="altText" onClick={handleClickInviteButton}>
                   초대하기
