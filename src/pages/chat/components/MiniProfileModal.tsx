@@ -129,6 +129,7 @@ const CloseBtn = styled.div`
   position: absolute;
   cursor: pointer;
 `;
+
 const Header = styled.div`
   height: 240px;
 `;

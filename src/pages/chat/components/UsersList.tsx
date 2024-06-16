@@ -7,7 +7,7 @@ import EmptyImage from "../../../components/commons/EmptyImage";
 
 interface UsersListProps {
   users: ChatRoomUsers[];
-  myInfo: ChatRoomUsers | null | undefined;
+  myInfo?: ChatRoomUsers | null | undefined;
   error?: string;
   onOpenMiniProfile: (userId: string | null) => void;
 }

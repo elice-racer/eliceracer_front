@@ -75,7 +75,7 @@ export default function ChatHome() {
     setIsModalOpen(true);
   };
 
-  /** 친구 검색 */
+  /** 멤버 검색 */
   const fetchSearchUserList = async () => {
     try {
       const res = await AxiosUser.getSearchUser(searchUser);

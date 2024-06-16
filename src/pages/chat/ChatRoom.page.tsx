@@ -15,6 +15,7 @@ import MiniProfileModal from "./components/MiniProfileModal";
 import { SocketContext, SOCKET_EVENT } from "../../context/SocketContext";
 import ChatList from "./components/ChatList";
 import { paths } from "../../utils/path";
+import SelectUsersModal from "./components/inviteUsers/SelectUserModal";
 
 interface TeamInfo {
   id: string;
@@ -37,18 +38,23 @@ const ChatRoom = () => {
   const navigate = useNavigate();
   const socket = useContext(SocketContext);
   const currentUser = useRecoilValue(currentUserAtom);
+  // ?
+  const recoilUser = useRecoilValue(currentUserAtom);
+
+  const chatBodyRef = useRef<HTMLDivElement>(null);
+  const observeRef = useRef<HTMLDivElement>(null);
+  const [userId, setUserId] = useState<any>(null);
 
   const [error, setError] = useState<string>("");
   const [miniProfile, setMiniProfile] = useState<UsersPageInfo>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [chatNameModalOpen, setChatNameModalOpen] = useState(false);
 
-  const [userId, setUserId] = useState<any>(null);
-
-  const recoilUser = useRecoilValue(currentUserAtom);
-
-  const chatBodyRef = useRef<HTMLDivElement>(null);
-  const observeRef = useRef<HTMLDivElement>(null);
+  /** 채팅방 멤버 초대  */
+  const [userList, setUserList] = useState();
+  const [isSelectUserModalOpne, setIsSelectUserModalOpen] = useState<boolean>(false);
+  const [searchUser, setSearchUser] = useState("");
+  const [selectedUsers, _setSelectedUsers] = useState<string[]>([]);
 
   const [chatsList, setChatList] = useState<Chats[]>();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -61,11 +67,10 @@ const ChatRoom = () => {
 
   const [officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
 
-  const [_selectedUsers, _setSelectedUsers] = useState<string[]>([]);
-
   const [chatNameInput, setChatNameInput] = useState("");
 
   const handleChageChatNameInput = (e: any) => setChatNameInput(e.target.value);
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setChatNameModalOpen(false);
@@ -86,6 +91,23 @@ const ChatRoom = () => {
       setChatNameInput("");
     }
   };
+
+  /** 멤버 검색 */
+  const fetchSearchUserList = async () => {
+    try {
+      const res = await AxiosUser.getSearchUser(searchUser);
+      if (res.status === 200) setUserList(res.data.data);
+    } catch (e: any) {
+      setError(e.response?.data.message);
+    }
+  };
+
+  const handleSearchUser = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      fetchSearchUserList();
+    }
+  };
+
   /** 팀 오피스아워 조회 */
   const fetchOfficehourTeams = async (id: string) => {
     try {
@@ -232,25 +254,37 @@ const ChatRoom = () => {
         alert("채팅방을 나왔습니다.");
         navigate(paths.CHAT_HOME);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (e: any) {
+      setError(e.response?.data.message);
     }
   };
 
+  /** 채팅방 나가기 이벤트 */
   const handleClickLeaveChat = async () => {
     if (chatRoomInfo?.team) alert("프로젝트 기간에는 팀 채팅방을 나가실 수 없습니다.");
     if (chatRoomInfo?.team === null) fetchLeaveChatRoom();
   };
 
+  const handleClickInviteButton = async () => {
+    if (chatRoomInfo?.team) {
+      if (recoilUser?.role === "RACER") alert("프로젝트 채팅방 초대는 관리자 권한이 필요합니다.");
+    }
+    alert("준비 중인 기능입니다.");
+    setIsSelectUserModalOpen(true);
+    // fetchInviteUsers();
+  };
+
   /** 유저 초대 */
-  // const fetchInviteUsers = async () => {
-  //   try {
-  //     const res = await AxiosChat.postUserToChat(chatId, selectedUsers);
-  //     console.log(res);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  const fetchInviteUsers = async () => {
+    try {
+      if (selectedUsers.length === 0) return alert("초대할 사람을 선택해주세요.");
+      console.log(selectedUsers);
+      const res = await AxiosChat.postUserToChat(chatId, selectedUsers);
+      console.log(res);
+    } catch (e: any) {
+      setError(e.response?.data.message);
+    }
+  };
 
   useEffect(() => {
     socket.on(SOCKET_EVENT.ROOM_CREATE, (chatId: string) => {
@@ -326,6 +360,18 @@ const ChatRoom = () => {
 
   return (
     <>
+      <SelectUsersModal
+        onOpen={isSelectUserModalOpne}
+        onClose={() => {
+          setIsSelectUserModalOpen(false);
+        }}
+        onChange={(e: any) => setSearchUser(e.target.value)}
+        onInviteUsers={fetchInviteUsers}
+        onSearch={handleSearchUser}
+        onClickSearch={fetchSearchUserList}
+        searchUser={searchUser}
+        userList={userList}
+      />
       <MiniProfileModal
         isModalOpen={isModalOpen}
         chatNameModalOpen={chatNameModalOpen}
@@ -340,9 +386,15 @@ const ChatRoom = () => {
       <Container>
         <Section>
           <ChatContainer id={chatRoomInfo?.id}>
-            <Header>
+            <TitleWrapper>
               <Title>{chatRoomInfo?.chatName}</Title>
-            </Header>
+              <IconWrapper onClick={handleClickInviteButton}>
+                <InviteIcon>➕👥</InviteIcon>
+                <InviteIcon className="altText" onClick={handleClickInviteButton}>
+                  초대하기
+                </InviteIcon>
+              </IconWrapper>
+            </TitleWrapper>
             <ChatBody ref={chatBodyRef}>
               <MessagesWrapper>
                 <TopBar ref={observeRef} />
@@ -494,7 +546,8 @@ const ChatContainer = styled.div`
   width: 100%;
   height: 588px;
 `;
-const Header = styled.div`
+
+const TitleWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -505,6 +558,34 @@ const Header = styled.div`
 
 const Title = styled.h1``;
 
+const IconWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover > div + .altText {
+    display: block;
+    opacity: 1;
+    position: absolute;
+    right: 2px;
+    width: 5rem;
+    opacity: 1;
+    padding: 5px;
+    border: solid #333 1px;
+    border-radius: 4px;
+    background-color: ${({ theme }) => theme.colors.purple1};
+  }
+`;
+const InviteIcon = styled.div`
+  width: 30px;
+  text-align: center;
+  &.altText {
+    opacity: 0;
+    display: none;
+  }
+  cursor: pointer;
+`;
 const ChatBody = styled.div`
   padding: 10px 20px;
   border: 1px solid ${({ theme }) => theme.colors.gray1};
