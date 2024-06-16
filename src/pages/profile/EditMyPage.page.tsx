@@ -159,7 +159,7 @@ function EditMyPage() {
   useEffect(() => {}, [tempSkills]);
 
   return (
-    <Container>
+    <>
       <SkillsModal
         searchValue={searchSkillValue}
         onChangeValue={e => setSearchSkillValue(e.target.value)}
@@ -175,34 +175,44 @@ function EditMyPage() {
         onDeleteTempSkill={onDeleteTempSkill}
         ref={inputRef}
       />
-      <Header>
-        <TextWrapper>
-          {usersInfo?.position ? (
-            <Title>
-              {usersInfo?.position} : {usersInfo?.realName}
-            </Title>
-          ) : (
-            <Title>내 정보</Title>
-          )}
-        </TextWrapper>
-        <BtnWrapper>
-          <Button onClick={handleClick}>저장하기</Button>
-        </BtnWrapper>
-      </Header>
-      <Wrapper>
-        <BasicInfoWrapper>
-          <ProfileWrapper>
+      <Container>
+        <TitleWrapper>
+          <TextWrapper>
+            {usersInfo?.position ? (
+              <Title>
+                {usersInfo?.position} : {usersInfo?.realName}
+              </Title>
+            ) : (
+              <Title>내 정보</Title>
+            )}
+          </TextWrapper>
+          <BtnWrapper>
+            <Button onClick={handleClick}>저장하기</Button>
+          </BtnWrapper>
+        </TitleWrapper>
+        <SectionWrapper>
+          <LeftSection>
             <ImgWrapper>{<Img src={imgPaths.DEFAULT_PROFILE_IMG} alt="기본이미지" />}</ImgWrapper>
             <Input type="file" accept=".jpg, .jpeg, .png" />
             <RoleWrapper>
-              {usersInfo?.role ? <Text>{usersInfo?.role}🏁</Text> : <Text>환영합니다! {usersInfo?.realName && `${usersInfo?.realName}님`}</Text>}
               {usersInfo?.track && (
                 <Text className="sun-info">
                   {usersInfo.track.trackName}
-                  {usersInfo.track.cardinalNo} |
+                  {usersInfo.track.cardinalNo}
                 </Text>
               )}
+              {usersInfo?.role ? (
+                <Text>
+                  {usersInfo?.role} {usersInfo?.realName}🏁
+                </Text>
+              ) : (
+                <Text>환영합니다! {usersInfo?.realName && `${usersInfo?.realName}님`}</Text>
+              )}
             </RoleWrapper>
+            <ItemWrapper>
+              <SubTitle>한줄 소개</SubTitle>
+              <EditInput onChange={onChangeForm} value={usersInfo?.comment || ""} placeholder="본인을 한 줄로 소개한다면?" name="comment" />
+            </ItemWrapper>
             <ItemWrapper>
               <SubTitle>Email</SubTitle>
               <Text>{usersInfo?.email || "이메일 인증 후 등록가능합니다."}</Text>
@@ -212,83 +222,79 @@ function EditMyPage() {
               <Text className="sun-info">연락처는 본인만 확인가능합니다.</Text>
               <Text>{usersInfo?.phoneNumber}</Text>
             </ItemWrapper>
-          </ProfileWrapper>
-          <UserInfoWrapper>
+            {/* <ItemWrapper>
+            <SubTitle>팀</SubTitle>
+            <Text className="sun-info"></Text>
+            <Text>{usersInfo?.teams.teamName}</Text>
+          </ItemWrapper> */}
+          </LeftSection>
+          <RightSection>
             <ItemWrapper>
-              <SubTitle>한줄 소개</SubTitle>
-              <EditInput onChange={onChangeForm} value={usersInfo?.comment || ""} placeholder="나를 한 줄로 표현해주세요." name="comment" />
+              <SubTitle>Position</SubTitle>
+              <EditInput onChange={onChangeForm} value={usersInfo?.position || ""} placeholder="포지션을 입력해주세요" name="position" />
+            </ItemWrapper>
+            <ItemWrapper>
+              <SubTitle>Github</SubTitle>
+              <EditInput onChange={onChangeForm} value={usersInfo?.github || ""} placeholder="깃허브 url을 추가해주세요." name="github" />
             </ItemWrapper>
 
             <ItemWrapper>
               <SubTitle>Blog</SubTitle>
               <EditInput onChange={onChangeForm} value={usersInfo?.blog || ""} placeholder="블로그 url을 추가해주세요." name="blog" />
             </ItemWrapper>
-            <ItemWrapper>
-              <SubTitle>Github</SubTitle>
-              <EditInput onChange={onChangeForm} value={usersInfo?.github || ""} placeholder="깃허브 url을 추가해주세요." name="github" />
-            </ItemWrapper>
-            <ItemWrapper>
-              <SubTitle>position</SubTitle>
-              <EditInput onChange={onChangeForm} value={usersInfo?.position || ""} placeholder="포지션을 입력해주세요" name="position" />
-            </ItemWrapper>
+
             <ItemWrapper>
               <SubTitle>SNS</SubTitle>
               <EditInput onChange={onChangeForm} value={usersInfo?.sns || ""} placeholder="sns 계정 url을 추가해주세요." name="sns" />
             </ItemWrapper>
-          </UserInfoWrapper>
-        </BasicInfoWrapper>
-        <>
-          <SubTitleWrapper>
-            <TextWrapper className="sub-title">
-              <SubTitle>보유 기술 스택</SubTitle>
-            </TextWrapper>
-            <AddSkillBtn
-              onClick={() => {
-                setIsModalOpen(true);
-              }}
-            >
-              기술스택 추가하기
-            </AddSkillBtn>
-          </SubTitleWrapper>
-          <SKillWrapper>
-            {skills?.map(item => (
-              <SkillBadge key={item} skillName={item} />
-            ))}
-          </SKillWrapper>
-        </>
-        <>
-          <SubTitleWrapper>
-            <TextWrapper className="sub-title">
-              <SubTitle>업적</SubTitle>
-            </TextWrapper>
-          </SubTitleWrapper>
-          <AchievBox></AchievBox>
-        </>
-        <>
-          <SubTitleWrapper>
-            <TextWrapper className="sub-title">
-              <SubTitle>소개</SubTitle>
-            </TextWrapper>
-          </SubTitleWrapper>
-          <DescriptBox>
-            <TextArea
-              value={usersInfo?.description || ""}
-              onChange={onChangeTextArea}
-              name="description"
-              placeholder="자유롭게 작성해주세요. (ex : MBTI, 목표하는 개발자의 모습 등등"
-            />
-          </DescriptBox>
-        </>
-        <SubTitleWrapper>
-          <TextWrapper className="sub-title">
-            <SubTitle>나의 TMI</SubTitle>
-          </TextWrapper>
-        </SubTitleWrapper>
-        <TMIBox>
-          <TextArea value={usersInfo?.tmi || ""} onChange={onChangeTextArea} name="tmi" />
-        </TMIBox>
-      </Wrapper>
-    </Container>
+            <ItemWrapper>
+              <SubTitleWrapper>
+                <TextWrapper>
+                  <SubTitle>보유 기술 스택</SubTitle>
+                </TextWrapper>
+                <AddSkillBtn
+                  onClick={() => {
+                    setIsModalOpen(true);
+                  }}
+                >
+                  기술스택 추가하기
+                </AddSkillBtn>
+              </SubTitleWrapper>
+              <Wrapper>
+                {skills?.map(item => (
+                  <SkillBadge key={item} skillName={item} />
+                ))}
+              </Wrapper>
+            </ItemWrapper>
+            <ItemWrapper>
+              <SubTitleWrapper>
+                <TextWrapper>
+                  <SubTitle>소개</SubTitle>
+                </TextWrapper>
+              </SubTitleWrapper>
+              <DescriptBox>
+                <TextArea
+                  value={usersInfo?.description || ""}
+                  onChange={onChangeTextArea}
+                  name="description"
+                  placeholder="자유롭게 작성해주세요. (ex : MBTI, 목표하는 개발자의 모습 등등"
+                />
+              </DescriptBox>
+            </ItemWrapper>
+            <ItemWrapper>
+              <SubTitleWrapper>
+                <TextWrapper>
+                  <SubTitle>나의 TMI</SubTitle>
+                </TextWrapper>
+              </SubTitleWrapper>
+              <TMIBox>
+                <TextArea value={usersInfo?.tmi || ""} onChange={onChangeTextArea} name="tmi" />
+              </TMIBox>
+            </ItemWrapper>
+          </RightSection>
+        </SectionWrapper>
+      </Container>
+    </>
   );
 }
 export default EditMyPage;
@@ -301,7 +307,7 @@ const Container = styled.div`
   width: 100%;
 `;
 
-const Header = styled.div`
+const TitleWrapper = styled.div`
   display: flex;
   justify-content: end;
   gap: 12px;
@@ -309,21 +315,47 @@ const Header = styled.div`
   height: 50px;
 `;
 
-const Wrapper = styled.div`
+const SectionWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  padding: 0 12px;
+`;
+
+const LeftSection = styled.div`
+  width: 36%;
   display: flex;
   flex-direction: column;
+`;
+
+const RightSection = styled.div`
+  width: 64%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const Input = styled.input`
+  display: none;
+`;
+
+const ImgWrapper = styled.label`
+  display: flex;
+  align-items: start;
   justify-content: center;
-  align-items: center;
-  gap: 10px;
+  padding: 30px 0 20px 0;
+`;
+
+const ItemWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 0 12px;
+  gap: 4px;
 `;
 
 const TextWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  &.sub-title {
-    margin-left: 10px;
-  }
 `;
 
 const Title = styled.h1`
@@ -337,12 +369,12 @@ const SubTitleWrapper = styled.div`
   align-items: center;
   justify-content: start;
   gap: 8px;
-  width: 590px;
+  width: 100%;
   height: 30px;
 `;
 
 const TMIBox = styled.div`
-  width: 590px;
+  width: 100%;
   height: 200px;
   padding: 12px;
   border-radius: 6px;
@@ -380,32 +412,9 @@ const BtnWrapper = styled.div`
   justify-content: center;
 `;
 
-const BasicInfoWrapper = styled.div`
-  display: flex;
-  gap: 10px;
-`;
-
-const ProfileWrapper = styled.div`
-  border-radius: 8px;
-  padding: 10px;
-  width: 200px;
-  border: 1px solid ${({ theme }) => theme.colors.gray1};
-`;
-
 const RoleWrapper = styled.div`
   margin: 0 10px;
   display: flex;
-`;
-
-const Input = styled.input`
-  display: none;
-`;
-
-const ImgWrapper = styled.label`
-  display: flex;
-  align-items: start;
-  justify-content: center;
-  padding: 30px 0 20px 0;
 `;
 
 const Img = styled.img`
@@ -415,43 +424,17 @@ const Img = styled.img`
   object-position: center center;
 `;
 
-const UserInfoWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  border-radius: 8px;
-  padding: 16px;
-  width: 380px;
-  height: 300px;
-  border: 1px solid ${({ theme }) => theme.colors.gray1};
-`;
-
-const ItemWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-`;
-
-const AchievBox = styled.div`
-  padding: 12px;
-  border-radius: 6px;
-  width: 590px;
-  height: 60px;
-  border: 1px solid ${({ theme }) => theme.colors.gray1};
-`;
-
-const SKillWrapper = styled.div`
+const Wrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  padding: 12px;
 
-  width: 590px;
+  width: 100%;
   min-height: 60px;
 
   gap: 4px;
-  padding-left: 12px;
-
   border-radius: 6px;
   border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
@@ -459,7 +442,7 @@ const SKillWrapper = styled.div`
 const DescriptBox = styled.div`
   border-radius: 6px;
   padding: 12px;
-  width: 590px;
+  width: 100%;
   height: 250px;
   border: 1px solid ${({ theme }) => theme.colors.gray1};
 `;
