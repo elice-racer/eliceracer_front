@@ -1,4 +1,6 @@
 import "./App.css";
+import "./utils/fcm";
+
 import { paths } from "./utils/path";
 
 import { SocketContext, socket, socketConfig } from "./context/SocketContext";
@@ -79,7 +81,7 @@ const router = createBrowserRouter([
       { path: paths.HOME, element: <Lounge /> },
       { path: paths.CHAT_HOME, element: <ChatHome /> },
       { path: paths.CHAT_ROOM, element: <ChatRoom /> },
-      { path: paths.USERS_PAGE, element: <UsersPage /> },
+      { path: paths.USERS_PAGE_ID, element: <UsersPage /> },
     ],
   },
   {
