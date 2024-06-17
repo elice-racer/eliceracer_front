@@ -21,8 +21,11 @@ function EditMyPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [usersInfo, setUsersInfo] = useState<UsersPageInfo | undefined | null>(null);
+  const [imageFile, setImageFile] = useState<File>();
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   // 검색어
   const [searchSkillValue, setSearchSkillValue] = useState("");
@@ -32,9 +35,13 @@ function EditMyPage() {
 
   const [tempSkills, setTempSkills] = useState<string[]>([]);
 
-  const [debounceTimeout, setDebounceTimeout] = useState<number | null>(null);
+  const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout>();
 
   const [skills, setSkills] = useState<string[]>([]);
+
+  const handleRefClick = () => {
+    fileRef?.current?.click();
+  };
 
   const onChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!usersInfo) return;
@@ -93,6 +100,35 @@ function EditMyPage() {
     }
   };
 
+  /** 이미지 업로드 */
+  const fetchUploadUserImg = async () => {
+    const formData = new FormData();
+    if (imageFile) {
+      formData.append("file", imageFile);
+      try {
+        const res = await AxiosUser.putUsersProfileImg(formData);
+        console.log(res);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    setLoading(false);
+  };
+
+  /** 이미지 화면 로드 */
+  const handleChangeImageFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      setImageFile(file);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleClick = async () => {
     try {
       if (!usersInfo) return;
@@ -107,11 +143,11 @@ function EditMyPage() {
         sns,
         tmi,
       });
-
       if (res.status === 200) {
         const newMypage = res.data.data as UsersPageInfo;
         setUsersInfo(newMypage);
       }
+      fetchUploadUserImg();
       navigate(paths.MYPAGE);
     } catch (e) {
       console.error(e);
@@ -121,9 +157,13 @@ function EditMyPage() {
   useEffect(() => {
     const fetchMyInfo = async () => {
       const res = await AxiosUser.getMyPage();
+
       setUsersInfo(res.data);
       setSkills(res.data?.skills.map(skill => skill.skillName) || []);
       setTempSkills(res.data?.skills.map(skill => skill.skillName) || []);
+      if (res.data?.profileImage) {
+        setPreviewImage(res.data?.profileImage);
+      }
     };
     fetchMyInfo();
   }, []);
@@ -193,8 +233,11 @@ function EditMyPage() {
         </TitleWrapper>
         <SectionWrapper>
           <LeftSection>
-            <ImgWrapper>{<Img src={imgPaths.DEFAULT_PROFILE_IMG} alt="기본이미지" />}</ImgWrapper>
-            <Input type="file" accept=".jpg, .jpeg, .png" />
+            <ImgWrapper onClick={handleRefClick}>
+              {previewImage ? <Img src={previewImage} /> : <Img src={imgPaths.DEFAULT_PROFILE_IMG} alt="기본이미지" />}
+            </ImgWrapper>
+            프로필 이미지를 등록하시려면 상단 이미지를 클릭해주세요!
+            <Input type="file" accept="image/jpg, image/jpeg, image/png" ref={fileRef} onChange={handleChangeImageFile} />
             <RoleWrapper>
               {usersInfo?.track && (
                 <Text className="sun-info">
@@ -221,7 +264,6 @@ function EditMyPage() {
             <ItemWrapper>
               <SubTitle>연락처</SubTitle>
               <Text className="sun-info">{usersInfo?.phoneNumber || "핸드폰 번호 인증 후 등록 가능합니다."}</Text>
-              <Text>{usersInfo?.phoneNumber}</Text>
             </ItemWrapper>
             {usersInfo?.teams[0]?.teamName && (
               <ItemWrapper>
@@ -352,6 +394,7 @@ const RightSection = styled.div`
 `;
 
 const Input = styled.input`
+  visibility: "hidden";
   display: none;
 `;
 

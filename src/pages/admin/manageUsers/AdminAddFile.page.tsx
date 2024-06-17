@@ -64,6 +64,7 @@ function AdminAddFile() {
       console.error(e);
     }
   };
+
   /** 코치 멤버 파일 업로드 */
   const handleUploadCoachesFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

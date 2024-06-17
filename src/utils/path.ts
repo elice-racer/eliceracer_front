@@ -14,7 +14,8 @@ const paths = {
   CHAT_ROOM: "/chat/:id",
 
   // 상대 프로필 조회
-  USERS_PAGE: "/elicer/:id",
+  USERS_PAGE_ID: "/elicer/:userId",
+  USERS_PAGE: "/elicer",
 
   // 공지 게시판
   NOTICE_LIST: "/user/notice",

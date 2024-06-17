@@ -37,7 +37,7 @@ function SelectUsersModal({ onOpen, onClose, onChange, onSearch, onClickSearch, 
           <>
             {userList.map(user => (
               <UserWrapper key={user.id} onClick={() => {}}>
-                <ProfileImg />
+                <ProfileImg userImg={user.profileImage} />
                 <NameWrapper>
                   {user.track ? (
                     <Text>{`[${user.track.trackName}${user.track.cardinalNo}]`}</Text>

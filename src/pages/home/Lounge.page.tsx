@@ -21,6 +21,9 @@ function Lounge() {
   const navigate = useNavigate();
   const setLoading = useSetRecoilState(loadingAtom);
   const myInfo = useRecoilValue(currentUserAtom);
+
+  if (!myInfo) return;
+
   const [error, setError] = useState("");
 
   /** 미니 프로필 */
@@ -60,7 +63,7 @@ function Lounge() {
   const fetchGetProjectIdInfo = async () => {
     setLoading(true);
     try {
-      if (!myInfo?.track?.cardinalNo) return;
+      if (!myInfo.track?.cardinalNo) return;
       const { trackName, cardinalNo } = myInfo?.track;
 
       const res = await AxiosProject.getCardinalsProjects({ trackName, cardinalNo });

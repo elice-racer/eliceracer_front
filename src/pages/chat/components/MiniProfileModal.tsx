@@ -1,10 +1,11 @@
 import styled from "styled-components";
-import { imgPaths } from "../../../utils/path";
+import { imgPaths, paths } from "../../../utils/path";
 import { Dimed } from "../../profile/components/SkillsModal";
 import { UsersPageInfo } from "../../../services/user";
 import ChatNameModal from "./ChatNameModal";
 import ReactDom from "react-dom";
 import Button from "../../../components/commons/Button";
+import { useNavigate } from "react-router-dom";
 
 interface MiniProfileModalProps {
   isModalOpen: boolean;
@@ -31,6 +32,7 @@ function MiniProfileModal({
   const el = document.getElementById("modal") as HTMLElement;
 
   if (!el) return null;
+  const navigate = useNavigate();
 
   return ReactDom.createPortal(
     <>
@@ -39,7 +41,7 @@ function MiniProfileModal({
         <CloseBtn onClick={onClose}>Ⅹ</CloseBtn>
         <Header>
           <ImgWrapper>
-            <UserProfileImg src={imgPaths.DEFAULT_PROFILE_IMG} />
+            {userdata?.profileImage ? <UserProfileImg src={userdata.profileImage} /> : <UserProfileImg src={imgPaths.DEFAULT_PROFILE_IMG} />}
           </ImgWrapper>
         </Header>
         {userdata ? (
@@ -81,10 +83,12 @@ function MiniProfileModal({
               </AchiveWrapper>
             </ColWrapper>
             <ButtonWrapper>
-              {/* <Button onClick={() => navigate(paths.USERS_PAGE)}>더보기</Button> */}
-              <Button className="user-page" onClick={() => alert("Comming Soon... June 18th")}>
-                더 보기
+              <Button className="user-page" onClick={() => navigate(`${paths.USERS_PAGE}/${userdata.id}`)}>
+                더보기
               </Button>
+              {/* <Button className="user-page" onClick={() => alert("Comming Soon... June 18th")}>
+                더 보기
+              </Button> */}
               {userdata.id && (
                 <Button id={userdata.id} onClick={onOpenChatName} className="chat-start">
                   {`${userdata.realName}님과 1 : 1 채팅`}

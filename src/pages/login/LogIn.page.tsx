@@ -71,6 +71,8 @@ export default function Login() {
     if (inputRef.current !== null) {
       inputRef.current.focus();
     }
+
+    setLoading(false);
   }, []);
 
   return (

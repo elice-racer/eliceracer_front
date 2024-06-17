@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 export default function ChatHome() {
   const user = useRecoilValue(currentUserAtom);
 
+  if (!user) return;
   const navigate = useNavigate();
   const [error, setError] = useState("");
 

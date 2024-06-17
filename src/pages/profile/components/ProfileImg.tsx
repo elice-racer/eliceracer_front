@@ -1,12 +1,11 @@
 import styled from "styled-components";
 import { imgPaths } from "../../../utils/path";
 
-function ProfileImg() {
-  return (
-    <Wrapper>
-      <Img src={imgPaths.DEFAULT_PROFILE_IMG} />
-    </Wrapper>
-  );
+interface ProfileImgProps {
+  userImg: string | null;
+}
+function ProfileImg({ userImg }: ProfileImgProps) {
+  return <Wrapper>{userImg ? <Img src={userImg} alt="🥕" /> : <Img src={imgPaths.DEFAULT_PROFILE_IMG} alt="🥕" />}</Wrapper>;
 }
 
 export default ProfileImg;

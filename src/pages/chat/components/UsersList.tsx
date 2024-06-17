@@ -7,7 +7,7 @@ import EmptyImage from "../../../components/commons/EmptyImage";
 
 interface UsersListProps {
   users: ChatRoomUsers[];
-  myInfo?: ChatRoomUsers | null | undefined;
+  myInfo: ChatRoomUsers;
   error?: string;
   onOpenMiniProfile: (userId: string | null) => void;
 }
@@ -18,7 +18,7 @@ function UsersList({ users, myInfo, error, onOpenMiniProfile }: UsersListProps) 
     <Container>
       <UsersListWrapper>
         <UserWrapper key={myInfo?.id} onClick={() => navigator(paths.MENU)}>
-          <ProfileImg />
+          <ProfileImg userImg={myInfo?.profileImage} />
           <NameWrapper>
             {myInfo?.track?.trackName ? (
               <Text>{`[${myInfo?.track.trackName}${myInfo?.track.cardinalNo}]`}</Text>
@@ -38,8 +38,8 @@ function UsersList({ users, myInfo, error, onOpenMiniProfile }: UsersListProps) 
         ) : (
           <>
             {users.map(user => (
-              <UserWrapper key={user.id} id={user.id ? user.id : ""} onClick={() => onOpenMiniProfile(user.id)}>
-                <ProfileImg />
+              <UserWrapper key={user?.id} id={user.id ? user.id : ""} onClick={() => onOpenMiniProfile(user.id)}>
+                <ProfileImg userImg={user?.profileImage} />
                 <NameWrapper>
                   {user.track ? (
                     <Text>{`[${user.track.trackName}${user.track.cardinalNo}]`}</Text>

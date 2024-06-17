@@ -15,7 +15,7 @@ function UsersMiniProfile({ userdata }: UserMiniProfileProps) {
         <Container>
           <TitleWrapper>
             <ImgWrapper>
-              <UserProfileImg src={imgPaths.DEFAULT_PROFILE_IMG} />
+              {userdata.profileImage ? <UserProfileImg src={userdata.profileImage} /> : <UserProfileImg src={imgPaths.DEFAULT_PROFILE_IMG} />}
             </ImgWrapper>
           </TitleWrapper>
           {userdata ? (

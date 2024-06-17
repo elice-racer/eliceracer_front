@@ -16,7 +16,7 @@ function ChatRoomUsersList({ users, onOpenMiniProfile }: ChatRoomUsersProps) {
         {users ? (
           users.map(user => (
             <UserWrapper key={user.id} onClick={() => onOpenMiniProfile(user.id)}>
-              <ProfileImg />
+              <ProfileImg userImg={user.profileImage} />
               <NameWrapper>
                 {user.track ? (
                   <Text>{`[${user.track.trackName}${user.track.cardinalNo}]`}</Text>

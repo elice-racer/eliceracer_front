@@ -53,7 +53,13 @@ function MyPage() {
       </TitleWrapper>
       <SectionWrapper>
         <LeftSection>
-          <ImgWrapper>{<Img src={imgPaths.DEFAULT_PROFILE_IMG} alt="기본이미지" />}</ImgWrapper>
+          <ImgWrapper>
+            {usersInfo?.profileImage ? (
+              <Img src={usersInfo.profileImage} alt="유저 이미지" />
+            ) : (
+              <Img src={imgPaths.DEFAULT_PROFILE_IMG} alt="기본 이미지" />
+            )}
+          </ImgWrapper>
           <RoleWrapper>
             {usersInfo?.track && (
               <Text className="sun-info">
@@ -80,7 +86,6 @@ function MyPage() {
           <ItemWrapper>
             <SubTitle>연락처</SubTitle>
             <Text className="sun-info">{usersInfo?.phoneNumber || "핸드폰 번호 인증 후 등록 가능합니다."}</Text>
-            <Text>{usersInfo?.phoneNumber}</Text>
           </ItemWrapper>
           {usersInfo?.teams[0]?.teamName && (
             <ItemWrapper>
