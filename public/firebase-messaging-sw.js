@@ -35,9 +35,9 @@ self.addEventListener("push", function (e) {
   const resultData = e.data.json().notification;
   const notificationTitle = resultData.title;
   const notificationOptions = {
-    body: resultData.body,
-    icon: resultData.image, // 웹 푸시 이미지는 icon
-    tag: resultData.tag,
+    body: payload.notification.body,
+    title: payload.notification.title,
+    icon: "imgs/elice-logo.png",
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
