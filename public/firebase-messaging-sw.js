@@ -3,7 +3,7 @@ importScripts("https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js")
 importScripts("https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js");
 
 const cacheName = "cache-v1";
-const appShellFiles = ["/", "index.html"];
+const appShellFiles = ["/"];
 
 self.addEventListener("install", function (e) {
   console.log("[Service Worker] Install");

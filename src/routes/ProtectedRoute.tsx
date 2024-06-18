@@ -7,7 +7,6 @@ import styled from "styled-components";
 import { useSetRecoilState } from "recoil";
 import { currentUserAtom } from "../recoil/UserAtom";
 
-///utils/fcm
 export const ProtectedRoute = () => {
   const [adminMenu, setAdminMenu] = useState(false);
   const setCurrentUser = useSetRecoilState(currentUserAtom);
