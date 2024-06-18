@@ -144,6 +144,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  console.log("------v 0.0.2-----");
   const setToken = useSetRecoilState(tokenAtom);
   const [isLoading, setLoading] = useRecoilState(loadingAtom);
 

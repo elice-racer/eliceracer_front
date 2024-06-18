@@ -55,5 +55,5 @@ getToken(messaging, {
 //포그라운드 메시지 수신
 onMessage(messaging, payload => {
   console.log("Message received. ", payload);
-  alert(` ${payload.notification.title} ${payload.notification.body}`);
+  console.log(` ${payload.notification.title} ${payload.notification.body}`);
 });
