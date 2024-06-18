@@ -15,18 +15,15 @@ const config = {
 const app = initializeApp(config);
 const messaging = getMessaging();
 
-const permission = await Notification.requestPermission();
-
-if (permission !== "granted") alert("브라우저에서 알람을 설정해주세요.");
+if (typeof window !== "undefined" && typeof window.navigator !== "undefined") {
+  const messaging = getMessaging(app);
+}
 
 //토큰값 얻기
 getToken(messaging, {
   vapidKey: import.meta.env.VITE_VAPID_KEY,
 })
   .then(async currentToken => {
-    console.log("---------current Token-------");
-    console.log(currentToken);
-
     if (currentToken) {
       // Send the token to your server and update the UI if necessary
       // ...
@@ -51,7 +48,7 @@ getToken(messaging, {
   })
   .catch(err => {
     console.log("An error occurred while retrieving token. ", err);
-    console.log(err.response.data);
+    console.log(err.response?.data);
     // ...
   });
 

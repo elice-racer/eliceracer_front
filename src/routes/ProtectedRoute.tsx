@@ -7,11 +7,17 @@ import styled from "styled-components";
 import { useSetRecoilState } from "recoil";
 import { currentUserAtom } from "../recoil/UserAtom";
 
+///utils/fcm
 export const ProtectedRoute = () => {
   const [adminMenu, setAdminMenu] = useState(false);
   const setCurrentUser = useSetRecoilState(currentUserAtom);
 
   const navigate = useNavigate();
+
+  const NotificationPermission = async () => {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") alert("브라우저에서 알람을 설정해주세요.");
+  };
 
   /** 유저정보를 확인하고 관리자인지 식별하는 함수 */
   const fetchGetUser = async () => {
@@ -41,6 +47,10 @@ export const ProtectedRoute = () => {
     } else {
       fetchGetUser();
     }
+  }, []);
+
+  useEffect(() => {
+    NotificationPermission();
   }, []);
 
   return (

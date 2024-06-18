@@ -1,5 +1,5 @@
 import "./App.css";
-import "./utils/fcm";
+import "./utils/fcm.js";
 
 import { paths } from "./utils/path";
 

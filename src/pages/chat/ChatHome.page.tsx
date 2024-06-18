@@ -13,7 +13,6 @@ import { useNavigate } from "react-router-dom";
 export default function ChatHome() {
   const user = useRecoilValue(currentUserAtom);
 
-  if (!user) return;
   const navigate = useNavigate();
   const [error, setError] = useState("");
 
@@ -180,7 +179,7 @@ export default function ChatHome() {
           <SearchIcon onClick={fetchSearchUserList}>🔎</SearchIcon>
           <SelectedUsers></SelectedUsers>
           <Error>{error}</Error>
-          <UsersList users={userList} myInfo={user} onOpenMiniProfile={handleClick} />
+          {user && <UsersList users={userList} myInfo={user} onOpenMiniProfile={handleClick} />}
         </Section>
         <Section>
           <ChatList chatsList={chatsList} />
