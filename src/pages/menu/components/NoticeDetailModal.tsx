@@ -27,7 +27,6 @@ export default function NoticeDetailModal({ $isOpen, onClose, noticeId }: Notice
       }
     } catch (e) {
       console.log("notice get error!!!");
-      console.log(e);
     }
   };
   useEffect(() => {

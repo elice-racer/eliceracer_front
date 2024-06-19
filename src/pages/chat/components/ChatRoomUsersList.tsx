@@ -7,11 +7,13 @@ interface ChatRoomUsersProps {
   onOpenMiniProfile: (userId: string | null) => void;
 }
 function ChatRoomUsersList({ users, onOpenMiniProfile }: ChatRoomUsersProps) {
+  const getRoleType = (role: string) => {
+    if (role === "RACER") return "레이서";
+    else if (role === "ADMIN") return "매니저";
+    else if (role === "COACH") return "코치";
+  };
   return (
     <Container>
-      {/* <TitleWrapper>
-        <Title>참여 인원</Title>
-      </TitleWrapper> */}
       <UsersListWrapper>
         {users ? (
           users.map(user => (
@@ -21,13 +23,8 @@ function ChatRoomUsersList({ users, onOpenMiniProfile }: ChatRoomUsersProps) {
                 {user.track ? (
                   <Text>{`[${user.track.trackName}${user.track.cardinalNo}]`}</Text>
                 ) : (
-                  <>
-                    {user.role === "RACER" && <Text className={user.role}>[레이서]</Text>}
-                    {user.role === "ADMIN" && <Text className={user.role}>[매니저]</Text>}
-                    {user.role === "COACH" && <Text className={user.role}>[코치]</Text>}
-                  </>
+                  <Text className={user.role}>[{getRoleType(user.role)}]</Text>
                 )}
-
                 <Text className={user.role}>{user.realName || "이름없음"}</Text>
               </NameWrapper>
               <CommentWrapper>

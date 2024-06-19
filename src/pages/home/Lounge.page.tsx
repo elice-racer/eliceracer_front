@@ -201,35 +201,37 @@ function Lounge() {
       />
 
       <Container>
-        <Section>
-          <Button onClick={() => navigate(paths.CHAT_HOME)} className="chat-home">
-            <Text>채팅홈 바로가기</Text>
-          </Button>
-          <UrlDashboard projectUrls={projectsInfo} />
-          <OfficeHourWeekly officehours={officeHours} />
-        </Section>
-        <Section>
-          <TitleWrapper>
-            <Title>Team Elice</Title>
-            <SubItemWrapper>
-              <Input
-                type="text"
-                placeholder="유저를 검색해주세요"
-                value={searchUser}
-                onChange={e => setSearchUser(e.target.value)}
-                onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                  if (e.key === "Enter") {
-                    fetchSearchUserList();
-                  }
-                }}
-              />
-              <SearchIcon onClick={fetchSearchUserList}>🔎</SearchIcon>
-            </SubItemWrapper>
-          </TitleWrapper>
-          <UserListWrapper>
-            {myInfo && <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />}
-          </UserListWrapper>
-        </Section>
+        <Wrapper>
+          <Section>
+            <Button onClick={() => navigate(paths.CHAT_HOME)} className="chat-home">
+              <Text>채팅홈 바로가기</Text>
+            </Button>
+            <UrlDashboard projectUrls={projectsInfo} />
+            <OfficeHourWeekly officehours={officeHours} />
+          </Section>
+          <Section>
+            <TitleWrapper>
+              <Title>Team Elice</Title>
+              <SubItemWrapper>
+                <Input
+                  type="text"
+                  placeholder="유저를 검색해주세요"
+                  value={searchUser}
+                  onChange={e => setSearchUser(e.target.value)}
+                  onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                    if (e.key === "Enter") {
+                      fetchSearchUserList();
+                    }
+                  }}
+                />
+                <SearchIcon onClick={fetchSearchUserList}>🔎</SearchIcon>
+              </SubItemWrapper>
+            </TitleWrapper>
+            <UserListWrapper>
+              {myInfo && <UsersList users={users} myInfo={myInfo} error={error} onOpenMiniProfile={handleOpenMiniProfile} />}
+            </UserListWrapper>
+          </Section>
+        </Wrapper>
       </Container>
     </>
   );
@@ -239,17 +241,26 @@ export default Lounge;
 
 const Container = styled.div`
   width: 100%;
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
   height: 100%;
   max-height: 100%;
 
   @media ${({ theme }) => theme.device.tablet} {
     flex-direction: column;
+    padding: 0 24px;
   }
 
-  padding: 0 24px;
+  padding: 0 48px;
+
+  padding-bottom: 48px;
+
+  box-sizing: border-box;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  gap: 24px;
+  height: 100%;
+  width: 100%;
 `;
 
 const Section = styled.div`

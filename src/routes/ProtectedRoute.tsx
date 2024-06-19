@@ -68,7 +68,9 @@ const Container = styled.div`
   position: relative;
   height: 100%;
   width: 100%;
-  margin-top: 56px;
+  padding-top: 80px;
+
+  box-sizing: border-box;
 `;
 
 const Wrapper = styled.div`

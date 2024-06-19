@@ -122,7 +122,6 @@ const ChatRoom = () => {
       const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
 
       if (res.status === 201) {
-        console.log(res);
         alert(`채팅방이 생성되었습니다!`);
         fetchGetChatList();
         setIsModalOpen(false);
@@ -276,9 +275,7 @@ const ChatRoom = () => {
   const fetchInviteUsers = async () => {
     try {
       if (selectedUsers.length === 0) return alert("초대할 사람을 선택해주세요.");
-      console.log(selectedUsers);
-      const res = await AxiosChat.postUserToChat(chatId, selectedUsers);
-      console.log(res);
+      await AxiosChat.postUserToChat(chatId, selectedUsers);
     } catch (e: any) {
       setError(e.response?.data.message);
     }

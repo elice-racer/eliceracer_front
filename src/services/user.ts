@@ -12,7 +12,7 @@ export interface Skills {
   skillName: string;
 }
 export interface UsersPageInfo {
-  id: string | null;
+  id: string;
   email: string | null;
   username: string | null;
   realName: string;

@@ -11,44 +11,55 @@ interface UsersListProps {
   error?: string;
   onOpenMiniProfile: (userId: string | null) => void;
 }
-function UsersList({ users, myInfo, error, onOpenMiniProfile }: UsersListProps) {
+
+interface MyInfoProps {
+  myInfo: ChatRoomUsers;
+}
+
+function MyInfo({ myInfo }: MyInfoProps) {
   const navigator = useNavigate();
 
   return (
+    <UserWrapper onClick={() => navigator(paths.MENU)}>
+      <ProfileImg userImg={myInfo?.profileImage} />
+      <NameWrapper>
+        {myInfo?.track?.trackName ? (
+          <Text>{`[${myInfo?.track.trackName}${myInfo?.track.cardinalNo}]`}</Text>
+        ) : (
+          <Text className={myInfo?.role}>[{myInfo?.role}]</Text>
+        )}
+        <Text className={myInfo?.role}>{myInfo?.realName || "이름없음"}</Text>
+      </NameWrapper>
+      <CommentWrapper>
+        <Text>{myInfo?.comment}</Text>
+      </CommentWrapper>
+    </UserWrapper>
+  );
+}
+
+function UsersList({ users, myInfo, onOpenMiniProfile }: UsersListProps) {
+  const getRoleType = (role: string) => {
+    if (role === "RACER") return "레이서";
+    else if (role === "ADMIN") return "매니저";
+    else if (role === "COACH") return "코치";
+  };
+  return (
     <Container>
       <UsersListWrapper>
-        <UserWrapper key={myInfo?.id} onClick={() => navigator(paths.MENU)}>
-          <ProfileImg userImg={myInfo?.profileImage} />
-          <NameWrapper>
-            {myInfo?.track?.trackName ? (
-              <Text>{`[${myInfo?.track.trackName}${myInfo?.track.cardinalNo}]`}</Text>
-            ) : (
-              <Text className={myInfo?.role}>[{myInfo?.role}]</Text>
-            )}
-            <Text className={myInfo?.role}>{myInfo?.realName || "이름없음"}</Text>
-          </NameWrapper>
-          <CommentWrapper>
-            <Text>{myInfo?.comment}</Text>
-          </CommentWrapper>
-        </UserWrapper>
-        {error && <Text className="error">Error...</Text>}
+        <MyInfo myInfo={myInfo} />
 
-        {!users ? (
+        {users.length === 0 ? (
           <EmptyImage message="친구가 존재하지 않습니다." />
         ) : (
           <>
             {users.map(user => (
-              <UserWrapper key={user?.id} id={user.id ? user.id : ""} onClick={() => onOpenMiniProfile(user.id)}>
+              <UserWrapper key={user.id} onClick={() => onOpenMiniProfile(user.id)}>
                 <ProfileImg userImg={user?.profileImage} />
                 <NameWrapper>
                   {user.track ? (
                     <Text>{`[${user.track.trackName}${user.track.cardinalNo}]`}</Text>
                   ) : (
-                    <>
-                      {user.role === "RACER" && <Text className={user.role}>[레이서]</Text>}
-                      {user.role === "ADMIN" && <Text className={user.role}>[매니저]</Text>}
-                      {user.role === "COACH" && <Text className={user.role}>[코치]</Text>}
-                    </>
+                    <Text className={user.role}>[{getRoleType(user.role)}]</Text>
                   )}
 
                   <Text>{user.realName || "이름없음"}</Text>

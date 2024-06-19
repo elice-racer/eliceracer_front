@@ -49,17 +49,19 @@ function OfficeHourWeekly({ officehours }: OfficeHourWeeklyProps) {
   };
   return (
     <Container>
-      <Wapper>
+      <Wrapper>
         <TitleWrapper>
           <Title>전체 오피스아워 일정 📆</Title>
         </TitleWrapper>
 
-        {officehours ? (
-          <CustomCalendar events={convertCalendarType(_officeHours)} />
-        ) : (
-          <EmptyImage message={"현재 등록된 전체 오피스아워 일정이 없습니다."} />
-        )}
-      </Wapper>
+        <CalendarWrapper>
+          {officehours ? (
+            <CustomCalendar events={convertCalendarType(_officeHours)} />
+          ) : (
+            <EmptyImage message={"현재 등록된 전체 오피스아워 일정이 없습니다."} />
+          )}
+        </CalendarWrapper>
+      </Wrapper>
     </Container>
   );
 }
@@ -67,12 +69,11 @@ function OfficeHourWeekly({ officehours }: OfficeHourWeeklyProps) {
 export default OfficeHourWeekly;
 
 const Container = styled.div`
-  width: 100%;
   display: flex;
   justify-content: center;
 `;
 
-const Wapper = styled.div`
+const Wrapper = styled.div`
   width: 100%;
 `;
 
@@ -89,4 +90,9 @@ const TitleWrapper = styled.div`
 
 const Title = styled.h1`
   font-size: 1.3em;
+`;
+
+const CalendarWrapper = styled.div`
+  height: 426px;
+  overflow: hidden;
 `;

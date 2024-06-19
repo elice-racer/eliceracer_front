@@ -1,17 +1,29 @@
 import styled from "styled-components";
-import ChatList from "./components/ChatList";
-import UsersList from "./components/UsersList";
-import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../services/user";
 import { useEffect, useState } from "react";
-import { AxiosChat, Chats } from "../../services/chat";
-import { useRecoilValue } from "recoil";
-import { currentUserAtom } from "../../recoil/UserAtom";
-import MiniProfileModal from "./components/MiniProfileModal";
-import { paths } from "../../utils/path";
 import { useNavigate } from "react-router-dom";
 
+// component
+import ChatList from "./components/ChatList";
+import UsersList from "./components/UsersList";
+import SearchInput from "./components/SearchInput";
+
+// apis
+import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../services/user";
+import { AxiosChat, Chats } from "../../services/chat";
+
+// recoil
+import { useRecoilValue } from "recoil";
+import { currentUserAtom } from "../../recoil/UserAtom";
+
+// utils
+import { paths } from "../../utils/path";
+
+// modal
+import MiniProfileModal from "./components/MiniProfileModal";
+import GroupChatStartModal from "./components/groupChats/GroupChatStartModal";
+
 export default function ChatHome() {
-  const user = useRecoilValue(currentUserAtom);
+  const currentUser = useRecoilValue(currentUserAtom);
 
   const navigate = useNavigate();
   const [error, setError] = useState("");
@@ -25,12 +37,12 @@ export default function ChatHome() {
 
   const [searchUser, setSearchUser] = useState("");
 
-  const [selectedUsers, _setSelectedUsers] = useState<string[]>([]);
+  const [selectedUsers, setSelectedUsers] = useState<ChatRoomUsers[]>([]);
 
   const [_chatName, _setChatName] = useState();
 
   const [_chatNameInput, _setChatNameInput] = useState();
-
+  const [isCreateGroupChatModalOpen, setIsCreateGroupChatModalOpen] = useState(false);
   /** 채팅 리스트 가져오기 */
   const fetchGetChatList = async () => {
     try {
@@ -88,15 +100,11 @@ export default function ChatHome() {
     }
   };
 
-  /** 그룹채팅 시 초대할 채팅방의 유저를 선택 */
-  // const handleSelectedchatUsers = (e: any) => {
-  //   const newUsers = e.target.id;
-  //   setSelectedUsers(users => [...users, newUsers]);
-  // };
+  const handleStartUsersChat = async (users: ChatRoomUsers[], chatName: string) => {
+    const convertUserIds = users.map(user => user.id);
 
-  const handleStartUsersChat = async (userId: string, chatName: string) => {
     try {
-      const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
+      const res = await AxiosChat.createUsersChat({ userIds: convertUserIds, chatName: chatName });
       if (res.status === 201) {
         alert(`채팅방이 생성되었습니다!`);
         fetchGetChatList();
@@ -107,16 +115,33 @@ export default function ChatHome() {
     }
   };
 
-  // const handleStartGroupChat = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      fetchSearchUserList();
+    }
+  };
+
+  const handleChangeSearchUser = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchUser(e.target.value);
+  };
+
+  const handleChangeGroupChatMembers = (chatRoomUser: ChatRoomUsers, flag: boolean) => {
+    if (flag) {
+      setSelectedUsers(selectedUsers.concat(chatRoomUser));
+    } else {
+      setSelectedUsers(selectedUsers.filter(user => user.id !== chatRoomUser.id));
+    }
+  };
+
+  // const handleStartGroupChat = async (e: React.KeyboardEvent<HTMLInputElement>) => {
   //   if (e.key !== "Enter") return;
-
   //   if (e.nativeEvent.isComposing) return;
-
-  //   if (_chatNameInput.trim() === "") return;
+  //   if (chatNameInput.trim() === "") return;
   //   try {
-  //     const res = await AxiosChat.createChat({e.target.id})
-  //   } catch (e) {
-  //      setError(e.response.data.message);
+  //     const res = await AxiosChat.createUsersChat(data);
+  //     console.log(res);
+  //   } catch (e: any) {
+  //     setError(e.response.data.message);
   //   }
   // };
 
@@ -142,12 +167,18 @@ export default function ChatHome() {
     setChatNameModalOpen(false);
 
     if (handleStartUsersChat && miniProfile.id) {
-      handleStartUsersChat(miniProfile.id, chatNameInput);
-      setChatNameInput("");
+      const findUser = userList.find(user => user.id === miniProfile.id);
+      if (findUser) {
+        handleStartUsersChat([findUser], chatNameInput);
+        setChatNameInput("");
+      }
     }
   };
   const [chatNameInput, setChatNameInput] = useState("");
   const handleChageChatNameInput = (e: any) => setChatNameInput(e.target.value);
+
+  if (!currentUser) return;
+
   return (
     <>
       <MiniProfileModal
@@ -161,29 +192,39 @@ export default function ChatHome() {
         onCreateChat={handleCreateChat}
         onCloseChatName={handleCloseChatNameModal}
       />
+      <GroupChatStartModal
+        currentUser={currentUser}
+        userList={userList}
+        groupchatMember={selectedUsers}
+        onClose={() => setIsCreateGroupChatModalOpen(false)}
+        isOpen={isCreateGroupChatModalOpen}
+        onChangeGroupMember={handleChangeGroupChatMembers}
+        onCreateGroupChat={handleStartUsersChat}
+      />
       <Container>
-        <Section>
-          <SearchWrapper>
-            <Input
-              type="text"
-              placeholder="유저를 검색해주세요"
-              value={searchUser}
-              onChange={e => setSearchUser(e.target.value)}
-              onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                if (e.key === "Enter") {
-                  fetchSearchUserList();
-                }
-              }}
+        <Wrapper>
+          <Section>
+            <SearchInput
+              searchUser={searchUser}
+              onKeyUp={handleKeyUp}
+              onChange={handleChangeSearchUser}
+              onFetchSearchUserList={fetchSearchUserList}
             />
-          </SearchWrapper>
-          <SearchIcon onClick={fetchSearchUserList}>🔎</SearchIcon>
-          <SelectedUsers>{selectedUsers}</SelectedUsers>
-          <Error>{error}</Error>
-          {user && <UsersList users={userList} myInfo={user} onOpenMiniProfile={handleClick} />}
-        </Section>
-        <Section>
-          <ChatList chatsList={chatsList} />
-        </Section>
+            <button>그룹 채팅 시작하기</button>
+
+            <Error>{error}</Error>
+            {currentUser && (
+              <StyledUserScrollWrapper>
+                <UsersList users={userList} myInfo={currentUser} onOpenMiniProfile={handleClick} />
+              </StyledUserScrollWrapper>
+            )}
+          </Section>
+          <Section>
+            <StyledChatScrollWrapper>
+              <ChatList chatsList={chatsList} />
+            </StyledChatScrollWrapper>
+          </Section>
+        </Wrapper>
       </Container>
     </>
   );
@@ -191,6 +232,7 @@ export default function ChatHome() {
 
 const Container = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: space-between;
 
@@ -198,7 +240,21 @@ const Container = styled.div`
     flex-direction: column;
   }
 
-  margin-top: 60px;
+  max-width: 700px;
+
+  margin: 0 auto;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+
+  padding-bottom: 136px;
+
+  gap: 12px;
+
+  box-sizing: border-box;
 `;
 
 const Section = styled.div`
@@ -212,28 +268,18 @@ const Error = styled.p`
   color: tomato;
 `;
 
-const SelectedUsers = styled.div`
+const StyledUserScrollWrapper = styled.div`
+  height: 100%;
   width: 100%;
+
+  overflow-y: auto;
+  border: 1px solid #dbdbdb;
 `;
 
-const SearchWrapper = styled.div`
+const StyledChatScrollWrapper = styled.div`
+  height: 100%;
   width: 100%;
-  padding: 12px;
-`;
 
-const Input = styled.input`
-  width: 100%;
-  border: 1px solid ${({ theme }) => theme.colors.gray1};
-  height: 36px;
-`;
-
-const SearchIcon = styled.p`
-  position: absolute;
-  top: 50%;
-  right: 12px;
-
-  transform: translateY(-50%);
-  font-size: 14px;
-
-  cursor: pointer;
+  overflow-y: auto;
+  border: 1px solid #dbdbdb;
 `;
