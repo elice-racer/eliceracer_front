@@ -79,7 +79,7 @@ function MiniProfileModal({
                 </Wrapper> */}
               <SubTitle>업적</SubTitle>
               <AchiveWrapper>
-                <Text className="skill">성실한 엘리스🏆</Text>
+                <Text className="achive">성실한 엘리스🏆</Text>
               </AchiveWrapper>
             </ColWrapper>
             <ButtonWrapper>
@@ -173,8 +173,11 @@ const Wrapper = styled.div`
 `;
 
 const SkillInfoWrapper = styled.div`
+  width: 100%;
   display: flex;
   gap: 10px;
+
+  flex-wrap: wrap;
 `;
 
 const ButtonWrapper = styled.div`
@@ -212,6 +215,18 @@ const Text = styled.p`
     color: ${({ theme }) => theme.colors.gray2};
   }
   &.skill {
+    position: relative;
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 26px;
+    position: relative;
+    background-color: ${({ theme }) => theme.colors.purple1};
+    border-radius: 12px;
+    padding: 0 4px;
+  }
+  &.achive {
     position: relative;
     width: auto;
     display: flex;

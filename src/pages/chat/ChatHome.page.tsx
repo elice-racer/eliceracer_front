@@ -25,7 +25,7 @@ export default function ChatHome() {
 
   const [searchUser, setSearchUser] = useState("");
 
-  const [_selectedUsers, _setSelectedUsers] = useState<string[]>([]);
+  const [selectedUsers, _setSelectedUsers] = useState<string[]>([]);
 
   const [_chatName, _setChatName] = useState();
 
@@ -177,7 +177,7 @@ export default function ChatHome() {
             />
           </SearchWrapper>
           <SearchIcon onClick={fetchSearchUserList}>🔎</SearchIcon>
-          <SelectedUsers></SelectedUsers>
+          <SelectedUsers>{selectedUsers}</SelectedUsers>
           <Error>{error}</Error>
           {user && <UsersList users={userList} myInfo={user} onOpenMiniProfile={handleClick} />}
         </Section>

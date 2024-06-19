@@ -252,6 +252,7 @@ const Text = styled.p`
 const RoleWrapper = styled.div`
   margin: 0 10px;
   display: flex;
+  gap: 6px;
 `;
 
 const Img = styled.img`

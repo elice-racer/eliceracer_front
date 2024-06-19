@@ -115,7 +115,7 @@ const Input = styled.input`
 
 const TextArea = styled.textarea`
   width: 100%;
-  height: 100%;
+  height: 300px;
   border: ${({ theme }) => theme.colors.gray1} 1px solid;
   padding: 12px;
 `;
