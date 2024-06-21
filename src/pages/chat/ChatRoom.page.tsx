@@ -38,8 +38,6 @@ const ChatRoom = () => {
   const navigate = useNavigate();
   const socket = useContext(SocketContext);
   const currentUser = useRecoilValue(currentUserAtom);
-  // ?
-  const recoilUser = useRecoilValue(currentUserAtom);
 
   const chatBodyRef = useRef<HTMLDivElement>(null);
   const observeRef = useRef<HTMLDivElement>(null);
@@ -124,7 +122,6 @@ const ChatRoom = () => {
       const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
 
       if (res.status === 201) {
-        console.log(res);
         alert(`채팅방이 생성되었습니다!`);
         fetchGetChatList();
         setIsModalOpen(false);
@@ -267,7 +264,7 @@ const ChatRoom = () => {
 
   const handleClickInviteButton = async () => {
     if (chatRoomInfo?.team) {
-      if (recoilUser?.role === "RACER") alert("프로젝트 채팅방 초대는 관리자 권한이 필요합니다.");
+      if (currentUser?.role === "RACER") alert("프로젝트 채팅방 초대는 관리자 권한이 필요합니다.");
     }
     return alert("Comming soon...");
     // setIsSelectUserModalOpen(true);
@@ -278,9 +275,7 @@ const ChatRoom = () => {
   const fetchInviteUsers = async () => {
     try {
       if (selectedUsers.length === 0) return alert("초대할 사람을 선택해주세요.");
-      console.log(selectedUsers);
-      const res = await AxiosChat.postUserToChat(chatId, selectedUsers);
-      console.log(res);
+      await AxiosChat.postUserToChat(chatId, selectedUsers);
     } catch (e: any) {
       setError(e.response?.data.message);
     }
@@ -330,9 +325,6 @@ const ChatRoom = () => {
       fetchChatInfoById();
     }
   }, [chatId]);
-
-  useEffect(() => {}, [officeHours]);
-  useEffect(() => {}, [recoilUser]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -461,7 +453,7 @@ const ChatRoom = () => {
             </FooterTypingBar>
           </ChatContainer>
         </Section>
-        <Section>
+        <Section className="section">
           <UsersWrapper>
             <Text className="error">{error}</Text>
             <ChatRoomUsersList users={chatRoomInfo?.users || []} onOpenMiniProfile={handleOpenMiniProfile} />
@@ -471,7 +463,7 @@ const ChatRoom = () => {
         {officeHours[0] && (
           <Section className="onMobile">
             <ChatInfoWrapper>
-              <TeamChatInfo officehours={officeHours} />
+              <TeamChatInfo officehours={officeHours} chatInfo={chatRoomInfo?.team} />
             </ChatInfoWrapper>
           </Section>
         )}
@@ -496,6 +488,11 @@ const Container = styled.div`
   @media ${({ theme }) => theme.device.mobileL} {
     flex-direction: column;
   }
+  @media ${({ theme }) => theme.device.mobileL} {
+    display: block;
+    padding: 0;
+  }
+
   padding: 0 12px;
 `;
 
@@ -510,6 +507,12 @@ const Section = styled.div`
   @media ${({ theme }) => theme.device.mobileL} {
     flex-direction: column;
     &.onMobile {
+      display: none;
+    }
+  }
+
+  @media ${({ theme }) => theme.device.mobileL} {
+    &.section {
       display: none;
     }
   }

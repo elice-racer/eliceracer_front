@@ -12,7 +12,7 @@ export interface Skills {
   skillName: string;
 }
 export interface UsersPageInfo {
-  id: string | null;
+  id: string;
   email: string | null;
   username: string | null;
   realName: string;
@@ -40,7 +40,6 @@ export namespace AxiosUser {
   export const getCurrentUser = async (): Promise<ResData<UsersPageInfo>> => {
     const url = `users/current`;
     const res = await api.get(url).then(res => res.data);
-
     return res;
   };
 
@@ -83,6 +82,18 @@ export namespace AxiosUser {
   export const putUsersSkills = async (skills: string[]) => {
     const url = `users/skills`;
     const res = await api.put(url, { skills });
+    return res;
+  };
+
+  /** 프로필 업로드 */
+  export const putUsersProfileImg = async (file: FormData) => {
+    const url = `users/profileImages`;
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+    const res = await api.put(url, file, config);
     return res;
   };
 

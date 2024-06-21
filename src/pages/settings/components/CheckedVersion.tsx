@@ -8,7 +8,7 @@ function CheckedVersion({ ...props }) {
       </Wrapper>
       <Wrapper>
         <Text>해당 사이트 관련 문의나 요청 사항, 피드백 등등 아래 폼을 통해 자유롭게 의견 남겨주세요.</Text>
-        <Button onClick={() => {}}>의견 제출하기</Button>
+        <Button href="https://forms.gle/H6qcuAz7ktAqX8567">의견 제출하기</Button>
       </Wrapper>
     </Container>
   );

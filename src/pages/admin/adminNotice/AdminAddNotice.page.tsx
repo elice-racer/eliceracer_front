@@ -88,11 +88,15 @@ const InputsWrapper = styled.div`
   gap: 10px;
 `;
 
-const SubmitBtn = styled.button`
-  border-color: ${({ theme }) => theme.colors.purple2};
+const SubmitBtn = styled.div`
   width: 80px;
   height: 30px;
   border-radius: 6px;
+  border: 1px solid ${({ theme }) => theme.colors.purple2};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 `;
 
 const Text = styled.p`
@@ -111,7 +115,7 @@ const Input = styled.input`
 
 const TextArea = styled.textarea`
   width: 100%;
-  height: 100%;
+  height: 300px;
   border: ${({ theme }) => theme.colors.gray1} 1px solid;
   padding: 12px;
 `;

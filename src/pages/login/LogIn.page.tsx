@@ -71,6 +71,8 @@ export default function Login() {
     if (inputRef.current !== null) {
       inputRef.current.focus();
     }
+
+    setLoading(false);
   }, []);
 
   return (
@@ -121,10 +123,8 @@ const Wrapper = styled.div`
   flex-direction: column;
   gap: 12px;
   width: 100%;
-
-  max-width: 540px;
   margin: 0 auto;
-  height: 100%;
+
   /* @media ${({ theme }) => theme.device.tablet} {
     background-color: blue;
   }
@@ -141,11 +141,14 @@ const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-
-  margin-top: 12px;
-
   .login-button {
-    width: 280px;
+    width: 295px;
+    @media ${({ theme }) => theme.device.tablet} {
+      width: 260px;
+    }
+    @media ${({ theme }) => theme.device.mobileM} {
+      width: 180px;
+    }
   }
 `;
 const Form = styled.form`

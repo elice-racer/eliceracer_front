@@ -13,6 +13,11 @@ export const ProtectedRoute = () => {
 
   const navigate = useNavigate();
 
+  const NotificationPermission = async () => {
+    const permission = await Notification.requestPermission();
+    if (permission !== "granted") alert("브라우저에서 알람을 설정해주세요.");
+  };
+
   /** 유저정보를 확인하고 관리자인지 식별하는 함수 */
   const fetchGetUser = async () => {
     try {
@@ -43,6 +48,10 @@ export const ProtectedRoute = () => {
     }
   }, []);
 
+  useEffect(() => {
+    NotificationPermission();
+  }, []);
+
   return (
     <Container>
       <Header adminMenu={adminMenu} />
@@ -59,7 +68,9 @@ const Container = styled.div`
   position: relative;
   height: 100%;
   width: 100%;
-  margin-top: 56px;
+  padding-top: 80px;
+
+  box-sizing: border-box;
 `;
 
 const Wrapper = styled.div`

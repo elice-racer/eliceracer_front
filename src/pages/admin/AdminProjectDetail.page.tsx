@@ -25,7 +25,6 @@ function AdminProjectDetail() {
   const fetchGetProjectsTeams = async () => {
     try {
       const res = await AxiosAdmin.getProjectDetail(id);
-      console.log(res);
       if (res.statusCode === 200) {
         setTeams(res.data);
       }

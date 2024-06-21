@@ -10,7 +10,6 @@ function AdminEditNotice() {
   const { id: noticeId } = useParams<string>();
 
   if (!noticeId) return;
-  console.log(noticeId);
   const [error, setError] = useState("");
   const setLoading = useSetRecoilState(loadingAtom);
   const navigate = useNavigate();

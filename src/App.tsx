@@ -1,4 +1,6 @@
 import "./App.css";
+import "./utils/fcm.js";
+
 import { paths } from "./utils/path";
 
 import { SocketContext, socket, socketConfig } from "./context/SocketContext";
@@ -79,7 +81,7 @@ const router = createBrowserRouter([
       { path: paths.HOME, element: <Lounge /> },
       { path: paths.CHAT_HOME, element: <ChatHome /> },
       { path: paths.CHAT_ROOM, element: <ChatRoom /> },
-      { path: paths.USERS_PAGE, element: <UsersPage /> },
+      { path: paths.USERS_PAGE_ID, element: <UsersPage /> },
     ],
   },
   {
@@ -132,6 +134,7 @@ const router = createBrowserRouter([
 
       { path: paths.ADMIN_PROJECTS, element: <AdminProject /> },
       { path: paths.ADMIN_PROJECTS_DETAIL, element: <AdminProjectDetail /> },
+      { path: paths.UPDATE_OFFICE_HOUR, element: <AdminOfficeHour /> },
     ],
   },
   {
@@ -141,6 +144,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  console.log("------v 0.0.2-----");
   const setToken = useSetRecoilState(tokenAtom);
   const [isLoading, setLoading] = useRecoilState(loadingAtom);
 
