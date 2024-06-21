@@ -46,11 +46,12 @@ jobs:
         run: yarn build
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          role-to-assume: ${{ AWS_ROLE_TO_ASSUME }}
 
       - name: Deploy to S3
         uses: jakejarvis/s3-sync-action@master
