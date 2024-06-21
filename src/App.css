@@ -1,42 +1,81 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
+/* 반응형, light dark mode 관리용 */
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+* {
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  font-family: "Elice Digital Baeum", sans-serif;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
+/* 테블릿 가로 (해상도 768px ~ 1023px)*/
+@media all and (min-width: 768px) and (max-width: 1023px) {
+  * {
+    font-size: 13px;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* 모바일 가로 & 테블릿 세로 (해상도 480px ~ 767px)*/
+@media all and (min-width: 480px) and (max-width: 767px) {
+  * {
+    font-size: 13px;
   }
 }
 
-.card {
-  padding: 2em;
+/* 모바일 세로 (해상도 ~ 479px)*/
+@media all and (max-width: 479px) {
+  * {
+    font-size: 13px;
+  }
 }
 
-.read-the-docs {
-  color: #888;
+@media (max-width: 390px) {
+  * {
+    font-size: 13px;
+  }
+}
+@media (max-width: 375px) {
+  * {
+    font-size: 13px;
+  }
+}
+@media (max-width: 290px) {
+  * {
+    font-size: 12px;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #fff;
+  }
+  /* :hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  } */
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+    color: #838282;
+  }
+}
+
+@media (prefers-color-scheme: black) {
+  :root {
+    color: #fff;
+    background-color: #242424;
+    height: 100%;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #beb2dc;
+    color: #fff;
+  }
+}
+
+html,
+body {
+  font-family: "Elice Digital Baeum", sans-serif;
 }
