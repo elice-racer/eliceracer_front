@@ -24,9 +24,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
+          cache: "yarn"
       - name: Create dotenv file
-      - run: |
+        run: |
           touch .env
           echo "VITE_BASE_URL=${{secrets.VITE_BASE_URL}}" >> .env
           echo "VITE_FIREBASE_API_KEY=${{secrets.VITE_FIREBASE_API_KEY}}" >> .env
@@ -41,9 +41,9 @@ jobs:
           echo "VITE_VAPID_KEY=${{secrets.VITE_VAPID_KEY}}" >> .env
           cat .env
       - name: Yarn install
-      - run: yarn
+        run: yarn
       - name: Yarn build
-      - run: yarn build
+        run: yarn build
       - name: Deploy to S3
         uses: jakejarvis/s3-sync-action@master
         with:
