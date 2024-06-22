@@ -71,14 +71,10 @@ const ModalContainer = styled.div<{ $isOpen: boolean }>`
   height: 600px;
   z-index: 8888;
   border-radius: 10px;
-
   background-color: #fff;
-
   border: 1px solid #333;
 
-  &.disable {
-    display: none;
-  }
+  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
   padding: 24px 20px;
 
   @media ${({ theme }) => theme.device.mobileL} {
