@@ -210,7 +210,7 @@ export default function ChatHome() {
               onChange={handleChangeSearchUser}
               onFetchSearchUserList={fetchSearchUserList}
             />
-            <button>그룹 채팅 시작하기</button>
+            <Button onClick={() => setIsCreateGroupChatModalOpen(true)}>그룹 채팅 시작하기</Button>
 
             <Error>{error}</Error>
             {currentUser && (
@@ -268,6 +268,20 @@ const Error = styled.p`
   color: tomato;
 `;
 
+const Button = styled.div`
+  color: #fff;
+  background-color: ${({ theme }) => theme.colors.purple5};
+  border: 1px solid ${({ theme }) => theme.colors.purple5};
+  padding: 4px 12px;
+  margin: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.purple0};
+    color: ${({ theme }) => theme.colors.purple5};
+    border: 1px solid ${({ theme }) => theme.colors.purple5};
+  }
+`;
 const StyledUserScrollWrapper = styled.div`
   height: 100%;
   width: 100%;
