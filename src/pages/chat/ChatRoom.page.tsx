@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import ChatRoomUsersList from "./components/ChatRoomUsersList";
 import TeamChatInfo from "./components/TeamChatInfo";
 import { AxiosChat, ChatMessage, Chats } from "../../services/chat";
-import { AxiosUser, UsersPageInfo } from "../../services/user";
+import { AxiosUser, ChatRoomUsers, UsersPageInfo } from "../../services/user";
 import { AxiosOffieHour, OfficehourProps } from "../../services/officehour";
 import { useRecoilValue } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
@@ -15,7 +15,7 @@ import MiniProfileModal from "./components/MiniProfileModal";
 import { SocketContext, SOCKET_EVENT } from "../../context/SocketContext";
 import ChatList from "./components/ChatList";
 import { paths } from "../../utils/path";
-import SelectUsersModal from "./components/inviteUsers/SelectUserModal";
+import GroupChatStartModal from "./components/groupChats/GroupChatStartModal";
 
 interface TeamInfo {
   id: string;
@@ -34,13 +34,16 @@ interface ChatRoomInfo {
 const ChatRoom = () => {
   const { id: chatId } = useParams();
 
-  if (!chatId) return;
   const navigate = useNavigate();
   const socket = useContext(SocketContext);
   const currentUser = useRecoilValue(currentUserAtom);
 
   const chatBodyRef = useRef<HTMLDivElement>(null);
   const observeRef = useRef<HTMLDivElement>(null);
+
+  if (!chatId) return;
+  if (!currentUser) return;
+
   const [userId, setUserId] = useState<any>(null);
 
   const [error, setError] = useState<string>("");
@@ -49,10 +52,8 @@ const ChatRoom = () => {
   const [chatNameModalOpen, setChatNameModalOpen] = useState(false);
 
   /** 채팅방 멤버 초대  */
-  const [userList, setUserList] = useState();
-  const [isSelectUserModalOpne, setIsSelectUserModalOpen] = useState<boolean>(false);
-  const [searchUser, setSearchUser] = useState("");
-  const [selectedUsers, _setSelectedUsers] = useState<string[]>([]);
+  const [userList, _setUserList] = useState<ChatRoomUsers[]>([]);
+  const [_searchUser, _setSearchUser] = useState("");
 
   const [chatsList, setChatList] = useState<Chats[]>();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -65,11 +66,24 @@ const ChatRoom = () => {
 
   const [officeHours, setOfficeHours] = useState<OfficehourProps[]>([]);
 
+  /** 채팅방 이름 */
   const [chatNameInput, setChatNameInput] = useState("");
+
+  /** 채팅방 멤버 초대 */
+  const [isOpenInviteUserModal, setIsOpenInviteUserModal] = useState(false);
+  const [selectedUsers, setSelectedUsers] = useState<ChatRoomUsers[]>([]);
 
   const handleChageChatNameInput = (e: any) => setChatNameInput(e.target.value);
 
-  const handleCloseModal = () => {
+  const handleChangeGroupChatMembers = (chatRoomUser: ChatRoomUsers, flag: boolean) => {
+    if (flag) {
+      setSelectedUsers(selectedUsers.concat(chatRoomUser));
+    } else {
+      setSelectedUsers(selectedUsers.filter(user => user.id !== chatRoomUser.id));
+    }
+  };
+
+  const handleCloseMiniProfileModal = () => {
     setIsModalOpen(false);
     setChatNameModalOpen(false);
   };
@@ -90,21 +104,32 @@ const ChatRoom = () => {
     }
   };
 
-  /** 멤버 검색 */
-  const fetchSearchUserList = async () => {
-    try {
-      const res = await AxiosUser.getSearchUser(searchUser);
-      if (res.status === 200) setUserList(res.data.data);
-    } catch (e: any) {
-      setError(e.response?.data.message);
-    }
-  };
+  /** current user 친구 목록 */
+  // const fetchGetUsers = async () => {
+  //   try {
+  //     const res = await AxiosUser.getChatUsersList();
+  //     if (res.statusCode === 200) setUserList(res.data || []);
+  //   } catch (e: any) {
+  //     setError(e.response.data.message);
+  //     if (e.response.status === 404) {
+  //       try {
+  //         fetchSearchUserList();
+  //       } catch (e: any) {
+  //         setError(e.response?.data.message);
+  //       }
+  //     }
+  //   }
+  // };
 
-  const handleSearchUser = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      fetchSearchUserList();
-    }
-  };
+  /** 멤버 검색 */
+  // const fetchSearchUserList = async () => {
+  //   try {
+  //     const res = await AxiosUser.getSearchUser(searchUser);
+  //     if (res.status === 200) setUserList(res.data.data);
+  //   } catch (e: any) {
+  //     setError(e.response?.data.message);
+  //   }
+  // };
 
   /** 팀 오피스아워 조회 */
   const fetchOfficehourTeams = async (id: string) => {
@@ -266,16 +291,17 @@ const ChatRoom = () => {
     if (chatRoomInfo?.team) {
       if (currentUser?.role === "RACER") alert("프로젝트 채팅방 초대는 관리자 권한이 필요합니다.");
     }
-    return alert("Comming soon...");
-    // setIsSelectUserModalOpen(true);
-    // fetchInviteUsers();
+
+    setIsOpenInviteUserModal(true);
   };
 
-  /** 유저 초대 */
-  const fetchInviteUsers = async () => {
+  /** 유저 초대 api */
+  const fetchInviteUsers = async (users: ChatRoomUsers[]) => {
+    const convertUserIds = users.map(user => user.id);
     try {
       if (selectedUsers.length === 0) return alert("초대할 사람을 선택해주세요.");
-      await AxiosChat.postUserToChat(chatId, selectedUsers);
+      const res = await AxiosChat.postUserToChat(chatId, convertUserIds);
+      console.log(res);
     } catch (e: any) {
       setError(e.response?.data.message);
     }
@@ -352,17 +378,14 @@ const ChatRoom = () => {
 
   return (
     <>
-      <SelectUsersModal
-        onOpen={isSelectUserModalOpne}
-        onClose={() => {
-          setIsSelectUserModalOpen(false);
-        }}
-        onChange={(e: any) => setSearchUser(e.target.value)}
-        onInviteUsers={fetchInviteUsers}
-        onSearch={handleSearchUser}
-        onClickSearch={fetchSearchUserList}
-        searchUser={searchUser}
+      <GroupChatStartModal
+        currentUser={currentUser}
         userList={userList}
+        groupchatMember={selectedUsers}
+        onClose={() => setIsOpenInviteUserModal(false)}
+        isOpen={isOpenInviteUserModal}
+        onChangeGroupMember={handleChangeGroupChatMembers}
+        onCreateGroupChat={fetchInviteUsers}
       />
       <MiniProfileModal
         isModalOpen={isModalOpen}
@@ -370,7 +393,7 @@ const ChatRoom = () => {
         onOpenChatName={() => setChatNameModalOpen(true)}
         chatNameInput={chatNameInput}
         onChagneInput={handleChageChatNameInput}
-        onClose={handleCloseModal}
+        onClose={handleCloseMiniProfileModal}
         userdata={miniProfile}
         onCreateChat={handleCreateChat}
         onCloseChatName={handleCloseChatNameModal}
