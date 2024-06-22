@@ -41,8 +41,10 @@ export default function ChatHome() {
 
   const [_chatName, _setChatName] = useState();
 
-  const [_chatNameInput, _setChatNameInput] = useState();
   const [isCreateGroupChatModalOpen, setIsCreateGroupChatModalOpen] = useState(false);
+
+  const [chatNameInput, setChatNameInput] = useState("");
+
   /** 채팅 리스트 가져오기 */
   const fetchGetChatList = async () => {
     try {
@@ -104,6 +106,7 @@ export default function ChatHome() {
     const convertUserIds = users.map(user => user.id);
 
     try {
+      if (selectedUsers.length === 0) return alert("초대할 사람을 선택해주세요.");
       const res = await AxiosChat.createUsersChat({ userIds: convertUserIds, chatName: chatName });
       if (res.status === 201) {
         alert(`채팅방이 생성되었습니다!`);
@@ -133,24 +136,6 @@ export default function ChatHome() {
     }
   };
 
-  // const handleStartGroupChat = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (e.key !== "Enter") return;
-  //   if (e.nativeEvent.isComposing) return;
-  //   if (chatNameInput.trim() === "") return;
-  //   try {
-  //     const res = await AxiosChat.createUsersChat(data);
-  //     console.log(res);
-  //   } catch (e: any) {
-  //     setError(e.response.data.message);
-  //   }
-  // };
-
-  useEffect(() => {
-    fetchGetChatList();
-    fetchGetUsers();
-  }, []);
-
-  useEffect(() => {}, [chatsList]);
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setChatNameModalOpen(false);
@@ -174,8 +159,15 @@ export default function ChatHome() {
       }
     }
   };
-  const [chatNameInput, setChatNameInput] = useState("");
+
   const handleChageChatNameInput = (e: any) => setChatNameInput(e.target.value);
+
+  useEffect(() => {
+    fetchGetChatList();
+    fetchGetUsers();
+  }, []);
+
+  useEffect(() => {}, [chatsList]);
 
   if (!currentUser) return;
 

@@ -26,7 +26,7 @@ export default function GroupChatStartModal({
   onCreateGroupChat,
 }: GropChatStartModalProps) {
   const handleCreateChatRoom = () => {
-    onCreateGroupChat(groupchatMember, `${currentUser.realName}님외 ${groupchatMember.length}명`);
+    onCreateGroupChat(groupchatMember, `${currentUser.realName}, ${groupchatMember.map(user => `${user.realName},`)}`);
     onClose();
   };
 
@@ -51,7 +51,7 @@ export default function GroupChatStartModal({
           </Wrapper>
         </Relative>
         <Button className="create-chat-button" onClick={handleCreateChatRoom}>
-          채팅방 생성하기
+          채팅 시작하기
         </Button>
       </ModalContainer>
       <Dimed className={isOpen ? "" : "disable"} onClick={onClose} />
