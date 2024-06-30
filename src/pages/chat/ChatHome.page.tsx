@@ -102,7 +102,24 @@ export default function ChatHome() {
     }
   };
 
-  const handleStartUsersChat = async (users: ChatRoomUsers[], chatName: string) => {
+  /** 그룹 채팅 시작하기 */
+  const handleStartUserGroupChat = async (users: ChatRoomUsers[], chatName: string) => {
+    const convertUserIds = users.map(user => user.id);
+
+    try {
+      if (selectedUsers.length === 0) return alert("초대할 사람을 선택해주세요.");
+      const res = await AxiosChat.createUsersChat({ userIds: convertUserIds, chatName: chatName });
+      if (res.status === 201) {
+        alert(`채팅방이 생성되었습니다!`);
+        fetchGetChatList();
+        navigate(`${paths.CHAT_HOME}/${res.data.data.id}`);
+      }
+    } catch (e: any) {
+      setError(e.response?.data.message);
+    }
+  };
+  /** 1:1 채팅 시작하기 */
+  const handleStartUserChat = async (users: ChatRoomUsers[], chatName: string) => {
     const convertUserIds = users.map(user => user.id);
 
     try {
@@ -144,6 +161,8 @@ export default function ChatHome() {
   const handleCloseChatNameModal = () => {
     setChatNameModalOpen(false);
   };
+
+  /** 채팅방 생성 */
   const handleCreateChat = () => {
     if (!miniProfile) return;
     if (chatNameInput.trim() === "") return;
@@ -151,10 +170,10 @@ export default function ChatHome() {
 
     setChatNameModalOpen(false);
 
-    if (handleStartUsersChat && miniProfile.id) {
+    if (handleStartUserChat && miniProfile.id) {
       const findUser = userList.find(user => user.id === miniProfile.id);
       if (findUser) {
-        handleStartUsersChat([findUser], chatNameInput);
+        handleStartUserChat([findUser], chatNameInput);
         setChatNameInput("");
       }
     }
@@ -191,7 +210,7 @@ export default function ChatHome() {
         onClose={() => setIsCreateGroupChatModalOpen(false)}
         isOpen={isCreateGroupChatModalOpen}
         onChangeGroupMember={handleChangeGroupChatMembers}
-        onCreateGroupChat={handleStartUsersChat}
+        onCreateGroupChat={handleStartUserGroupChat}
       />
       <Container>
         <Wrapper>

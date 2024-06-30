@@ -109,4 +109,11 @@ export namespace AxiosUser {
     const res = await api.get(url);
     return res;
   };
+
+  /** 레이서 역할별 조회 */
+  export const getAllUsers = async () => {
+    const url = `users/all?pageSize=10&role=all`;
+    const res = await api.get(url);
+    return res;
+  };
 }
