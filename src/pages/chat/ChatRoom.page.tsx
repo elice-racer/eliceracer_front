@@ -32,17 +32,17 @@ interface ChatRoomInfo {
 }
 
 const ChatRoom = () => {
-  const { id: chatId } = useParams();
+  const { id } = useParams();
+
+  const chatId = id as string;
+
+  const currentUser = useRecoilValue(currentUserAtom);
 
   const navigate = useNavigate();
   const socket = useContext(SocketContext);
-  const currentUser = useRecoilValue(currentUserAtom);
 
   const chatBodyRef = useRef<HTMLDivElement>(null);
   const observeRef = useRef<HTMLDivElement>(null);
-
-  if (!chatId) return;
-  if (!currentUser) return;
 
   const [userId, setUserId] = useState<any>(null);
 
@@ -191,6 +191,7 @@ const ChatRoom = () => {
     setIsLoading(true);
     try {
       const res = await AxiosChat.getChatMessages(chatId);
+      console.log(res);
       setIsLoading(false);
       setNextUrl(typeof res.pagination.next === "string" ? res.pagination.next.replace(baseURL, "") : null);
 
@@ -199,6 +200,7 @@ const ChatRoom = () => {
       }
       setIsLoading(false);
     } catch (e: any) {
+      console.log(e.response);
       setError(e.response?.data.message);
       setIsLoading(false);
     }
@@ -375,6 +377,9 @@ const ChatRoom = () => {
       }
     };
   }, [nextUrl]);
+
+  if (!chatId) return;
+  if (!currentUser) return;
 
   return (
     <>
