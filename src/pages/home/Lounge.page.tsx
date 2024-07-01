@@ -102,7 +102,8 @@ function Lounge() {
       setError(e.response.data.message);
       if (e.response.status === 404) {
         try {
-          fetchSearchUserList();
+          const res = await AxiosUser.getAllUsers();
+          setUsers(res.data || []);
         } catch (e: any) {
           setError(e.response.data.message);
         }
@@ -126,14 +127,17 @@ function Lounge() {
   const handleStartUsersChat = async (userId: string, chatName: string) => {
     try {
       const res = await AxiosChat.createUsersChat({ userIds: [userId], chatName: chatName });
+      console.log(res);
       if (res.status === 201) {
         alert(`채팅방이 생성되었습니다! `);
         setIsModalOpen(false);
 
         navigate(`${paths.CHAT_HOME}/${res.data.data.id}`);
       }
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      if (e.response.status === 409) {
+        alert("이미 생성된 채팅방이 존재합니다.");
+      }
     }
   };
 

@@ -41,8 +41,10 @@ export default function ChatHome() {
 
   const [_chatName, _setChatName] = useState();
 
-  const [_chatNameInput, _setChatNameInput] = useState();
   const [isCreateGroupChatModalOpen, setIsCreateGroupChatModalOpen] = useState(false);
+
+  const [chatNameInput, setChatNameInput] = useState("");
+
   /** 채팅 리스트 가져오기 */
   const fetchGetChatList = async () => {
     try {
@@ -100,10 +102,28 @@ export default function ChatHome() {
     }
   };
 
-  const handleStartUsersChat = async (users: ChatRoomUsers[], chatName: string) => {
+  /** 그룹 채팅 시작하기 */
+  const handleStartUserGroupChat = async (users: ChatRoomUsers[], chatName: string) => {
     const convertUserIds = users.map(user => user.id);
 
     try {
+      if (selectedUsers.length === 0) return alert("초대할 사람을 선택해주세요.");
+      const res = await AxiosChat.createUsersChat({ userIds: convertUserIds, chatName: chatName });
+      if (res.status === 201) {
+        alert(`채팅방이 생성되었습니다!`);
+        fetchGetChatList();
+        navigate(`${paths.CHAT_HOME}/${res.data.data.id}`);
+      }
+    } catch (e: any) {
+      setError(e.response?.data.message);
+    }
+  };
+  /** 1:1 채팅 시작하기 */
+  const handleStartUserChat = async (users: ChatRoomUsers[], chatName: string) => {
+    const convertUserIds = users.map(user => user.id);
+
+    try {
+      if (selectedUsers.length === 0) return alert("초대할 사람을 선택해주세요.");
       const res = await AxiosChat.createUsersChat({ userIds: convertUserIds, chatName: chatName });
       if (res.status === 201) {
         alert(`채팅방이 생성되었습니다!`);
@@ -133,24 +153,6 @@ export default function ChatHome() {
     }
   };
 
-  // const handleStartGroupChat = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (e.key !== "Enter") return;
-  //   if (e.nativeEvent.isComposing) return;
-  //   if (chatNameInput.trim() === "") return;
-  //   try {
-  //     const res = await AxiosChat.createUsersChat(data);
-  //     console.log(res);
-  //   } catch (e: any) {
-  //     setError(e.response.data.message);
-  //   }
-  // };
-
-  useEffect(() => {
-    fetchGetChatList();
-    fetchGetUsers();
-  }, []);
-
-  useEffect(() => {}, [chatsList]);
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setChatNameModalOpen(false);
@@ -159,6 +161,8 @@ export default function ChatHome() {
   const handleCloseChatNameModal = () => {
     setChatNameModalOpen(false);
   };
+
+  /** 채팅방 생성 */
   const handleCreateChat = () => {
     if (!miniProfile) return;
     if (chatNameInput.trim() === "") return;
@@ -166,16 +170,23 @@ export default function ChatHome() {
 
     setChatNameModalOpen(false);
 
-    if (handleStartUsersChat && miniProfile.id) {
+    if (handleStartUserChat && miniProfile.id) {
       const findUser = userList.find(user => user.id === miniProfile.id);
       if (findUser) {
-        handleStartUsersChat([findUser], chatNameInput);
+        handleStartUserChat([findUser], chatNameInput);
         setChatNameInput("");
       }
     }
   };
-  const [chatNameInput, setChatNameInput] = useState("");
+
   const handleChageChatNameInput = (e: any) => setChatNameInput(e.target.value);
+
+  useEffect(() => {
+    fetchGetChatList();
+    fetchGetUsers();
+  }, []);
+
+  useEffect(() => {}, [chatsList]);
 
   if (!currentUser) return;
 
@@ -199,7 +210,7 @@ export default function ChatHome() {
         onClose={() => setIsCreateGroupChatModalOpen(false)}
         isOpen={isCreateGroupChatModalOpen}
         onChangeGroupMember={handleChangeGroupChatMembers}
-        onCreateGroupChat={handleStartUsersChat}
+        onCreateGroupChat={handleStartUserGroupChat}
       />
       <Container>
         <Wrapper>
@@ -210,7 +221,7 @@ export default function ChatHome() {
               onChange={handleChangeSearchUser}
               onFetchSearchUserList={fetchSearchUserList}
             />
-            <button>그룹 채팅 시작하기</button>
+            <Button onClick={() => setIsCreateGroupChatModalOpen(true)}>그룹 채팅 시작하기</Button>
 
             <Error>{error}</Error>
             {currentUser && (
@@ -268,6 +279,20 @@ const Error = styled.p`
   color: tomato;
 `;
 
+const Button = styled.div`
+  color: #fff;
+  background-color: ${({ theme }) => theme.colors.purple5};
+  border: 1px solid ${({ theme }) => theme.colors.purple5};
+  padding: 4px 12px;
+  margin: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.purple0};
+    color: ${({ theme }) => theme.colors.purple5};
+    border: 1px solid ${({ theme }) => theme.colors.purple5};
+  }
+`;
 const StyledUserScrollWrapper = styled.div`
   height: 100%;
   width: 100%;

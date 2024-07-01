@@ -27,6 +27,7 @@ const Input = styled.input`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.colors.gray1};
   height: 36px;
+  padding: 4px 12px;
 `;
 
 const SearchIcon = styled.p`
