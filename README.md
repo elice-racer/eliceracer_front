@@ -1,30 +1,28 @@
-# React + TypeScript + Vite
+# 엘리스 부트캠프를 수강하는 레이서를 위한 팀 프로젝트 협업 서비스, ElicerRacer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+엘리스 부트캠프 커리큘럼을 맞춤으로 제작된 협업 웹 서비스입니다.
+오피스아워 시간관리, 오피스아워 시작 및 QR 체크 알림 기능을 통해 보다 개발에 집중할 수 있는 프로세스를 경험해보세요!
 
-Currently, two official plugins are available:
+## 프로젝트 아키텍처
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[서버 github]()
+[클라이언트 github]()
 
-## Expanding the ESLint configuration
+## 사용 스택
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## 클라이언트 UI
 
-- Configure the top-level `parserOptions` property like this:
+- 다양한 기기로 접근 가능하도록 반응형으로 제작
+- 아래는 로그인페이지, 메인페이지 예시
+  ![ui-example](https://github.com/elice-racer/eliceracer_front/assets/124546770/235e9adb-ca8a-4acd-89c3-209df517a1d8)
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+## ElicerRacer's Teams
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- 이혜빈
+- 진채영
+
+## 추가 예정 서비스
+
+- 팀원간의 일정 공유
+- 팀원내의 알림 기능
+- 레이서들만의 대나무 숲, 게시판 기능
