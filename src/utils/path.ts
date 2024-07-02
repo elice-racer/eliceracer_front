@@ -36,6 +36,8 @@ const paths = {
   // 관리자 기능
   ADMIN: "/admin",
 
+  // 관리자 트랙 관리
+  TRACKS_SETTINGS: "/admin/tracks",
   // 관리자 유저 관리
   ADD_USERS: "/admin/upload-file",
   ADMIN_SEARCH_USERS: "/admin/search-users",

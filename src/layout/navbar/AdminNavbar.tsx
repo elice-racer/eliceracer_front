@@ -21,6 +21,17 @@ function AdminNavbar() {
         </Wrapper>
         <Wrapper
           onClick={() => {
+            navigate(paths.TRACKS_SETTINGS);
+          }}
+        >
+          <Text>
+            🏁
+            <br />
+            트랙 관리
+          </Text>
+        </Wrapper>
+        <Wrapper
+          onClick={() => {
             alert("준비 중입니다.");
           }}
         >
@@ -56,8 +67,7 @@ function AdminNavbar() {
           <Text>
             👥
             <br />
-            트랙 및<br />
-            레이서 조회
+            사용자 조회
           </Text>
         </Wrapper>
         <Wrapper onClick={() => navigate(paths.ADMIN_SETTINGS_CHAT)}>

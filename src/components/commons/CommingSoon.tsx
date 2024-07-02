@@ -15,10 +15,11 @@ export default ComingSoonPage;
 
 const Container = styled.div`
   display: flex;
+  height: 100vh;
+  width: 100%;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
   text-align: center;
 `;
 

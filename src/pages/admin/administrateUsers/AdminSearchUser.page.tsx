@@ -5,7 +5,7 @@ function AdminSearchUser() {
     <Container>
       <Wrapper>
         <TitleBar>
-          <Title>트랙 및 레이서 조회</Title>
+          <Title>사용자 조회</Title>
         </TitleBar>
         <SelectOptionWrapper>
           <Input></Input>

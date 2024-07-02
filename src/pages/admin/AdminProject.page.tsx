@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { paths } from "../../utils/path";
 import { Link, useNavigate } from "react-router-dom";
-import SelectBox from "./manageUsers/components/SelectBox";
+import SelectBox from "./administrateUsers/components/SelectBox";
 import { useEffect, useState } from "react";
 import { AxiosProject, ProjectInfo } from "../../services/projects";
 
