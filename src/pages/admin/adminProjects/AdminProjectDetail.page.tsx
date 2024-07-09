@@ -174,6 +174,7 @@ const TitleWrapper = styled.div`
   padding: 0 0 12px 0;
   border-bottom: 3px solid ${({ theme }) => theme.colors.purple1};
 `;
+
 const TitleTextWrapper = styled.div`
   display: flex;
   gap: 4px;
