@@ -33,6 +33,7 @@ const colors = {
   green2: "#509151",
   gray1: "#EDEDED",
   gray2: "#5F5F5F",
+  tomato: "#FF776E",
 } as const;
 
 const containerSizes = {};

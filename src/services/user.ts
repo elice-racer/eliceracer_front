@@ -2,8 +2,8 @@ import { ResData, TeamsInfo } from "./admin";
 import { api } from "./api";
 
 export interface Track {
-  cardinalNo: number | null;
-  id: string | null;
+  cardinalNo: number;
+  id: string;
   trackName: "AI" | "SW" | "CLOUD";
 }
 
@@ -31,6 +31,11 @@ export interface UsersPageInfo {
   teams: TeamsInfo[];
   tmi: string | null;
 }
+
+export type UserListType = Omit<
+  UsersPageInfo,
+  "email" | "username" | "phoneNumber" | "comment" | "position" | "blog" | "sns" | "description" | "skills" | "status" | "teams" | "tmi"
+>;
 export type ChatRoomUsers = Omit<UsersPageInfo, "phoneNumber">;
 
 export type OmitUserInfo = Omit<UsersPageInfo, "username" | "email" | "id" | "skill" | "role" | "teams" | "track" | "status">;

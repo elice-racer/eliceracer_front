@@ -95,13 +95,6 @@ export namespace AxiosAdmin {
     return res;
   };
 
-  // id 값만으로 프로젝트 조회했을때 해당 프로젝트 트랙, 기수 필요
-  export const getProject = async (id: string | undefined) => {
-    const url = `projects/${id}`;
-    const res = await api.get(url).then(res => res.data);
-    return res;
-  };
-
   export const getProjectDetail = async (id: string | undefined): Promise<ResData<TeamsInfo[]>> => {
     const url = `teams/projects/all?pageSize=10&projectId=${id}`;
     const res = await api.get(url).then(res => res.data);
