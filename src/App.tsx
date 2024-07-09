@@ -73,8 +73,10 @@ import SuccessCreateUsers from "./pages/login/SuccessCreateUsers.page";
 import AdminProjectDetail from "./pages/admin/AdminProjectDetail.page";
 import SuccessAuthEmail from "./pages/redirects/SuccessAuthEmail.page";
 import AdministrateTracks from "./pages/admin/administrateTracks/AdministrateTracks.page.js";
+import DevInfo from "./pages/DevInfo.page.js";
 
 const router = createBrowserRouter([
+  { path: "", element: <DevInfo /> },
   {
     path: "",
     element: <ProtectedRoute />,
@@ -145,7 +147,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  console.log("------v 0.0.2-----");
+  console.log("------현재 업데이트 기간입니다.-----");
   const setToken = useSetRecoilState(tokenAtom);
   const [isLoading, setLoading] = useRecoilState(loadingAtom);
 

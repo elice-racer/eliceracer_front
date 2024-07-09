@@ -43,6 +43,8 @@ const Container = styled.div<{ $isOpen: boolean }>`
   display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
   z-index: 9999;
   border: 1px solid ${({ theme }) => theme.colors.purple2};
+
+  padding: 12px;
 `;
 
 const SubmitUpdatedBtn = styled.div`
