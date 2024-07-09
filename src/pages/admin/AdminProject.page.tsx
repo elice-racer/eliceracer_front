@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { paths } from "../../utils/path";
 import { Link, useNavigate } from "react-router-dom";
-import SelectBox from "./manageUsers/components/SelectBox";
+import SelectBox from "./administrateUsers/components/SelectBox";
 import { useEffect, useState } from "react";
 import { AxiosProject, ProjectInfo } from "../../services/projects";
 
@@ -44,17 +44,19 @@ function AdminProject() {
   return (
     <Container>
       <Wrapper>
-        <TitleWrapper>
-          <Title>프로젝트 조회</Title>
-          <Link to={paths.ADD_USERS}>
-            <AddBtn>프로젝트 일정 등록</AddBtn>
-          </Link>
-        </TitleWrapper>
-        <SelectWrapper>
-          <SelectBox options={OptTrack} name="trackName" value={track.trackName} onChange={handleChangeTrackInfo} />
-          <Input type="text" name="cardinalNo" value={track.cardinalNo} onChange={handleChangeTrackInfo} placeholder="기수" required />
-          <Input type="text" name="lastRound" value={track.lastRound} onChange={handleChangeTrackInfo} placeholder="회차" required />
-        </SelectWrapper>
+        <TitleFlex>
+          <TitleTextWrapper>
+            <Title>프로젝트 조회</Title>
+            <Link to={paths.ADD_USERS}>
+              <AddBtn>프로젝트 일정 등록</AddBtn>
+            </Link>
+          </TitleTextWrapper>
+          <SelectWrapper>
+            <SelectBox options={OptTrack} name="trackName" value={track.trackName} onChange={handleChangeTrackInfo} />
+            <Input type="text" name="cardinalNo" value={track.cardinalNo} onChange={handleChangeTrackInfo} placeholder="기수" required />
+            <Input type="text" name="lastRound" value={track.lastRound} onChange={handleChangeTrackInfo} placeholder="회차" required />
+          </SelectWrapper>
+        </TitleFlex>
         <ProjectListWrapper>
           {projects?.map((project, idx) => (
             <ProjectWrapper key={project.id} onClick={() => handleDetailClick(project.id)}>
@@ -83,13 +85,21 @@ const Wrapper = styled.div`
   width: 80%;
 `;
 
-const TitleWrapper = styled.div`
+const TitleFlex = styled.div`
   display: flex;
+  justify-content: flex-start;
+  width: 100%;
   border-bottom: solid 2px ${({ theme }) => theme.colors.purple2};
+`;
+
+const TitleTextWrapper = styled.div`
+  display: flex;
+
   align-items: center;
   padding: 10px;
   gap: 12px;
 `;
+
 const Title = styled.h1``;
 
 const AddBtn = styled.div`

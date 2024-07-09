@@ -36,8 +36,8 @@ import Settings from "./pages/settings/Settings.page";
 
 // 관리자 page
 import AdminMain from "./pages/admin/adminMain/AdminMain.page";
-import AdminAddFile from "./pages/admin/manageUsers/AdminAddFile.page";
-import AdminSearchUser from "./pages/admin/manageUsers/AdminSearchUser.page";
+import AdminAddFile from "./pages/admin/administrateUsers/AdminAddFile.page.js";
+import AdminSearchUser from "./pages/admin/administrateUsers/AdminSearchUser.page.js";
 
 // 관리자 공지 page
 import AdminNoticeList from "./pages/admin/adminNotice/AdminNoticeList.page";
@@ -72,8 +72,11 @@ import Notfound from "./pages/404/Notfound.page";
 import SuccessCreateUsers from "./pages/login/SuccessCreateUsers.page";
 import AdminProjectDetail from "./pages/admin/AdminProjectDetail.page";
 import SuccessAuthEmail from "./pages/redirects/SuccessAuthEmail.page";
+import AdministrateTracks from "./pages/admin/administrateTracks/AdministrateTracks.page.js";
+import DevInfo from "./pages/DevInfo.page.js";
 
 const router = createBrowserRouter([
+  { path: "", element: <DevInfo /> },
   {
     path: "",
     element: <ProtectedRoute />,
@@ -117,7 +120,7 @@ const router = createBrowserRouter([
     element: <AdminRoute />,
     children: [
       { path: paths.ADMIN, element: <AdminMain /> },
-
+      { path: paths.TRACKS_SETTINGS, element: <AdministrateTracks /> },
       { path: paths.ADD_USERS, element: <AdminAddFile /> },
       { path: paths.ADMIN_SEARCH_USERS, element: <AdminSearchUser /> },
 
@@ -144,7 +147,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  console.log("------v 0.0.2-----");
+  console.log("------현재 업데이트 기간입니다.-----");
   const setToken = useSetRecoilState(tokenAtom);
   const [isLoading, setLoading] = useRecoilState(loadingAtom);
 

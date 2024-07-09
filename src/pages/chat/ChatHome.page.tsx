@@ -246,13 +246,7 @@ const Container = styled.div`
   height: 100%;
   display: flex;
   justify-content: space-between;
-
-  @media ${({ theme }) => theme.device.mobileL} {
-    flex-direction: column;
-  }
-
   max-width: 700px;
-
   margin: 0 auto;
 `;
 
@@ -266,6 +260,14 @@ const Wrapper = styled.div`
   gap: 12px;
 
   box-sizing: border-box;
+  @media ${({ theme }) => theme.device.tablet} {
+    flex-direction: column;
+    padding: 0 24px;
+  }
+  @media ${({ theme }) => theme.device.mobileL} {
+    flex-direction: column;
+    padding: 0 24px;
+  }
 `;
 
 const Section = styled.div`
