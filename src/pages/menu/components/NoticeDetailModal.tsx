@@ -6,14 +6,15 @@ import { Backdrop } from "@mui/material";
 
 import { AxiosNotice, Notice } from "../../../services/notice";
 import IconButton from "../../../components/commons/IconButton";
+import { ModalProps } from "../../admin/adminProjects/components/UpdateTeamModal";
+import { Dimed } from "../../profile/components/SkillsModal";
 
-interface NoticeModalProps {
-  $isOpen: boolean;
-  onClose: () => void;
+interface NoticeModalProps extends ModalProps {
+  isOpen: boolean;
   noticeId: string | null;
 }
 
-export default function NoticeDetailModal({ $isOpen, onClose, noticeId }: NoticeModalProps) {
+export default function NoticeDetailModal({ isOpen, onClose, noticeId }: NoticeModalProps) {
   const el = document.getElementById("modal") as HTMLElement;
 
   const [notice, setNotice] = useState<Notice | null>(null);
@@ -39,8 +40,8 @@ export default function NoticeDetailModal({ $isOpen, onClose, noticeId }: Notice
 
   return ReactDom.createPortal(
     <>
-      <Backdrop sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer }} open={$isOpen} onClick={onClose} />
-      <ModalContainer $open={$isOpen}>
+      <Backdrop sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer }} open={isOpen} onClick={onClose} />
+      <ModalContainer $isOpen={isOpen}>
         <ModalHeader>
           <ModalTitle>{notice?.title}</ModalTitle>
           <IconButton onClick={onClose}>
@@ -62,12 +63,13 @@ export default function NoticeDetailModal({ $isOpen, onClose, noticeId }: Notice
         </ModalSubTitle>
         <ModalBody>{notice?.content}</ModalBody>
       </ModalContainer>
+      <Dimed $isOpen={isOpen} onClick={onClose} />
     </>,
     el
   );
 }
 
-const ModalContainer = styled.div<{ $open: boolean }>`
+const ModalContainer = styled.div<{ $isOpen: boolean }>`
   position: fixed;
   top: 50%;
   left: 50%;
@@ -81,7 +83,7 @@ const ModalContainer = styled.div<{ $open: boolean }>`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   z-index: 9999;
 
-  display: ${({ $open }) => ($open ? "block" : "none")};
+  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
 
   @media ${({ theme }) => theme.device.mobileL} {
     width: 100%;

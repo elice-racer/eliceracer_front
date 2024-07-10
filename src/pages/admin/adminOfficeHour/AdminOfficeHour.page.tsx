@@ -3,11 +3,46 @@ import OfficeHourDataBoard from "./components/OfficeHourDataBoard";
 import OfficehourUpdateMoal from "./components/OfficehourUpdateMoal";
 import { useState } from "react";
 
+export interface OfficehourData {
+  id: string;
+  coachName: string;
+  time: string;
+  date: string;
+}
+
 function AdminOfficeHour() {
-  const [isOepn, setIsOpen] = useState(false);
+  /** 수정할 오피스아워 정보 */
+  const [officehourInfo, setOfficehourInfo] = useState<OfficehourData>({
+    id: "저장된 데이터가 없습니다.",
+    coachName: "등록된 코치가 없습니다.",
+    time: "예정된 시간이 없습니다.",
+    date: "예정된 날짜가 없습니다.",
+  });
+  const [isOepn, setIsOpen] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleUpdateOfficehour = () => {
+    // 수정을 마치겠습니까? alert 모달 띄우기
+    setIsLoading(true);
+    setIsOpen(false);
+    setIsLoading(false);
+  };
+
+  const handleChangeOfficehourInfo = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setOfficehourInfo(updatedInfo => ({ ...updatedInfo, [name]: value }));
+  };
+
   return (
     <Container>
-      <OfficehourUpdateMoal isOpen={isOepn} value={"준비중"} onClick={() => setIsOpen(false)} onChange={() => {}} onClose={() => setIsOpen(false)} />
+      <OfficehourUpdateMoal
+        isOpen={isOepn}
+        isLoading={isLoading}
+        value={officehourInfo}
+        onClick={handleUpdateOfficehour}
+        onChange={handleChangeOfficehourInfo}
+        onClose={() => setIsOpen(false)}
+      />
       <InputWrapper>
         <SearchInput type="text" placeholder="'AI8 3차' 형태로 입력해주세요." />
       </InputWrapper>

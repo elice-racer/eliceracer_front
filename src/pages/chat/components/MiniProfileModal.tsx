@@ -18,6 +18,7 @@ interface MiniProfileModalProps {
   onCreateChat: () => void;
   userdata: UsersPageInfo | undefined;
 }
+
 function MiniProfileModal({
   isModalOpen,
   chatNameModalOpen,
@@ -100,7 +101,7 @@ function MiniProfileModal({
           ""
         )}
       </ModalContainer>
-      <Dimed className={isModalOpen ? "" : "disable"} onClick={onClose} />
+      <Dimed $isOpen={isModalOpen} onClick={onClose} />
     </>,
     el
   );

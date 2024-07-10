@@ -1,3 +1,14 @@
+import { createTheme } from "@mui/material/styles";
+
+// todo mui 커스텀 테마 만들기
+export const Muitheme = createTheme({
+  palette: {
+    primary: {
+      main: "#dfd6ff",
+    },
+  },
+});
+
 const deviceSizes = {
   mobileS: "290px",
   mobileM: "375px",
@@ -6,7 +17,7 @@ const deviceSizes = {
   laptop: "1024px",
 } as const;
 
-const device = {
+export const device = {
   mobileS: `screen and (max-width: ${deviceSizes.mobileS})`,
   mobileM: `screen and (max-width: ${deviceSizes.mobileM})`,
   mobileL: `screen and (max-width: ${deviceSizes.mobileL})`,
@@ -14,7 +25,7 @@ const device = {
   laptop: `screen and (max-width: ${deviceSizes.laptop})`,
 } as const;
 
-const colors = {
+export const colors = {
   purple0: "#f2effb",
   purple1: "#dfd6ff",
   purple2: "#c6b3ff",

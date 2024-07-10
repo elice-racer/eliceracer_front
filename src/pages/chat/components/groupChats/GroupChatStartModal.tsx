@@ -54,7 +54,7 @@ export default function GroupChatStartModal({
           채팅 시작하기
         </Button>
       </ModalContainer>
-      <Dimed className={isOpen ? "" : "disable"} onClick={onClose} />
+      <Dimed $isOpen={isOpen} onClick={onClose} />
     </>
   );
 }

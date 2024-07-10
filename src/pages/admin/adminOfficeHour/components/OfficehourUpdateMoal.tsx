@@ -1,55 +1,38 @@
 import styled from "styled-components";
-import { Dimed } from "../../../profile/components/SkillsModal";
+import LoadingButton from "@mui/lab/LoadingButton";
+import Modal from "../../../../components/commons/Modal";
+import { OfficehourData } from "../AdminOfficeHour.page";
 
 interface OfficehourUpdateMoalProps {
   isOpen: boolean;
-  value: string;
+  isLoading: boolean;
+
+  value: OfficehourData;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onClick: () => void;
   onClose: () => void;
 }
-function OfficehourUpdateMoal({ isOpen, onClick, value, onChange, onClose }: OfficehourUpdateMoalProps) {
+function OfficehourUpdateMoal({ isOpen, isLoading, onClick, value, onChange, onClose }: OfficehourUpdateMoalProps) {
   return (
-    <>
-      <Container $isOpen={isOpen}>
-        AdminUpdateOfficeHour{value}
-        <Input onChange={onChange} />
-        <SubmitUpdatedBtn onClick={onClick}>변경</SubmitUpdatedBtn>
-      </Container>
-      <Dimed className={isOpen ? "" : "disable"} onClick={onClose} />
-    </>
+    <Modal isOpen={isOpen} onClose={onClose} title="오피스아워 수정">
+      {value.id}
+      <Input type="text" name="" value={value.coachName} onChange={onChange} required />
+      <ButtonWrapper>
+        {/* mui ui createTheme이용해서 테마 커스텀하기 */}
+        <LoadingButton loading={isLoading} variant="outlined" onClick={onClick}>
+          완료
+        </LoadingButton>
+      </ButtonWrapper>
+    </Modal>
   );
 }
 
 export default OfficehourUpdateMoal;
 
-const Container = styled.div<{ $isOpen: boolean }>`
-  position: fixed;
-
-  top: 50%;
-  left: 50%;
-
-  transform: translate(-50%, -50%);
-
-  background-color: #fff;
-
-  width: 294px;
-  height: 120px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
-  z-index: 9999;
-  border: 1px solid ${({ theme }) => theme.colors.purple2};
-
-  padding: 12px;
-`;
-
-const SubmitUpdatedBtn = styled.div`
-  border: 1px solid #bdbdbd;
-  padding: 6px;
-`;
-
 const Input = styled.input``;
+
+const ButtonWrapper = styled.div`
+  padding-top: 4px;
+  display: flex;
+  justify-content: end;
+`;

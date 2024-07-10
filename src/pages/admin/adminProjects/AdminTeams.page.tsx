@@ -10,6 +10,7 @@ function AdminTeams() {
 
   const navigate = useNavigate();
   const [team, setTeam] = useState<TeamInfo>();
+  const [_isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
   const fetchGetTeamInfo = async () => {
     try {
@@ -61,7 +62,7 @@ function AdminTeams() {
             )}
           </TitleTextWrapper>
           <OptionWrapper>
-            <OptionButton>팀 정보 수정</OptionButton>
+            <OptionButton onClick={() => setIsOpenModal(true)}>팀 정보 수정</OptionButton>
             <OptionButton className="tomato">팀 삭제</OptionButton>
           </OptionWrapper>
         </TitleWrapper>

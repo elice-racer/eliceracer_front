@@ -89,7 +89,7 @@ function SkillsModal(
           )}
         </SkillContainer>
       </StyledSkillModal>
-      <Dimed className={isModalOpen ? "" : "disable"} onClick={onClose} />
+      <Dimed $isOpen={isModalOpen} onClick={onClose} />
     </>,
     el
   );
@@ -249,7 +249,7 @@ const StyledAddSkillButton = styled(StyledSkillItem)`
 `;
 
 // dimmed
-export const Dimed = styled.div`
+export const Dimed = styled.div<{ $isOpen: boolean }>`
   width: 100%;
   height: 100%;
   position: fixed;
@@ -258,8 +258,7 @@ export const Dimed = styled.div`
   left: 0;
   background-color: #000;
   opacity: 0.3;
-  display: block;
-
+  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
   &.disable {
     display: none;
   }

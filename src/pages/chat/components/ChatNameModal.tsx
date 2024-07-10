@@ -24,7 +24,7 @@ function ChatNameModal({ $isOpen, onClick, value, onChange, onClose }: CreateCha
         </Wrapper>
       </Container>
 
-      <Dimed className={$isOpen ? "" : "disable"} onClick={onClose} />
+      <Dimed $isOpen={$isOpen} onClick={onClose} />
     </>
   );
 }
