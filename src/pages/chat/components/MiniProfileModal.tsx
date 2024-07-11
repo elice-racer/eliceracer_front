@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import { imgPaths, paths } from "../../../utils/path";
-import { Dimed } from "../../profile/components/SkillsModal";
+
 import { UsersPageInfo } from "../../../services/user";
 import ChatNameModal from "./ChatNameModal";
 import ReactDom from "react-dom";
 import Button from "../../../components/commons/Button";
 import { useNavigate } from "react-router-dom";
+import Modal from "../../../components/commons/Modal";
 
 interface MiniProfileModalProps {
   isModalOpen: boolean;
@@ -38,8 +39,7 @@ function MiniProfileModal({
   return ReactDom.createPortal(
     <>
       <ChatNameModal $isOpen={chatNameModalOpen} onClick={onCreateChat} value={chatNameInput} onChange={onChagneInput} onClose={onCloseChatName} />
-      <ModalContainer className={isModalOpen ? "" : "disable"}>
-        <CloseBtn onClick={onClose}>Ⅹ</CloseBtn>
+      <Modal isOpen={isModalOpen} onClose={onClose} width="700px" height="680px">
         <Header>
           <ImgWrapper>
             {userdata?.profileImage ? <UserProfileImg src={userdata.profileImage} /> : <UserProfileImg src={imgPaths.DEFAULT_PROFILE_IMG} />}
@@ -100,44 +100,13 @@ function MiniProfileModal({
         ) : (
           ""
         )}
-      </ModalContainer>
-      <Dimed $isOpen={isModalOpen} onClick={onClose} />
+      </Modal>
     </>,
     el
   );
 }
 
 export default MiniProfileModal;
-
-const ModalContainer = styled.div`
-  position: fixed;
-  display: flex;
-  flex-direction: column;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  max-width: 700px;
-  height: 600px;
-  z-index: 8888;
-  border-radius: 10px;
-  background-color: #fff;
-
-  &.disable {
-    display: none;
-  }
-  padding: 24px 20px;
-
-  @media ${({ theme }) => theme.device.mobileL} {
-    height: 100%;
-    border-radius: 0px;
-  }
-`;
-
-const CloseBtn = styled.div`
-  position: absolute;
-  cursor: pointer;
-`;
 
 const Header = styled.div`
   height: 240px;

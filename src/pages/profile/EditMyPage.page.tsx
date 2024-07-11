@@ -56,11 +56,11 @@ function EditMyPage() {
   };
 
   /** 검색 스킬을 미리보기에 추가하기 */
-  const onAddTempSkill = (skillName: string) => {
+  const handleAddTempSkill = (skillName: string) => {
     const findSkill = skills.find(skill => skill === skillName);
     const findTempSkill = tempSkills.find(skill => skill == skillName);
 
-    if (findSkill || findTempSkill) return;
+    if (findSkill || findTempSkill) return alert("이미 존재하는 스킬입니다.");
 
     setTempSkills(tempSkills.concat(skillName));
     setSearchSkillValue("");
@@ -88,7 +88,6 @@ function EditMyPage() {
     setLoading(true);
     try {
       const res = await AxiosUser.putUsersSkills(tempSkills);
-
       if (res.status === 200) {
         setSkills(res.data.data.map((skill: Skills) => skill.skillName));
       }
@@ -212,7 +211,7 @@ function EditMyPage() {
         showSkills={tempSkills}
         searchSkills={searchSkills}
         onAddSkill={fetchAddSkills}
-        onAddTempSkill={onAddTempSkill}
+        onAddTempSkill={handleAddTempSkill}
         onDeleteTempSkill={onDeleteTempSkill}
         ref={inputRef}
       />

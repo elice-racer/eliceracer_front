@@ -1,10 +1,10 @@
 import { ChatRoomUsers, UsersPageInfo } from "../../../../services/user";
-import { Dimed } from "../../../profile/components/SkillsModal";
+
 import { styled } from "styled-components";
 import SelectUserList from "../SelectUserList";
-import { IoCloseSharp } from "react-icons/io5";
-import { IconButton } from "@mui/material";
+
 import Button from "../../../../components/commons/Button";
+import Modal from "../../../../components/commons/Modal";
 
 interface GropChatStartModalProps {
   currentUser: UsersPageInfo;
@@ -32,12 +32,14 @@ export default function GroupChatStartModal({
 
   return (
     <>
-      <ModalContainer $isOpen={isOpen}>
+      <Modal onClose={onClose} isOpen={isOpen} width="540px" height="680px">
         <Relative>
-          <IconButton className="close-button" onClick={onClose}>
-            <IoCloseSharp />
-          </IconButton>
-          <Title>초대할 친구</Title>
+          <TitleWrapper>
+            <Title>초대할 친구</Title>{" "}
+            <Button className="create-chat-button" onClick={handleCreateChatRoom}>
+              채팅 시작하기
+            </Button>
+          </TitleWrapper>
           <ScrollWrapper>
             {groupchatMember.map(user => (
               <Badge key={user.id}>{user.realName}</Badge>
@@ -50,41 +52,18 @@ export default function GroupChatStartModal({
             </UserScrollWrapper>
           </Wrapper>
         </Relative>
-        <Button className="create-chat-button" onClick={handleCreateChatRoom}>
-          채팅 시작하기
-        </Button>
-      </ModalContainer>
-      <Dimed $isOpen={isOpen} onClick={onClose} />
+      </Modal>
     </>
   );
 }
 
-const ModalContainer = styled.div<{ $isOpen: boolean }>`
-  position: fixed;
-  display: flex;
-  flex-direction: column;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+const TitleWrapper = styled.div`
   width: 100%;
-  max-width: 540px;
-  height: 600px;
-  z-index: 8888;
-  border-radius: 10px;
-  background-color: #fff;
-  border: 1px solid #333;
 
-  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
-  padding: 24px 20px;
+  padding-top: 4px;
 
-  @media ${({ theme }) => theme.device.mobileL} {
-    height: 100%;
-    border-radius: 0px;
-  }
-
-  .create-chat-button {
-    margin-top: 12px !important;
-  }
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Relative = styled.div`

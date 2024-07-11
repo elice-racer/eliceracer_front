@@ -8,11 +8,14 @@ export interface ResData<T> {
 }
 
 interface Track {
+  id: string;
   trackName: string;
   cardinalNo: number | string;
 }
 
-interface GetTrackTeamsQuery extends Track {
+type OmitTrackProps = Omit<Track, "id">;
+
+interface GetTrackTeamsQuery extends OmitTrackProps {
   lastRound: number | string;
 }
 // period : "2023.05.15~2023.11.15 형태
@@ -28,9 +31,11 @@ export interface TeamsInfo {
 export interface CreateChat {
   teamId: string;
 }
+
 const configs = {
   headers: { "Content-Type": "multipart/form-data" },
 };
+
 export namespace AxiosAdmin {
   export const createTeamChat = async (teamId: CreateChat) => {
     const url = `admins/chats/teams`;
@@ -75,7 +80,7 @@ export namespace AxiosAdmin {
   };
 
   /** 트랙 생성 */
-  export const createTrack = async (createTrack: Track) => {
+  export const createTrack = async (createTrack: OmitTrackProps) => {
     const url = `admins/tracks`;
     const res = await api.post(url, createTrack);
     return res;

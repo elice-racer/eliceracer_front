@@ -14,7 +14,7 @@ interface OfficehourUpdateMoalProps {
 }
 function OfficehourUpdateMoal({ isOpen, isLoading, onClick, value, onChange, onClose }: OfficehourUpdateMoalProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="오피스아워 수정">
+    <Modal isOpen={isOpen} onClose={onClose} title="오피스아워">
       {value.id}
       <Input type="text" name="" value={value.coachName} onChange={onChange} required />
       <ButtonWrapper>

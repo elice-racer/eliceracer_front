@@ -3,6 +3,7 @@ import { Skills } from "../../../services/user";
 import React, { forwardRef, useState, Ref, useRef, useEffect } from "react";
 import SkillBadge from "./SkillBadge";
 import ReactDOM from "react-dom";
+import Modal from "../../../components/commons/Modal";
 
 interface SkillModalProps {
   isModalOpen: boolean;
@@ -44,52 +45,47 @@ function SkillsModal(
       if (height > 32) setHeight(height);
     }
   }, [skillModalOpen]);
+
   return ReactDOM.createPortal(
     <>
-      <StyledSkillModal className={isModalOpen ? "" : "disable"}>
-        <Container className={isModalOpen ? "" : "disable"}>
-          <TitleWrapper>
-            <Title>보유 기술 스택</Title>
-          </TitleWrapper>
-          <Wrapper ref={skillboxRef}>
-            {showSkills.map(skill => (
-              <SkillBadge key={skill} skillName={skill} isDelete onDelete={onDeleteTempSkill} />
-            ))}
-            <Input
-              value={searchValue}
-              onChange={onChangeValue}
-              onFocus={() => setSkillModalOpen(true)}
-              onBlur={() => setSkillModalOpen(false)}
-              onKeyDown={handleKeyDown}
-              placeholder="기술 스택을 입력해주세요"
-              ref={ref}
-            />
-          </Wrapper>
-          <ButtonWrapper>
-            <Button onClick={onAddSkill}>저장</Button>
-            <Button className="close" onClick={onClose}>
-              닫기
-            </Button>
-          </ButtonWrapper>
-        </Container>
-        <SkillContainer $isOpen={skillModalOpen && searchValue !== ""} style={{ top: `calc(45% + ${height / 2}px` }}>
-          {searchSkills.map(skill => (
-            <SkillItem skillName={skill.skillName} onClick={() => onAddTempSkill(skill.skillName)} />
+      <Modal isOpen={isModalOpen} onClose={onClose} title={"보유 기술 스택"} width="435px" height="280px">
+        <Wrapper ref={skillboxRef}>
+          {showSkills.map(skill => (
+            <SkillBadge key={skill} skillName={skill} isDelete onDelete={onDeleteTempSkill} />
           ))}
-          {searchValue !== "" && !searchSkills.find(skill => skill.skillName === searchValue) && (
-            <StyledAddSkillButton
-              onClick={(e: React.MouseEvent) => {
-                e.preventDefault();
-                onAddTempSkill(searchValue);
-              }}
-              onMouseDown={handleMouseDown}
-            >
-              + "{searchValue}" 추가하기
-            </StyledAddSkillButton>
-          )}
-        </SkillContainer>
-      </StyledSkillModal>
-      <Dimed $isOpen={isModalOpen} onClick={onClose} />
+          <Input
+            value={searchValue}
+            onChange={onChangeValue}
+            onFocus={() => setSkillModalOpen(true)}
+            onBlur={() => setSkillModalOpen(false)}
+            onKeyDown={handleKeyDown}
+            placeholder="기술 스택을 입력해주세요"
+            ref={ref}
+          />
+        </Wrapper>
+        <ButtonWrapper>
+          <Button onClick={onAddSkill}>저장</Button>
+          <Button className="close" onClick={onClose}>
+            닫기
+          </Button>
+        </ButtonWrapper>
+      </Modal>
+      <SkillContainer $isOpen={skillModalOpen && searchValue !== ""} style={{ top: `calc(45% + ${height / 2}px` }}>
+        {searchSkills.map(skill => (
+          <SkillItem skillName={skill.skillName} onClick={() => onAddTempSkill(skill.skillName)} />
+        ))}
+        {searchValue !== "" && !searchSkills.find(skill => skill.skillName === searchValue) && (
+          <StyledAddSkillButton
+            onClick={(e: React.MouseEvent) => {
+              e.preventDefault();
+              onAddTempSkill(searchValue);
+            }}
+            onMouseDown={handleMouseDown}
+          >
+            + "{searchValue}" 추가하기
+          </StyledAddSkillButton>
+        )}
+      </SkillContainer>
     </>,
     el
   );
@@ -119,45 +115,6 @@ function SkillItem({ skillName, onClick }: SkillItemProps) {
 
 export default forwardRef<HTMLInputElement, SkillModalProps>(SkillsModal);
 
-const StyledSkillModal = styled.div`
-  position: fixed;
-  display: flex;
-  flex-direction: column;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  max-width: 700px;
-  height: 560px;
-  z-index: 999;
-  border-radius: 10px;
-  background-color: transparent;
-
-  &.disable {
-    display: none;
-  }
-  padding: 24px 20px;
-`;
-
-const Container = styled.div`
-  position: fixed;
-  display: flex;
-  flex-direction: column;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 999;
-  width: 100%;
-  max-width: 435px;
-  height: 280px;
-  border-radius: 10px;
-  background-color: #fff;
-
-  &.disable {
-    display: none;
-  }
-  padding: 24px 20px;
-`;
 const Wrapper = styled.div`
   position: relative;
   display: flex;
@@ -175,21 +132,6 @@ const Input = styled.input`
   height: 30px;
   border: none;
   padding-left: 4px;
-`;
-const TitleWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: relative;
-  width: 100%;
-  background: rgb(255, 255, 255);
-`;
-
-const Title = styled.p`
-  font-size: 1.5rem;
-  font-weight: bold;
-  user-select: none;
-  padding-bottom: 24px;
 `;
 
 const ButtonWrapper = styled.div`
@@ -246,20 +188,4 @@ const StyledSkillItem = styled.div`
 
 const StyledAddSkillButton = styled(StyledSkillItem)`
   padding-left: 12px;
-`;
-
-// dimmed
-export const Dimed = styled.div<{ $isOpen: boolean }>`
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  z-index: 888;
-  top: 0;
-  left: 0;
-  background-color: #000;
-  opacity: 0.3;
-  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
-  &.disable {
-    display: none;
-  }
 `;

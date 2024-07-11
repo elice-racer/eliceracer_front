@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import ReactDom from "react-dom";
 import styled from "styled-components";
 
-import { Backdrop } from "@mui/material";
-
 import { AxiosNotice, Notice } from "../../../services/notice";
-import IconButton from "../../../components/commons/IconButton";
 import { ModalProps } from "../../admin/adminProjects/components/UpdateTeamModal";
-import { Dimed } from "../../profile/components/SkillsModal";
+import Modal from "../../../components/commons/Modal";
+
+// import { Backdrop } from "@mui/material";
+// import IconButton from "../../../components/commons/IconButton";
 
 interface NoticeModalProps extends ModalProps {
   isOpen: boolean;
@@ -40,13 +40,13 @@ export default function NoticeDetailModal({ isOpen, onClose, noticeId }: NoticeM
 
   return ReactDom.createPortal(
     <>
-      <Backdrop sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer }} open={isOpen} onClick={onClose} />
-      <ModalContainer $isOpen={isOpen}>
+      {/* <Backdrop sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer }} open={isOpen} onClick={onClose} /> */}
+      <Modal isOpen={isOpen} onClose={onClose} width="500px" height="680px">
         <ModalHeader>
           <ModalTitle>{notice?.title}</ModalTitle>
-          <IconButton onClick={onClose}>
+          {/* <IconButton onClick={onClose}>
             <CloseButton>&times;</CloseButton>
-          </IconButton>
+          </IconButton> */}
         </ModalHeader>
         <ModalSubTitle>
           <Text>{notice?.user.realName} 매니저</Text>
@@ -62,36 +62,11 @@ export default function NoticeDetailModal({ isOpen, onClose, noticeId }: NoticeM
           </Wrapper>
         </ModalSubTitle>
         <ModalBody>{notice?.content}</ModalBody>
-      </ModalContainer>
-      <Dimed $isOpen={isOpen} onClick={onClose} />
+      </Modal>
     </>,
     el
   );
 }
-
-const ModalContainer = styled.div<{ $isOpen: boolean }>`
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-  max-width: 500px;
-  height: 700px;
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  z-index: 9999;
-
-  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
-
-  @media ${({ theme }) => theme.device.mobileL} {
-    width: 100%;
-    max-width: 100%;
-    height: 100%;
-    border-radius: 0px;
-  }
-`;
 
 const ModalHeader = styled.div`
   display: flex;
@@ -109,14 +84,14 @@ const ModalTitle = styled.h2`
   width: 100%;
 `;
 
-const CloseButton = styled.div`
-  border: none;
-  font-size: 2rem;
+// const CloseButton = styled.div`
+//   border: none;
+//   font-size: 2rem;
 
-  position: absolute;
+//   position: absolute;
 
-  cursor: pointer;
-`;
+//   cursor: pointer;
+// `;
 
 const ModalSubTitle = styled.div`
   display: flex;

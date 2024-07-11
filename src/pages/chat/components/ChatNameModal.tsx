@@ -1,6 +1,7 @@
 import styled from "styled-components";
-import { Dimed } from "../../profile/components/SkillsModal";
+
 import Button from "../../../components/commons/Button";
+import Modal from "../../../components/commons/Modal";
 
 interface CreateChatNameModalProps {
   $isOpen: boolean;
@@ -13,7 +14,7 @@ interface CreateChatNameModalProps {
 function ChatNameModal({ $isOpen, onClick, value, onChange, onClose }: CreateChatNameModalProps) {
   return (
     <>
-      <Container $isOpen={$isOpen}>
+      <Modal isOpen={$isOpen} onClose={onClose} width="294px" height="120px">
         <Wrapper>
           <Input className="input" value={value} onChange={onChange} placeholder="채팅방 이름을 설정해주세요" />
           <ButtonWrapper>
@@ -22,36 +23,35 @@ function ChatNameModal({ $isOpen, onClick, value, onChange, onClose }: CreateCha
             </Button>
           </ButtonWrapper>
         </Wrapper>
-      </Container>
-
-      <Dimed $isOpen={$isOpen} onClick={onClose} />
+      </Modal>
     </>
   );
 }
 
 export default ChatNameModal;
 
-const Container = styled.div<{ $isOpen: boolean }>`
-  position: fixed;
+// todo 여기서부터
+// const Container = styled.div<{ $isOpen: boolean }>`
+//   position: fixed;
 
-  top: 50%;
-  left: 50%;
+//   top: 50%;
+//   left: 50%;
 
-  transform: translate(-50%, -50%);
+//   transform: translate(-50%, -50%);
 
-  background-color: #fff;
+//   background-color: #fff;
 
-  width: 294px;
-  height: 120px;
+//   width: 294px;
+//   height: 120px;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
 
-  display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
-  z-index: 9999;
-  border: 1px solid ${({ theme }) => theme.colors.purple2};
-`;
+//   display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
+//   z-index: 9999;
+//   border: 1px solid ${({ theme }) => theme.colors.purple2};
+// `;
 
 const Wrapper = styled.div`
   width: 100%;
