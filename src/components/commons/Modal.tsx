@@ -10,12 +10,14 @@ export interface ModalProps {
   title?: string;
   width?: string;
   height?: string;
+  zIndex?: string;
 }
 
-function Modal({ isOpen, onClose, children, title, width = "700px", height = "600px" }: ModalProps) {
+// zInfdex 고민하기
+export function Modal({ isOpen, onClose, children, title, width = "700px", height = "600px", zIndex }: ModalProps) {
   return (
     <>
-      <ModalContainer $isOpen={isOpen} $width={width} $height={height}>
+      <ModalContainer $isOpen={isOpen} $width={width} $height={height} $zIndex={zIndex}>
         <OptionWrapper>
           <Title>{title}</Title>
           <IconButton aria-label="close" onClick={onClose}>
@@ -24,12 +26,10 @@ function Modal({ isOpen, onClose, children, title, width = "700px", height = "60
         </OptionWrapper>
         {children}
       </ModalContainer>
-      <Dimed $isOpen={isOpen} onClick={onClose} />
+      <Dimed $isOpen={isOpen} onClick={onClose} $zIndex={zIndex} />
     </>
   );
 }
-
-export default Modal;
 
 const OptionWrapper = styled.div`
   display: flex;
@@ -38,7 +38,7 @@ const OptionWrapper = styled.div`
 
 const Title = styled.h1``;
 
-const ModalContainer = styled.div<{ $isOpen: boolean; $width: string; $height: string }>`
+const ModalContainer = styled.div<{ $isOpen: boolean; $width: string; $height: string; $zIndex: string | undefined }>`
   @media ${({ theme }) => theme.device.mobileL} {
     height: 100%;
     width: 100%;
@@ -62,10 +62,10 @@ const ModalContainer = styled.div<{ $isOpen: boolean; $width: string; $height: s
   top: 50%;
   left: 50%;
 
-  z-index: 999;
+  z-index: ${({ $zIndex = "999" }) => $zIndex};
 `;
 
-export const Dimed = styled.div<{ $isOpen: boolean }>`
+export const Dimed = styled.div<{ $isOpen: boolean; $zIndex: string | undefined }>`
   width: 100%;
   height: 100%;
 
@@ -78,5 +78,5 @@ export const Dimed = styled.div<{ $isOpen: boolean }>`
   top: 0;
   left: 0;
 
-  z-index: 888;
+  z-index: ${({ $zIndex = "888" }) => $zIndex};
 `;

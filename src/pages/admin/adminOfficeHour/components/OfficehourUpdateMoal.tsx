@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import LoadingButton from "@mui/lab/LoadingButton";
-import Modal from "../../../../components/commons/Modal";
+import { Modal } from "../../../../components/commons/Modal";
 import { OfficehourData } from "../AdminOfficeHour.page";
 
 interface OfficehourUpdateMoalProps {

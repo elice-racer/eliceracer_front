@@ -3,7 +3,7 @@ import { Skills } from "../../../services/user";
 import React, { forwardRef, useState, Ref, useRef, useEffect } from "react";
 import SkillBadge from "./SkillBadge";
 import ReactDOM from "react-dom";
-import Modal from "../../../components/commons/Modal";
+import { Modal } from "../../../components/commons/Modal";
 
 interface SkillModalProps {
   isModalOpen: boolean;

@@ -1,57 +1,64 @@
 import styled from "styled-components";
 
 import Button from "../../../components/commons/Button";
-import Modal from "../../../components/commons/Modal";
+import { Dimed } from "../../../components/commons/Modal";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
 
 interface CreateChatNameModalProps {
-  $isOpen: boolean;
+  isOpen: boolean;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onClick: () => void;
   onClose: () => void;
 }
 
-function ChatNameModal({ $isOpen, onClick, value, onChange, onClose }: CreateChatNameModalProps) {
+function ChatNameModal({ isOpen, onClick, value, onChange, onClose }: CreateChatNameModalProps) {
   return (
     <>
-      <Modal isOpen={$isOpen} onClose={onClose} width="294px" height="120px">
+      <Container $isOpen={isOpen}>
+        {/* <Modal isOpen={isOpen} onClose={onClose} width="294px" height="120px" zIndex="9999"> */}
         <Wrapper>
+          <ButtonFlex>
+            <IconButton aria-label="close" onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+          </ButtonFlex>
           <Input className="input" value={value} onChange={onChange} placeholder="채팅방 이름을 설정해주세요" />
-          <ButtonWrapper>
+          <ButtonFlex>
             <Button className="button" onClick={onClick}>
               채팅방 생성
             </Button>
-          </ButtonWrapper>
+          </ButtonFlex>
         </Wrapper>
-      </Modal>
+      </Container>
+      <Dimed $isOpen={isOpen} $zIndex="1000" onClick={onClose} />
+      {/* </Modal> */}
     </>
   );
 }
 
 export default ChatNameModal;
 
-// todo 여기서부터
-// const Container = styled.div<{ $isOpen: boolean }>`
-//   position: fixed;
+const Container = styled.div<{ $isOpen: boolean }>`
+  width: 294px;
+  height: 120px;
 
-//   top: 50%;
-//   left: 50%;
+  border: 1px solid ${({ theme }) => theme.colors.purple2};
+  background-color: #fff;
 
-//   transform: translate(-50%, -50%);
+  display: ${({ $isOpen }) => ($isOpen ? "flex" : "none")};
+  align-items: center;
+  justify-content: center;
 
-//   background-color: #fff;
+  position: fixed;
+  transform: translate(-50%, -50%);
 
-//   width: 294px;
-//   height: 120px;
+  top: 50%;
+  left: 50%;
 
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-
-//   display: ${({ $isOpen }) => ($isOpen ? "block" : "none")};
-//   z-index: 9999;
-//   border: 1px solid ${({ theme }) => theme.colors.purple2};
-// `;
+  z-index: 9999;
+`;
 
 const Wrapper = styled.div`
   width: 100%;
@@ -67,16 +74,12 @@ const Wrapper = styled.div`
     border: none;
     border-radius: 0px;
   }
-
-  .button {
-    margin-top: 12px;
-    width: 100px;
-    background-color: ${({ theme }) => theme.colors.purple5} !important;
-  }
 `;
 
-const ButtonWrapper = styled.div`
+const ButtonFlex = styled.div`
   width: 100%;
+  padding: 4px;
+
   display: flex;
   justify-content: end;
 `;

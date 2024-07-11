@@ -4,7 +4,7 @@ import { styled } from "styled-components";
 import SelectUserList from "../SelectUserList";
 
 import Button from "../../../../components/commons/Button";
-import Modal from "../../../../components/commons/Modal";
+import { Modal } from "../../../../components/commons/Modal";
 
 interface GropChatStartModalProps {
   currentUser: UsersPageInfo;

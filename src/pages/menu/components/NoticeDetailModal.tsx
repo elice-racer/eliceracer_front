@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 import { AxiosNotice, Notice } from "../../../services/notice";
 import { ModalProps } from "../../admin/adminProjects/components/UpdateTeamModal";
-import Modal from "../../../components/commons/Modal";
+import { Modal } from "../../../components/commons/Modal";
 
 // import { Backdrop } from "@mui/material";
 // import IconButton from "../../../components/commons/IconButton";

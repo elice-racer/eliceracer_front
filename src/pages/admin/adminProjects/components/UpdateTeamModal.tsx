@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Modal from "../../../../components/commons/Modal";
+import { Modal } from "../../../../components/commons/Modal";
 
 export interface ModalProps {
   isOpen: boolean;

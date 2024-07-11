@@ -6,7 +6,7 @@ import ChatNameModal from "./ChatNameModal";
 import ReactDom from "react-dom";
 import Button from "../../../components/commons/Button";
 import { useNavigate } from "react-router-dom";
-import Modal from "../../../components/commons/Modal";
+import { Modal } from "../../../components/commons/Modal";
 
 interface MiniProfileModalProps {
   isModalOpen: boolean;
@@ -38,7 +38,7 @@ function MiniProfileModal({
 
   return ReactDom.createPortal(
     <>
-      <ChatNameModal $isOpen={chatNameModalOpen} onClick={onCreateChat} value={chatNameInput} onChange={onChagneInput} onClose={onCloseChatName} />
+      <ChatNameModal isOpen={chatNameModalOpen} onClick={onCreateChat} value={chatNameInput} onChange={onChagneInput} onClose={onCloseChatName} />
       <Modal isOpen={isModalOpen} onClose={onClose} width="700px" height="680px">
         <Header>
           <ImgWrapper>
