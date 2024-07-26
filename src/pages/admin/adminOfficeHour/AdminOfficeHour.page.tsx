@@ -18,7 +18,7 @@ function AdminOfficeHour() {
     time: "예정된 시간이 없습니다.",
     date: "예정된 날짜가 없습니다.",
   });
-  const [isOepn, setIsOpen] = useState(true);
+  const [isOepn, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleUpdateOfficehour = () => {
