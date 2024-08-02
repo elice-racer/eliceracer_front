@@ -164,7 +164,7 @@ function AdminAddFile() {
       setLoading(false);
     }
   };
-
+  // 요청 url , 메서드, 데이터,
   const handleUploadUsersFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
