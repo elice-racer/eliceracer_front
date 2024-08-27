@@ -3,12 +3,12 @@ import styled from "styled-components";
 
 // type OfficehourType = "FE" | "BE" | "AI" | "ALL";
 
-interface OfficehourData {
+export interface OfficehourData {
   id: string;
   date: string;
   coachName: string;
   team: string;
-  type: string;
+  officehourType: string;
   time: string;
   isAlert: boolean;
 }
@@ -30,21 +30,26 @@ const DAY_OF_THE_WEEK = [
 function Calendars({ officehourDatas }: CalendarProps) {
   const storageDate = localStorage.getItem("date");
   const initDate = storageDate ? new Date(storageDate) : new Date();
+
+  // 현재 날짜 저장, 기존에 조회하던 날짜가 있을 경우 localStorage에 저장된 Date 객체를 가져온다.
   const [currentDate, setCurrentDate] = useState<Date>(initDate);
 
+  /** 주간 가져오는 함수 */
   const calculateWeeks = (date: Date): Date[] => {
-    const week = [];
+    const week = []; // 한주를 담을 변수 선언
 
-    const startOfWeek = new Date(date);
+    const startOfWeek = new Date(date); // 시작 날짜 계산
 
-    startOfWeek.setDate(date.getDate() - date.getDay());
+    startOfWeek.setDate(date.getDate() - date.getDay()); // 일요일부터 가져올 것이기 때문에, 현재 날짜에서 현재 요일을 뺀다. 일요일 = 0
 
+    // 시작날짜 일요일 기준으로 7일을 가져온다.
     for (let i = 0; i < 7; i++) {
       const day = new Date(startOfWeek);
       day.setDate(startOfWeek.getDate() + i);
       week.push(day);
     }
 
+    // 가져온 주간 데이터 반환
     return week;
   };
 

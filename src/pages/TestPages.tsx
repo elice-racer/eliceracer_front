@@ -1,10 +1,23 @@
 import Calendars from "../components/calendars/Calendars";
 
+// type OfficehourType = "FE" | "BE" | "AI" | "ALL";
+
+export interface OfficehourData {
+  id: string;
+  date: string;
+  coachName: string;
+  team: string;
+  officehourType: string;
+  time: string;
+  isAlert: boolean;
+}
+
 function TestPages() {
   const officehourDatas = [
-    { id: "sadfasdf", date: "1000-000-00", coachName: "김정현", team: "1팀", type: "FE", time: "22:00", isAlert: false },
-    { id: "sadfasdf", date: "1000-000-00", coachName: "김정현", team: "1팀", type: "FE", time: "22:00", isAlert: false },
+    { id: "sadfasdf", date: "1000-000-00", coachName: "김정현", team: "1팀", officehourType: "FE", time: "22:00", isAlert: false },
+    { id: "sadfasdf", date: "1000-000-00", coachName: "김정현", team: "1팀", officehourType: "FE", time: "22:00", isAlert: false },
   ];
+
   return <Calendars officehourDatas={officehourDatas} />;
 }
 
