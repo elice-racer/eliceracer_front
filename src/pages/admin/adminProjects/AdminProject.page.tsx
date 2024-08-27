@@ -1,12 +1,12 @@
 import styled from "styled-components";
-import { paths } from "../../utils/path";
+import { paths } from "../../../utils/path";
 import { Link, useNavigate } from "react-router-dom";
-import SelectBox from "./administrateUsers/components/SelectBox";
+import SelectBox from "../administrateUsers/components/SelectBox";
 import { useEffect, useState } from "react";
-import { AxiosProject, ProjectInfo } from "../../services/projects";
+import { AxiosProject, ProjectInfo } from "../../../services/projects";
 
 const OptTrack = [
-  { value: "", name: "트랙" },
+  { value: "All", name: "트랙" },
   { value: "AI", name: "AI" },
   { value: "CLOUD", name: "CLOUD" },
   { value: "SW", name: "SW" },
@@ -65,6 +65,10 @@ function AdminProject() {
                 {project.track.trackName} {project.track.cardinalNo}
               </Text>
               <Text>{project.projectName}</Text>
+              <Text>project.isProgess</Text>
+              <Text>
+                {project.startDate.slice(0, 10)} ~ {project.endDate.slice(0, 10)}
+              </Text>
             </ProjectWrapper>
           ))}
         </ProjectListWrapper>
@@ -128,6 +132,7 @@ const ProjectListWrapper = styled.div`
   gap: 4px;
 `;
 const ProjectWrapper = styled.div`
+  width: 100%;
   padding: 12px;
   display: flex;
   justify-content: space-between;

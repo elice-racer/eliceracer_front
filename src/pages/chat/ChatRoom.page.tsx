@@ -10,7 +10,7 @@ import { AxiosOffieHour, OfficehourProps } from "../../services/officehour";
 import { useRecoilValue } from "recoil";
 import { currentUserAtom } from "../../recoil/UserAtom";
 import Loading from "../../components/commons/Loading";
-import { baseURL } from "../../services/api";
+import { baseURL } from "../../services/instance";
 import MiniProfileModal from "./components/MiniProfileModal";
 import { SocketContext, SOCKET_EVENT } from "../../context/SocketContext";
 import ChatList from "./components/ChatList";

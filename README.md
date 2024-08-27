@@ -115,6 +115,9 @@ yarn start:dev
 
 ## 프로젝트 아키텍처
 
+### 프론트 아키텍처
+
+![프론트 아키텍처](https://github.com/elice-racer/eliceracer_front/assets/124546770/ffb87673-6afa-4fd6-bd1c-64e98ff88085)
 [서버 github]()
 [클라이언트 github]()
 
