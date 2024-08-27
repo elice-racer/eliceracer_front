@@ -78,6 +78,8 @@ import EmptyData from "./pages/404/EmptyData.page.js";
 import AdminTeams from "./pages/admin/adminProjects/AdminTeams.page.js";
 // import DevInfo from "./pages/DevInfo.page.js";
 
+import TestPages from "./pages/TestPages.js";
+
 const router = createBrowserRouter([
   // { path: "", element: <DevInfo /> },
   {
@@ -94,6 +96,7 @@ const router = createBrowserRouter([
     path: "/auth",
     element: <BasicRoute />,
     children: [
+      { path: "/auth/calendar", element: <TestPages /> },
       { path: paths.LOGIN, element: <Login /> },
       { path: paths.INTRO, element: <Intro /> },
       { path: paths.CREATE_USER, element: <CreateAccount /> },

@@ -6,13 +6,14 @@ export const baseURL = import.meta.env.VITE_BASE_URL;
 
 type ErrorType = AxiosError["response"];
 
-export const api = axios.create({
+export const instance = axios.create({
   baseURL,
   // 쿠키가 모든 요청에 자동으로 포함되게 하는 옵션
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
+  timeout: 2000,
 });
 
 /** 요청 전에 access_token을 header에 넣는 작업 */
@@ -39,6 +40,7 @@ const requestError = (e: AxiosError): Promise<AxiosError> => {
 const onFulfilled = (res: AxiosResponse) => {
   return res;
 };
+
 const onRejected = async (e: AxiosError<ErrorType>) => {
   const { config, response } = e;
   const originalRequest = config;
@@ -48,7 +50,6 @@ const onRejected = async (e: AxiosError<ErrorType>) => {
   }
 
   if (response?.status === 401) {
-    // 쿠키에서 들고오기
     const refreshToken = Cookies.get("refreshToken");
 
     const url = `${baseURL}auth/refresh`;
@@ -56,7 +57,8 @@ const onRejected = async (e: AxiosError<ErrorType>) => {
     const new_access_token = res.headers?.authorization.replace("Bearer ", "");
     localStorage.setItem("userToken", new_access_token);
 
-    api.defaults.headers.common["Authorization"] = `Bearer ${new_access_token}`;
+    instance.defaults.headers.common["Authorization"] = `Bearer ${new_access_token}`;
+
     if (originalRequest) {
       originalRequest.headers["Authorization"] = `Bearer ${new_access_token}`;
 
@@ -67,5 +69,6 @@ const onRejected = async (e: AxiosError<ErrorType>) => {
   }
   return Promise.reject(e);
 };
-api.interceptors.request.use(requestPrev, requestError);
-api.interceptors.response.use(onFulfilled, onRejected);
+
+instance.interceptors.request.use(requestPrev, requestError);
+instance.interceptors.response.use(onFulfilled, onRejected);

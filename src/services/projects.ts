@@ -1,5 +1,5 @@
 import { ResData } from "./admin";
-import { api } from "./api";
+import { instance } from "./instance";
 import { Track, UserListType } from "./user";
 
 export interface ProjectInfo {
@@ -50,13 +50,13 @@ export namespace AxiosProject {
   /** 모든 프로젝트 조회 */
   export const getAllProjectsList = async (): Promise<ResData<ProjectInfo[]>> => {
     const url = `projects/all?pageSize=10&trackName=AI`;
-    const res = await api.get(url).then(res => res.data);
+    const res = await instance.get(url).then(res => res.data);
     return res;
   };
 
   export const getProjectId = async (projectId: string | undefined) => {
     const url = `projects/${projectId}`;
-    const res = await api.get(url).then(res => res.data);
+    const res = await instance.get(url).then(res => res.data);
     return res;
   };
 
@@ -67,21 +67,21 @@ export namespace AxiosProject {
     lastCardinalNo,
   }: TracksProjectsQeruyString): Promise<ResData<ProjectInfo[]>> => {
     const url = `projects/tracks/all?pageSize=${pageSize}&trackName=${trackName}&lastCardinalNo=${lastCardinalNo};`;
-    const res = await api.get(url).then(res => res.data);
+    const res = await instance.get(url).then(res => res.data);
     return res;
   };
 
   /**기수별 프로젝트 조회 */
   export const getCardinalsProjects = async ({ pageSize = 3, trackName, cardinalNo }: CardinalNoProjectsQeruyString) => {
     const url = `projects/cardinals/all?pageSize=${pageSize}&trackName=${trackName}&cardinalNo=${cardinalNo}`;
-    const res = await api.get(url).then(res => res.data);
+    const res = await instance.get(url).then(res => res.data);
     return res;
   };
 
   /** 팀 상세 조회 */
   export const getTeamInfo = async (teamId: string | undefined): Promise<ResData<TeamInfo>> => {
     const url = `teams/${teamId}`;
-    const res = await api.get(url).then(res => res.data);
+    const res = await instance.get(url).then(res => res.data);
     return res;
   };
 }
