@@ -13,7 +13,7 @@ interface Track {
   cardinalNo: number | string;
 }
 
-type OmitTrackProps = Omit<Track, "id">;
+export type OmitTrackProps = Omit<Track, "id">;
 
 interface GetTrackTeamsQuery extends OmitTrackProps {
   lastRound: number | string;

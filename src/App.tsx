@@ -35,7 +35,6 @@ import OfficeHour from "./pages/officeHour/OfficeHour.page";
 import Settings from "./pages/settings/Settings.page";
 
 // 관리자 page
-import AdminMain from "./pages/admin/adminMain/AdminMain.page";
 import AdminAddFile from "./pages/admin/administrateUsers/AdminAddFile.page.js";
 import AdminSearchUser from "./pages/admin/administrateUsers/AdminSearchUser.page.js";
 
@@ -125,7 +124,7 @@ const router = createBrowserRouter([
     path: "/admin",
     element: <AdminRoute />,
     children: [
-      { path: paths.ADMIN, element: <AdminMain /> },
+      { path: paths.ADMIN, element: <AdminAddFile /> },
       { path: paths.TRACKS_SETTINGS, element: <AdministrateTracks /> },
       { path: paths.TRACKS_DETAIL, element: <AdministrateTrackDetail /> },
 

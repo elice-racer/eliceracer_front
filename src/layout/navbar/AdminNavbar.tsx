@@ -9,7 +9,7 @@ function AdminNavbar() {
       <Flex>
         <Wrapper
           onClick={() => {
-            navigate(paths.ADD_USERS);
+            navigate(paths.ADMIN);
           }}
         >
           <Text>

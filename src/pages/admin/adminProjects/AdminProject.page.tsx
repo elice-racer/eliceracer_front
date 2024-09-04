@@ -5,7 +5,7 @@ import SelectBox from "../administrateUsers/components/SelectBox";
 import { useEffect, useState } from "react";
 import { AxiosProject, ProjectInfo } from "../../../services/projects";
 
-const OptTrack = [
+const OPT_TRACKS = [
   { value: "All", name: "트랙" },
   { value: "AI", name: "AI" },
   { value: "CLOUD", name: "CLOUD" },
@@ -52,7 +52,7 @@ function AdminProject() {
             </Link>
           </TitleTextWrapper>
           <SelectWrapper>
-            <SelectBox options={OptTrack} name="trackName" value={track.trackName} onChange={handleChangeTrackInfo} />
+            <SelectBox options={OPT_TRACKS} name="trackName" value={track.trackName} onChange={handleChangeTrackInfo} />
             <Input type="text" name="cardinalNo" value={track.cardinalNo} onChange={handleChangeTrackInfo} placeholder="기수" required />
             <Input type="text" name="lastRound" value={track.lastRound} onChange={handleChangeTrackInfo} placeholder="회차" required />
           </SelectWrapper>
