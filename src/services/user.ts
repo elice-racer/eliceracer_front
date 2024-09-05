@@ -2,8 +2,8 @@ import { ResData, TeamsInfo } from "./admin";
 import { instance } from "./instance";
 
 export interface Track {
-  cardinalNo: number;
   id: string;
+  cardinalNo: number;
   trackName: string; // todo "AI" | "SW" | "CLOUD" 로 사용할 수 있게 변경
 }
 

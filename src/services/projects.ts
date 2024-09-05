@@ -1,7 +1,8 @@
-import { ResData } from "./admin";
+import { ResData, TeamsInfo } from "./admin";
 import { instance } from "./instance";
 import { Track, UserListType } from "./user";
 
+// todo Projects 로 수정
 export interface ProjectInfo {
   id: string;
   projectName: string;
@@ -9,6 +10,11 @@ export interface ProjectInfo {
   round: 3;
   startDate: string;
   endDate: string;
+}
+
+// todo ProjectInfo로 수정
+export interface ProjectDetail extends ProjectInfo {
+  teams: TeamsInfo[] | [];
 }
 
 interface TracksProjectsQeruyString {
@@ -47,7 +53,7 @@ export interface TeamInfo {
 }
 
 export namespace AxiosProject {
-  /** 모든 프로젝트 조회 */
+  /** 프로젝트 조회 */
   export const getAllProjectsList = async (): Promise<ResData<ProjectInfo[]>> => {
     const url = `projects?pageSize=10&trackName=ALL&cardinalNo=0&round=0&lastTrackName=&lastCardinalNo=&lastRound=`;
     const res = await instance.get(url).then(res => res.data);
@@ -60,7 +66,7 @@ export namespace AxiosProject {
     return res;
   };
 
-  /** 트랙별 프로젝트 조회 */
+  /** [삭제 예정] 트랙별 프로젝트 조회 */
   export const getTracksProjects = async ({
     pageSize = 3,
     trackName,
@@ -71,7 +77,7 @@ export namespace AxiosProject {
     return res;
   };
 
-  /**기수별 프로젝트 조회 */
+  /** [삭제 예정] 기수별 프로젝트 조회 */
   export const getCardinalsProjects = async ({ pageSize = 3, trackName, cardinalNo }: CardinalNoProjectsQeruyString) => {
     const url = `projects/cardinals/all?pageSize=${pageSize}&trackName=${trackName}&cardinalNo=${cardinalNo}`;
     const res = await instance.get(url).then(res => res.data);

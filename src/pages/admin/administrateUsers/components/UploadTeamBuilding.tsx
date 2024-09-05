@@ -118,4 +118,5 @@ const Button = styled.div`
   text-align: center;
   width: 30%;
   background-color: ${({ theme }) => theme.colors.purple0};
+  cursor: pointer;
 `;
