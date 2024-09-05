@@ -4,7 +4,7 @@ import { instance } from "./instance";
 export interface Track {
   cardinalNo: number;
   id: string;
-  trackName: "AI" | "SW" | "CLOUD";
+  trackName: string; // todo "AI" | "SW" | "CLOUD" 로 사용할 수 있게 변경
 }
 
 export interface Skills {
@@ -36,9 +36,11 @@ export type UserListType = Omit<
   UsersPageInfo,
   "email" | "username" | "phoneNumber" | "comment" | "position" | "blog" | "sns" | "description" | "skills" | "status" | "teams" | "tmi"
 >;
+
 export type ChatRoomUsers = Omit<UsersPageInfo, "phoneNumber">;
 
 export type OmitUserInfo = Omit<UsersPageInfo, "username" | "email" | "id" | "skill" | "role" | "teams" | "track" | "status">;
+
 export type UpdateUserInfo = Partial<OmitUserInfo>;
 export namespace AxiosUser {
   /** 현재 유저 정보 가져오기 */

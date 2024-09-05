@@ -49,7 +49,7 @@ export interface TeamInfo {
 export namespace AxiosProject {
   /** 모든 프로젝트 조회 */
   export const getAllProjectsList = async (): Promise<ResData<ProjectInfo[]>> => {
-    const url = `projects/all?pageSize=10&trackName=AI`;
+    const url = `projects?pageSize=10&trackName=ALL&cardinalNo=0&round=0&lastTrackName=&lastCardinalNo=&lastRound=`;
     const res = await instance.get(url).then(res => res.data);
     return res;
   };

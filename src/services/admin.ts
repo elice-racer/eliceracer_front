@@ -1,7 +1,7 @@
 import { instance } from "./instance";
 
 export interface ResData<T> {
-  data: T | undefined;
+  data: T;
   message: string;
   statusCode: number;
   pagination: { next: string | null; count: number };

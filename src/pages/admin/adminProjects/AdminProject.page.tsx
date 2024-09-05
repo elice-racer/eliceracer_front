@@ -14,7 +14,7 @@ const OPT_TRACKS = [
 
 function AdminProject() {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState<ProjectInfo[]>();
+  const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [track, setTrack] = useState({
     trackName: "",
     cardinalNo: "",
@@ -38,15 +38,17 @@ function AdminProject() {
   const handleDetailClick = (key: string) => {
     navigate(`${paths.ADMIN_PROJECTS}/${key}`);
   };
+
   useEffect(() => {
     fetchGetAllProjects();
   }, []);
+
   return (
     <Container>
       <Wrapper>
         <TitleFlex>
           <TitleTextWrapper>
-            <Title>프로젝트 조회</Title>
+            <Title>프로젝트 관리</Title>
             <Link to={paths.ADD_USERS}>
               <AddBtn>프로젝트 일정 등록</AddBtn>
             </Link>
@@ -58,19 +60,23 @@ function AdminProject() {
           </SelectWrapper>
         </TitleFlex>
         <ProjectListWrapper>
-          {projects?.map((project, idx) => (
-            <ProjectWrapper key={project.id} onClick={() => handleDetailClick(project.id)}>
-              <Text className="gray">{idx + 1}</Text>
-              <Text>
-                {project.track.trackName} {project.track.cardinalNo}
-              </Text>
-              <Text>{project.projectName}</Text>
-              <Text>project.isProgess</Text>
-              <Text>
-                {project.startDate.slice(0, 10)} ~ {project.endDate.slice(0, 10)}
-              </Text>
-            </ProjectWrapper>
-          ))}
+          {projects.length === 0 ? (
+            <Text>등록된 프로젝트가 없습니다.</Text>
+          ) : (
+            projects.map((project, idx) => (
+              <ProjectWrapper key={project.id} onClick={() => handleDetailClick(project.id)}>
+                <Text className="gray">{idx + 1}</Text>
+                <Text>
+                  {project.track.trackName} {project.track.cardinalNo}
+                </Text>
+                <Text>{project.projectName}</Text>
+                <Text>project.isProgess</Text>
+                <Text>
+                  {project.startDate.slice(0, 10)} ~ {project.endDate.slice(0, 10)}
+                </Text>
+              </ProjectWrapper>
+            ))
+          )}
         </ProjectListWrapper>
       </Wrapper>
     </Container>
