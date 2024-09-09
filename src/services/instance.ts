@@ -13,7 +13,7 @@ export const instance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 2000,
+  timeout: 5000,
 });
 
 /** 요청 전에 access_token을 header에 넣는 작업 */

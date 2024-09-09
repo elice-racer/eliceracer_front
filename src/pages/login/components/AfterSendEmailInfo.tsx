@@ -10,14 +10,16 @@ function AfterSendEmailInfo() {
         <Text>정보가 등록되었습니다. </Text>
         <Text> 이메일 인증 후 로그인해주세요.</Text>
       </TextWrapper>
-      <Btn to={paths.LOGIN}>로그인하러 가기</Btn>
+      <Btn to={paths.LOGIN}>
+        <Text>로그인하러 가기</Text>
+      </Btn>
     </Container>
   );
 }
 
 export default AfterSendEmailInfo;
 
-const Container = styled.p`
+const Container = styled.div`
   width: 100%;
   height: 60px;
 
@@ -44,6 +46,7 @@ const Btn = styled(Link)`
   text-align: center;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.colors.purple2};
-  width: 160px;
+  padding: 10px 0px;
+  width: 180px;
   height: 52px;
 `;

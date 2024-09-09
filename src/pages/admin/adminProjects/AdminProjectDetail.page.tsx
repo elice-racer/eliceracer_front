@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { AxiosAdmin, TeamsInfo } from "../../../services/admin";
+import { AxiosAdmin } from "../../../services/admin";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { AxiosProject, ProjectInfo } from "../../../services/projects";
+import { AxiosProject, ProjectDetail } from "../../../services/projects";
 import { paths } from "../../../utils/path";
 
 // 프로젝트 조회해서 내용 넣기
@@ -11,33 +11,15 @@ function AdminProjectDetail() {
   const { id } = useParams();
 
   const navigate = useNavigate();
-  const [project, setProject] = useState<ProjectInfo>();
-
-  const [teams, setTeams] = useState<TeamsInfo[]>();
+  const [project, setProject] = useState<ProjectDetail>();
 
   const fetchGetProject = async () => {
     try {
       const res = await AxiosProject.getProjectId(id);
       if (res.statusCode === 200) setProject(res.data);
+      console.log(res);
     } catch (e) {
       console.error(e);
-    }
-  };
-
-  /** 해당 프로젝트 팀 조회 */
-  const fetchGetProjectsTeams = async () => {
-    try {
-      const res = await AxiosAdmin.getProjectDetail(id);
-      if (res.statusCode === 200) {
-        setTeams(res.data);
-      }
-    } catch (e: any) {
-      console.error(e);
-
-      if (e.response.statue === 409) {
-        console.log("이미 존재하는 팀 채팅방입니다.");
-        return;
-      }
     }
   };
 
@@ -52,7 +34,6 @@ function AdminProjectDetail() {
     }
   };
   useEffect(() => {
-    fetchGetProjectsTeams();
     fetchGetProject();
   }, []);
 
@@ -111,29 +92,34 @@ function AdminProjectDetail() {
         <TeamsListWrapper>
           <SubText>프로젝트 팀</SubText>
           <Text className="info">채팅방이 생성되지 않은 팀일 경우, 채팅방 생성 버튼을 통해 채팅방을 생성하실 수 있습니다!</Text>
-          {teams?.map((team, _idx) => (
-            <TeamWrapper key={team.id}>
-              {/* todo teamId로 chatId 조회 */}
-              <TeamTextWrapper onClick={() => navigate(`${paths.ADMIN_SETTINS_TEAMS}/${team.id}`)}>
-                {team.teamName ? (
-                  <Text>
-                    {team.teamNumber}팀 {team.teamName}
-                  </Text>
+          {project.teams.length === 0 ? (
+            <Text>존재하는 팀 정보가 없습니다.</Text>
+          ) : (
+            project.teams.map((team, _idx) => (
+              <TeamWrapper key={team.id}>
+                {/* todo teamId로 chatId 조회 */}
+                <TeamTextWrapper onClick={() => navigate(`${paths.ADMIN_SETTINS_TEAMS}/${team.id}`)}>
+                  {team.teamName ? (
+                    <Text>
+                      {team.teamNumber}팀 {team.teamName}
+                    </Text>
+                  ) : (
+                    <Text>{team.teamNumber}팀 </Text>
+                  )}
+                </TeamTextWrapper>
+                {team.users.map(user => `${user.realName} `)}
+                {team.id ? (
+                  <CreateChatBtn onClick={() => navigate(team.id)} id={team.id}>
+                    팀 채팅방 바로가기
+                  </CreateChatBtn>
                 ) : (
-                  <Text>{team.teamNumber}팀 </Text>
+                  <CreateChatBtn onClick={fetchCreateChatRoom} id={team.id}>
+                    채팅방 생성
+                  </CreateChatBtn>
                 )}
-              </TeamTextWrapper>
-              {team.id ? (
-                <CreateChatBtn onClick={() => navigate(team.id)} id={team.id}>
-                  팀 채팅방 바로가기
-                </CreateChatBtn>
-              ) : (
-                <CreateChatBtn onClick={fetchCreateChatRoom} id={team.id}>
-                  채팅방 생성
-                </CreateChatBtn>
-              )}
-            </TeamWrapper>
-          ))}
+              </TeamWrapper>
+            ))
+          )}
         </TeamsListWrapper>
 
         <SubText>오피스아워 스케줄</SubText>

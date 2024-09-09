@@ -28,7 +28,7 @@ export const ProtectedRoute = () => {
         if (currentUser) {
           setCurrentUser(currentUser);
         }
-        if (currentUser?.role === "ADMIN") {
+        if (currentUser.role === "ADMIN") {
           setAdminMenu(true);
         }
       }

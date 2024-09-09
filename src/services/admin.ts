@@ -1,7 +1,8 @@
 import { instance } from "./instance";
+import { UserListType } from "./user";
 
 export interface ResData<T> {
-  data: T | undefined;
+  data: T;
   message: string;
   statusCode: number;
   pagination: { next: string | null; count: number };
@@ -13,7 +14,7 @@ interface Track {
   cardinalNo: number | string;
 }
 
-type OmitTrackProps = Omit<Track, "id">;
+export type OmitTrackProps = Omit<Track, "id">;
 
 interface GetTrackTeamsQuery extends OmitTrackProps {
   lastRound: number | string;
@@ -26,6 +27,7 @@ export interface TeamsInfo {
   teamName: string | null;
   gitlab: string | null;
   notion: string | null;
+  users: UserListType[];
 }
 
 export interface CreateChat {
@@ -93,13 +95,14 @@ export namespace AxiosAdmin {
     return res;
   };
 
-  /** 트랙 + 기수로 조회 */
+  /** [삭제 예정 ]트랙 + 기수로 조회 */
   export const getTrackTeamList = async (TeamsInfo: GetTrackTeamsQuery): Promise<ResData<TeamsInfo[]>> => {
     const url = `teams/cardinals/all?pageSize=10&trackName=${TeamsInfo.trackName}&cardinalNo=${TeamsInfo.cardinalNo}&lastRound=${TeamsInfo.lastRound}`;
     const res = await instance.get(url).then(res => res.data);
     return res;
   };
 
+  /** [삭제 예정] */
   export const getProjectDetail = async (id: string | undefined): Promise<ResData<TeamsInfo[]>> => {
     const url = `teams/projects/all?pageSize=10&projectId=${id}`;
     const res = await instance.get(url).then(res => res.data);
