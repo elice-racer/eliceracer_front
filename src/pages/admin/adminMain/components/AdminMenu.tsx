@@ -6,7 +6,7 @@ function AdminMenu() {
   return (
     <Container>
       <Wrapper>
-        <FastLinkItem to={paths.ADD_USERS}>빠른 파일 업로드</FastLinkItem>
+        <FastLinkItem to={paths.ADMIN}>빠른 파일 업로드</FastLinkItem>
         <FastLinkItem to={paths.ADMIN_ADD_NOTICE}>빠른 공지 등록</FastLinkItem>
       </Wrapper>
       <Wrapper>

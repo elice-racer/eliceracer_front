@@ -1,12 +1,12 @@
 import styled from "styled-components";
-import { paths } from "../../utils/path";
+import { paths } from "../../../utils/path";
 import { Link, useNavigate } from "react-router-dom";
-import SelectBox from "./administrateUsers/components/SelectBox";
+import SelectBox from "../administrateUsers/components/SelectBox";
 import { useEffect, useState } from "react";
-import { AxiosProject, ProjectInfo } from "../../services/projects";
+import { AxiosProject, ProjectInfo } from "../../../services/projects";
 
-const OptTrack = [
-  { value: "", name: "트랙" },
+const OPT_TRACKS = [
+  { value: "All", name: "트랙" },
   { value: "AI", name: "AI" },
   { value: "CLOUD", name: "CLOUD" },
   { value: "SW", name: "SW" },
@@ -14,7 +14,7 @@ const OptTrack = [
 
 function AdminProject() {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState<ProjectInfo[]>();
+  const [projects, setProjects] = useState<ProjectInfo[]>([]);
   const [track, setTrack] = useState({
     trackName: "",
     cardinalNo: "",
@@ -38,35 +38,45 @@ function AdminProject() {
   const handleDetailClick = (key: string) => {
     navigate(`${paths.ADMIN_PROJECTS}/${key}`);
   };
+
   useEffect(() => {
     fetchGetAllProjects();
   }, []);
+
   return (
     <Container>
       <Wrapper>
         <TitleFlex>
           <TitleTextWrapper>
-            <Title>프로젝트 조회</Title>
+            <Title>프로젝트 관리</Title>
             <Link to={paths.ADD_USERS}>
               <AddBtn>프로젝트 일정 등록</AddBtn>
             </Link>
           </TitleTextWrapper>
           <SelectWrapper>
-            <SelectBox options={OptTrack} name="trackName" value={track.trackName} onChange={handleChangeTrackInfo} />
+            <SelectBox options={OPT_TRACKS} name="trackName" value={track.trackName} onChange={handleChangeTrackInfo} />
             <Input type="text" name="cardinalNo" value={track.cardinalNo} onChange={handleChangeTrackInfo} placeholder="기수" required />
             <Input type="text" name="lastRound" value={track.lastRound} onChange={handleChangeTrackInfo} placeholder="회차" required />
           </SelectWrapper>
         </TitleFlex>
         <ProjectListWrapper>
-          {projects?.map((project, idx) => (
-            <ProjectWrapper key={project.id} onClick={() => handleDetailClick(project.id)}>
-              <Text className="gray">{idx + 1}</Text>
-              <Text>
-                {project.track.trackName} {project.track.cardinalNo}
-              </Text>
-              <Text>{project.projectName}</Text>
-            </ProjectWrapper>
-          ))}
+          {projects.length === 0 ? (
+            <Text>등록된 프로젝트가 없습니다.</Text>
+          ) : (
+            projects.map((project, idx) => (
+              <ProjectWrapper key={project.id} onClick={() => handleDetailClick(project.id)}>
+                <Text className="gray">{idx + 1}</Text>
+                <Text>
+                  {project.track.trackName} {project.track.cardinalNo}
+                </Text>
+                <Text>{project.projectName}</Text>
+                <Text>project.isProgess</Text>
+                <Text>
+                  {project.startDate.slice(0, 10)} ~ {project.endDate.slice(0, 10)}
+                </Text>
+              </ProjectWrapper>
+            ))
+          )}
         </ProjectListWrapper>
       </Wrapper>
     </Container>
@@ -128,6 +138,7 @@ const ProjectListWrapper = styled.div`
   gap: 4px;
 `;
 const ProjectWrapper = styled.div`
+  width: 100%;
   padding: 12px;
   display: flex;
   justify-content: space-between;

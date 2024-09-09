@@ -35,7 +35,6 @@ import OfficeHour from "./pages/officeHour/OfficeHour.page";
 import Settings from "./pages/settings/Settings.page";
 
 // 관리자 page
-import AdminMain from "./pages/admin/adminMain/AdminMain.page";
 import AdminAddFile from "./pages/admin/administrateUsers/AdminAddFile.page.js";
 import AdminSearchUser from "./pages/admin/administrateUsers/AdminSearchUser.page.js";
 
@@ -49,7 +48,7 @@ import AdminSettingsChat from "./pages/admin/AdminSettingsChat";
 
 import AdminOfficeHour from "./pages/admin/adminOfficeHour/AdminOfficeHour.page";
 import AdminAlert from "./pages/admin/AdminAlert.page";
-import AdminProject from "./pages/admin/AdminProject.page";
+import AdminProject from "./pages/admin/adminProjects/AdminProject.page.js";
 
 // styled
 import GlobalThemeProvider from "./styles/GlobalThemeProvider";
@@ -70,13 +69,18 @@ import EditMyPage from "./pages/profile/EditMyPage.page";
 import BasicRoute from "./routes/BasicRoute";
 import Notfound from "./pages/404/Notfound.page";
 import SuccessCreateUsers from "./pages/login/SuccessCreateUsers.page";
-import AdminProjectDetail from "./pages/admin/AdminProjectDetail.page";
+import AdminProjectDetail from "./pages/admin/adminProjects/AdminProjectDetail.page.js";
 import SuccessAuthEmail from "./pages/redirects/SuccessAuthEmail.page";
 import AdministrateTracks from "./pages/admin/administrateTracks/AdministrateTracks.page.js";
-import DevInfo from "./pages/DevInfo.page.js";
+import AdministrateTrackDetail from "./pages/admin/administrateTracks/AdministrateTrackDetail.page.js";
+import EmptyData from "./pages/404/EmptyData.page.js";
+import AdminTeams from "./pages/admin/adminProjects/AdminTeams.page.js";
+// import DevInfo from "./pages/DevInfo.page.js";
+
+import TestPages from "./pages/TestPages.js";
 
 const router = createBrowserRouter([
-  { path: "", element: <DevInfo /> },
+  // { path: "", element: <DevInfo /> },
   {
     path: "",
     element: <ProtectedRoute />,
@@ -91,6 +95,7 @@ const router = createBrowserRouter([
     path: "/auth",
     element: <BasicRoute />,
     children: [
+      { path: "/auth/calendar", element: <TestPages /> },
       { path: paths.LOGIN, element: <Login /> },
       { path: paths.INTRO, element: <Intro /> },
       { path: paths.CREATE_USER, element: <CreateAccount /> },
@@ -119,8 +124,10 @@ const router = createBrowserRouter([
     path: "/admin",
     element: <AdminRoute />,
     children: [
-      { path: paths.ADMIN, element: <AdminMain /> },
+      { path: paths.ADMIN, element: <AdminAddFile /> },
       { path: paths.TRACKS_SETTINGS, element: <AdministrateTracks /> },
+      { path: paths.TRACKS_DETAIL, element: <AdministrateTrackDetail /> },
+
       { path: paths.ADD_USERS, element: <AdminAddFile /> },
       { path: paths.ADMIN_SEARCH_USERS, element: <AdminSearchUser /> },
 
@@ -137,6 +144,8 @@ const router = createBrowserRouter([
 
       { path: paths.ADMIN_PROJECTS, element: <AdminProject /> },
       { path: paths.ADMIN_PROJECTS_DETAIL, element: <AdminProjectDetail /> },
+      { path: paths.ADMIN_SETTINGS_TEAM_DETAIL, element: <AdminTeams /> },
+
       { path: paths.UPDATE_OFFICE_HOUR, element: <AdminOfficeHour /> },
     ],
   },
@@ -144,10 +153,11 @@ const router = createBrowserRouter([
     path: "*",
     element: <Notfound />,
   },
+  { path: "/empty-data", element: <EmptyData /> },
 ]);
 
 function App() {
-  console.log("------현재 업데이트 기간입니다.-----");
+  console.log("------개발 서버입니다.-----");
   const setToken = useSetRecoilState(tokenAtom);
   const [isLoading, setLoading] = useRecoilState(loadingAtom);
 

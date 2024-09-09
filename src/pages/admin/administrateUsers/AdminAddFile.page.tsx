@@ -100,6 +100,7 @@ function AdminAddFile() {
     if (Number.isNaN(parseInt(track.cardinalNo)) || Number.isNaN(parseInt(track.lastRound))) return alert("기수에 숫자만 입력해주세요.");
     try {
       const { trackName, cardinalNo, lastRound } = track;
+      // todo 프로젝트 조회 페이지로 조회할 수 있게 변경
       const res = await AxiosAdmin.getTrackTeamList({ trackName, cardinalNo, lastRound });
       setLoading(true);
       if (res.statusCode === 200) {
@@ -164,7 +165,7 @@ function AdminAddFile() {
       setLoading(false);
     }
   };
-
+  // 요청 url , 메서드, 데이터,
   const handleUploadUsersFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {

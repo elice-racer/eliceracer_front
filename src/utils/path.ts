@@ -1,5 +1,5 @@
 const paths = {
-  HOME: "/h",
+  HOME: "/",
   INTRO: "/auth",
   LOGIN: "/auth/login",
   CREATE_USER: "/auth/create-account",
@@ -38,12 +38,19 @@ const paths = {
 
   // 관리자 트랙 관리
   TRACKS_SETTINGS: "/admin/tracks",
+  TRACKS_DETAIL: "/admin/tracks/:id",
+
+  // 관리자 팀 상세 조회
+  ADMIN_SETTINS_TEAMS: "/admin/teams",
+  ADMIN_SETTINGS_TEAM_DETAIL: "/admin/teams/:id",
+
   // 관리자 유저 관리
   ADD_USERS: "/admin/upload-file",
   ADMIN_SEARCH_USERS: "/admin/search-users",
 
   // 채팅 관리
   ADMIN_SETTINGS_CHAT: "/admin/chat",
+  ADMIN_CHAT_DETAIL: "/admin/chat/:id",
 
   // 관리자 오피스아워 관리
   OFFICE_HOUR: "/admin/officehour",
