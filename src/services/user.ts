@@ -42,6 +42,7 @@ export type ChatRoomUsers = Omit<UsersPageInfo, "phoneNumber">;
 export type OmitUserInfo = Omit<UsersPageInfo, "username" | "email" | "id" | "skill" | "role" | "teams" | "track" | "status">;
 
 export type UpdateUserInfo = Partial<OmitUserInfo>;
+
 export namespace AxiosUser {
   /** 현재 유저 정보 가져오기 */
   export const getCurrentUser = async (): Promise<ResData<UsersPageInfo>> => {
@@ -111,15 +112,16 @@ export namespace AxiosUser {
     return res;
   };
 
-  export const getSearchUser = async (search: string) => {
-    const url = `users?search=${search}`;
+  /** 유저 이름으로 검색 */
+  export const getSearchUsersRealName = async (search: string) => {
+    const url = `users/search?realName=${search}`;
     const res = await instance.get(url);
     return res;
   };
 
-  /** 레이서 역할별 조회 */
+  /** 모든 유저 조회 */
   export const getAllUsers = async () => {
-    const url = `users/all?pageSize=10&role=all`;
+    const url = `users?pageSize=30&trackName=all&cardinalNo=0&role=all`;
     const res = await instance.get(url);
     return res;
   };
