@@ -75,6 +75,7 @@ const paths = {
 };
 
 const imgPaths = {
+  ELICE_INTRO: "/imgs/elicerracerMain.webp",
   ELICE_LOGO: "/imgs/elice-logo.png",
   DEFAULT_PROFILE_IMG: "/imgs/defaultProfileImg.png",
   NOT_FOUND: "/imgs/404page.png",

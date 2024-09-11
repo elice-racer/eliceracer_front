@@ -114,7 +114,7 @@ function Lounge() {
   /** 친구 검색 */
   const fetchSearchUserList = async () => {
     try {
-      const res = await AxiosUser.getSearchUser(searchUser);
+      const res = await AxiosUser.getSearchUsersRealName(searchUser);
       if (res.status === 200) {
         setUsers(res.data.data);
       }
