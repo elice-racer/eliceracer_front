@@ -76,45 +76,76 @@ export default function Login() {
   }, []);
 
   return (
-    <Wrapper>
-      <Img src={imgPaths.ELICE_LOGO} />
-      <Form>
-        <InputFiled
-          ref={inputRef}
-          onChange={onChange}
-          name="identifier"
-          value={userLoginForm.identifier}
-          placeholder="id"
-          type="id"
-          required
-          onKeyDown={onKeyDown}
-        />
-        <InputFiled
-          error={error}
-          onChange={onChange}
-          name="password"
-          value={userLoginForm.password}
-          placeholder="password"
-          type="password"
-          required
-          onKeyDown={onKeyDown}
-        />
-      </Form>
-      <ButtonWrapper>
-        <Button onClick={handleLogin} className="login-button">
-          로그인
-        </Button>
-      </ButtonWrapper>
+    <Container>
+      <IntroWrapper>
+        <IntroImg src={imgPaths.ELICE_INTRO} />
+      </IntroWrapper>
+      <Wrapper>
+        <Img src={imgPaths.ELICE_LOGO} />
+        <Form>
+          <InputFiled
+            ref={inputRef}
+            onChange={onChange}
+            name="identifier"
+            value={userLoginForm.identifier}
+            placeholder="id"
+            type="id"
+            required
+            onKeyDown={onKeyDown}
+          />
+          <InputFiled
+            error={error}
+            onChange={onChange}
+            name="password"
+            value={userLoginForm.password}
+            placeholder="password"
+            type="password"
+            required
+            onKeyDown={onKeyDown}
+          />
+        </Form>
+        <ButtonWrapper>
+          <Button onClick={handleLogin} className="login-button">
+            로그인
+          </Button>
+        </ButtonWrapper>
 
-      <TextWrapper>
-        <StyledLink to={paths.FIND_ID}>아이디</StyledLink> | <StyledLink to={paths.FIND_PW}>비밀번호 찾기</StyledLink>
-      </TextWrapper>
-      <Text>
-        처음 방문하셨나요? <Link to={paths.INTRO}>회원가입하기 &rarr;</Link>
-      </Text>
-    </Wrapper>
+        <TextWrapper>
+          <StyledLink to={paths.FIND_ID}>아이디</StyledLink> | <StyledLink to={paths.FIND_PW}>비밀번호 찾기</StyledLink>
+        </TextWrapper>
+        <Text>
+          처음 방문하셨나요? <Link to={paths.INTRO}>회원가입하기 &rarr;</Link>
+        </Text>
+      </Wrapper>
+    </Container>
   );
 }
+
+const Container = styled.div`
+  display: flex;
+`;
+
+const IntroWrapper = styled.div`
+  @media ${({ theme }) => theme.device.mobileM} {
+    display: none;
+  }
+  @media ${({ theme }) => theme.device.mobileS} {
+    display: none;
+  }
+`;
+
+const IntroImg = styled.img`
+  width: 100%;
+  @media ${({ theme }) => theme.device.tablet} {
+    display: none;
+  }
+  @media ${({ theme }) => theme.device.mobileM} {
+    display: none;
+  }
+  @media ${({ theme }) => theme.device.mobileS} {
+    display: none;
+  }
+`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -158,7 +189,7 @@ const Form = styled.form`
 `;
 const Img = styled.img`
   width: 230px;
-  margin: 50px 0 40px 0;
+  margin: 12px 0 40px 0;
 `;
 
 const Text = styled.p`
