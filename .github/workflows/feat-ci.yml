@@ -11,13 +11,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Create Pull Request
+      - name: Changes by create-pull-request action
         uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.ACTIONS_TOKEN }}
-          commit-message: Create PR with changes
+          commit-message: Create PR with changes ${{ github.ref }} to dev
           base: dev
           branch: ${{ github.ref }}
           assignees: devchaeyoung
           title: Create PR to DEV
-          body: dev 브랜치에 새로운 PR이 생성되었습니다.
+          body: ${{ github.ref }} to dev
