@@ -1,8 +1,9 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { paths } from "../../../utils/path";
 import { AxiosNotice, Notice } from "../../../services/notice";
 import { useEffect, useState } from "react";
+import Button from "../administrateTracks/components/Button";
 
 function AdminNoticeList() {
   const navigate = useNavigate();
@@ -27,9 +28,9 @@ function AdminNoticeList() {
       <NoticeWrapper>
         <TitleWrapper>
           <Title>공지</Title>
-          <Link to={paths.ADMIN_ADD_NOTICE}>
-            <AddBtn>공지 등록</AddBtn>
-          </Link>
+          <Button isBasic={true} onClick={() => navigate(paths.ADMIN_ADD_NOTICE)}>
+            공지 등록
+          </Button>
         </TitleWrapper>
         <NoticeListWrapper>
           {notices?.map((notice, index) => (
@@ -97,13 +98,7 @@ const DateWrapper = styled.div`
   display: flex;
   gap: 5px;
 `;
-const AddBtn = styled.div`
-  color: ${({ theme }) => theme.colors.purple3};
-  text-align: center;
-  padding: 2px 5px;
-  border-radius: 6px;
-  border: 1px solid ${({ theme }) => theme.colors.purple2};
-`;
+
 const NoticeListWrapper = styled.div`
   margin-top: 12px;
   display: flex;
