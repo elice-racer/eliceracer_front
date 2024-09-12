@@ -18,11 +18,6 @@ const InputFiled = forwardRef<HTMLInputElement, InputFieldProps>(({ label, error
 export default InputFiled;
 
 const Wrapper = styled.div`
-  width: 280px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
   @media ${({ theme }) => theme.device.tablet} {
     width: 260px;
   }
@@ -32,6 +27,11 @@ const Wrapper = styled.div`
   @media ${({ theme }) => theme.device.mobileS} {
     width: 180px;
   }
+  width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 `;
 
 const Label = styled.label`
@@ -44,6 +44,12 @@ const Error = styled.div`
   color: tomato;
 `;
 const Input = styled.input`
+  @media (width <= 1060px) {
+    width: 260px;
+  }
+  @media (width <= 946px) {
+    width: 200px;
+  }
   width: 100%;
   height: 36px;
   padding-left: 10px;

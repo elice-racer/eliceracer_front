@@ -6,6 +6,13 @@ export default function Button({ children, ...props }: ButtonProps) {
 }
 
 const StyledButton = styled(MUIButton)`
+  @media (width <= 1080px) {
+    width: 230p !important;
+  }
+  @media (width <= 946px) {
+    width: 200px !important;
+  }
+
   background-color: ${({ theme }) => theme.colors.purple5} !important;
 
   height: 36px !important;

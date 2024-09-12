@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { paths } from "../../../utils/path";
 import { currentUserAtom } from "../../../recoil/UserAtom";
 import { useRecoilValue } from "recoil";
+import Button from "../administrateTracks/components/Button";
 
 function AdminNoticeId() {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ function AdminNoticeId() {
     }
   };
 
+  // todo 삭제시 확인 모달 띄우기
   const fetchDeleteNotice = async () => {
     try {
       const noticeId = id;
@@ -50,10 +52,13 @@ function AdminNoticeId() {
           </Link>
           {notice?.user.id === myInfo?.id && (
             <>
-              <Link to={`${paths.ADMIN_NOTICE_LIST}/update/${id}`}>
-                <AddBtn>공지 수정</AddBtn>
-              </Link>
-              <DelBtn onClick={() => fetchDeleteNotice()}>삭제</DelBtn>
+              <Button isBasic={true} onClick={() => navigate(`${paths.ADMIN_NOTICE_LIST}/update/${id}`)}>
+                공지 수정
+              </Button>
+
+              <Button isBasic={false} onClick={() => fetchDeleteNotice()}>
+                삭제
+              </Button>
             </>
           )}
         </Header>
@@ -154,31 +159,5 @@ const Text = styled.p`
   }
   &.date {
     color: ${({ theme }) => theme.colors.gray2};
-  }
-`;
-
-const AddBtn = styled.div`
-  color: ${({ theme }) => theme.colors.purple3};
-  text-align: center;
-  padding: 2px 5px;
-  border-radius: 6px;
-  border: 1px solid ${({ theme }) => theme.colors.purple2};
-  cursor: pointer;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.colors.purple2};
-    color: #fff;
-  }
-`;
-
-const DelBtn = styled.div`
-  color: tomato;
-  text-align: center;
-  padding: 2px 5px;
-  border-radius: 6px;
-  border: 1px solid tomato;
-  &:hover {
-    background-color: tomato;
-    color: #fff;
   }
 `;

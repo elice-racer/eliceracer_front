@@ -37,6 +37,8 @@ function AdminAddNotice() {
       console.error(e);
       setError(e.response.data.message);
       setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
