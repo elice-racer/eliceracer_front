@@ -1,0 +1,23 @@
+on:
+  push:
+    branches:
+      - feat/*
+
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Changes by create-pull-request action
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.ACTIONS_TOKEN }}
+          commit-message: Create PR with changes ${{ github.ref }} to dev
+          base: dev
+          branch: ${{ github.ref }}
+          assignees: devchaeyoung
+          title: Create PR to DEV
+          body: ${{ github.ref }} to dev

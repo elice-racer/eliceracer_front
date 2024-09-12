@@ -155,16 +155,6 @@ const Wrapper = styled.div`
   gap: 12px;
   width: 100%;
   margin: 0 auto;
-
-  /* @media ${({ theme }) => theme.device.tablet} {
-    background-color: blue;
-  }
-  @media ${({ theme }) => theme.device.mobileM} {
-    background-color: red;
-  }
-  @media ${({ theme }) => theme.device.mobileS} {
-    background-color: green;
-  } */
 `;
 
 const ButtonWrapper = styled.div`
