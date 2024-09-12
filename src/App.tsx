@@ -75,12 +75,12 @@ import AdministrateTracks from "./pages/admin/administrateTracks/AdministrateTra
 import AdministrateTrackDetail from "./pages/admin/administrateTracks/AdministrateTrackDetail.page.js";
 import EmptyData from "./pages/404/EmptyData.page.js";
 import AdminTeams from "./pages/admin/adminProjects/AdminTeams.page.js";
-// import DevInfo from "./pages/DevInfo.page.js";
+import DevInfo from "./pages/DevInfo.page.js";
 
 import TestPages from "./pages/TestPages.js";
 
 const router = createBrowserRouter([
-  // { path: "", element: <DevInfo /> },
+  { path: "", element: <DevInfo /> },
   {
     path: "",
     element: <ProtectedRoute />,
